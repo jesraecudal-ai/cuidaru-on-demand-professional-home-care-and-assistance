@@ -7,14 +7,11 @@ import ReviewForm from '../components/reviews/ReviewForm';
 import { Skeleton } from '@/components/ui/skeleton';
 import { Calendar, Briefcase } from 'lucide-react';
 import { toast } from 'sonner';
-import {
-  Dialog,
-  DialogContent,
-  DialogHeader,
-  DialogTitle,
-} from '@/components/ui/dialog';
+import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog';
+import { useI18n } from '@/lib/i18n';
 
 export default function Bookings() {
+  const { t } = useI18n();
   const [user, setUser] = useState(null);
   const [providerProfile, setProviderProfile] = useState(null);
   const [reviewBooking, setReviewBooking] = useState(null);
@@ -53,7 +50,7 @@ export default function Bookings() {
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['clientBookings'] });
       queryClient.invalidateQueries({ queryKey: ['providerBookings'] });
-      toast.success('Booking updated!');
+      toast.success('Updated!');
     },
   });
 
@@ -61,9 +58,8 @@ export default function Bookings() {
     if (action === 'release') {
       updateMutation.mutate({ id: bookingId, data: { payment_status: 'released' } });
       const booking = clientBookings.find((b) => b.id === bookingId);
-      if (booking) {
-        const reviewExists = existingReviews.some((r) => r.booking_id === bookingId);
-        if (!reviewExists) setReviewBooking(booking);
+      if (booking && !existingReviews.some((r) => r.booking_id === bookingId)) {
+        setReviewBooking(booking);
       }
     } else {
       updateMutation.mutate({ id: bookingId, data: { status: action } });
@@ -76,30 +72,28 @@ export default function Bookings() {
 
   return (
     <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-      <h1 className="text-3xl font-display font-bold mb-6">My Bookings</h1>
+      <h1 className="text-3xl font-display font-bold mb-6">{t('my_bookings')}</h1>
 
       <Tabs defaultValue="client">
         <TabsList className="mb-6">
           <TabsTrigger value="client" className="gap-2">
-            <Calendar className="w-4 h-4" /> As Client
+            <Calendar className="w-4 h-4" /> {t('as_client')}
           </TabsTrigger>
           {providerProfile && (
             <TabsTrigger value="provider" className="gap-2">
-              <Briefcase className="w-4 h-4" /> As Provider
+              <Briefcase className="w-4 h-4" /> {t('as_provider')}
             </TabsTrigger>
           )}
         </TabsList>
 
         <TabsContent value="client">
           {loadingClient ? (
-            <div className="space-y-4">
-              {Array(3).fill(0).map((_, i) => <Skeleton key={i} className="h-32 rounded-xl" />)}
-            </div>
+            <div className="space-y-4">{Array(3).fill(0).map((_, i) => <Skeleton key={i} className="h-32 rounded-xl" />)}</div>
           ) : clientBookings.length === 0 ? (
             <div className="text-center py-16">
               <Calendar className="w-12 h-12 text-muted-foreground mx-auto mb-3" />
-              <h3 className="text-lg font-semibold">No bookings yet</h3>
-              <p className="text-muted-foreground">Browse providers and book your first service</p>
+              <h3 className="text-lg font-semibold">{t('no_bookings')}</h3>
+              <p className="text-muted-foreground">{t('no_bookings_sub')}</p>
             </div>
           ) : (
             <div className="space-y-4">
@@ -108,18 +102,11 @@ export default function Bookings() {
               ))}
             </div>
           )}
-
           {completedUnreviewed.length > 0 && (
             <div className="mt-8 space-y-4">
-              <h3 className="font-semibold text-lg">Pending Reviews</h3>
+              <h3 className="font-semibold text-lg">{t('pending_reviews')}</h3>
               {completedUnreviewed.map((booking) => (
-                <ReviewForm
-                  key={booking.id}
-                  bookingId={booking.id}
-                  providerId={booking.provider_id}
-                  reviewerName={user?.full_name}
-                  onSubmitted={() => queryClient.invalidateQueries({ queryKey: ['myReviews'] })}
-                />
+                <ReviewForm key={booking.id} bookingId={booking.id} providerId={booking.provider_id} reviewerName={user?.full_name} onSubmitted={() => queryClient.invalidateQueries({ queryKey: ['myReviews'] })} />
               ))}
             </div>
           )}
@@ -128,14 +115,12 @@ export default function Bookings() {
         {providerProfile && (
           <TabsContent value="provider">
             {loadingProvider ? (
-              <div className="space-y-4">
-                {Array(3).fill(0).map((_, i) => <Skeleton key={i} className="h-32 rounded-xl" />)}
-              </div>
+              <div className="space-y-4">{Array(3).fill(0).map((_, i) => <Skeleton key={i} className="h-32 rounded-xl" />)}</div>
             ) : providerBookings.length === 0 ? (
               <div className="text-center py-16">
                 <Briefcase className="w-12 h-12 text-muted-foreground mx-auto mb-3" />
-                <h3 className="text-lg font-semibold">No booking requests yet</h3>
-                <p className="text-muted-foreground">Clients will find you in the marketplace</p>
+                <h3 className="text-lg font-semibold">{t('no_requests')}</h3>
+                <p className="text-muted-foreground">{t('no_requests_sub')}</p>
               </div>
             ) : (
               <div className="space-y-4">
@@ -151,17 +136,14 @@ export default function Bookings() {
       <Dialog open={!!reviewBooking} onOpenChange={() => setReviewBooking(null)}>
         <DialogContent>
           <DialogHeader>
-            <DialogTitle>How was the service?</DialogTitle>
+            <DialogTitle>{t('how_was_service')}</DialogTitle>
           </DialogHeader>
           {reviewBooking && (
             <ReviewForm
               bookingId={reviewBooking.id}
               providerId={reviewBooking.provider_id}
               reviewerName={user?.full_name}
-              onSubmitted={() => {
-                setReviewBooking(null);
-                queryClient.invalidateQueries({ queryKey: ['myReviews'] });
-              }}
+              onSubmitted={() => { setReviewBooking(null); queryClient.invalidateQueries({ queryKey: ['myReviews'] }); }}
             />
           )}
         </DialogContent>

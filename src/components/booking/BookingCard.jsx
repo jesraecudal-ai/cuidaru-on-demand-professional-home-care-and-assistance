@@ -5,6 +5,7 @@ import { Button } from '@/components/ui/button';
 import { Calendar, Clock, MapPin, DollarSign, User, CheckCircle2, XCircle, AlertCircle } from 'lucide-react';
 import CategoryBadge from '../shared/CategoryBadge';
 import { format } from 'date-fns';
+import { useI18n } from '@/lib/i18n';
 
 const STATUS_STYLES = {
   pending: { color: 'bg-amber-50 text-amber-700 border-amber-200', icon: Clock },
@@ -22,6 +23,7 @@ const PAYMENT_STYLES = {
 };
 
 export default function BookingCard({ booking, isProvider, onAction }) {
+  const { t } = useI18n();
   const status = STATUS_STYLES[booking.status] || STATUS_STYLES.pending;
   const StatusIcon = status.icon;
 
@@ -34,11 +36,11 @@ export default function BookingCard({ booking, isProvider, onAction }) {
               <CategoryBadge category={booking.category} />
               <Badge variant="outline" className={status.color}>
                 <StatusIcon className="w-3 h-3 mr-1" />
-                {booking.status?.replace('_', ' ')}
+                {t(`status_${booking.status?.replace(' ', '_')}`) || booking.status}
               </Badge>
               <Badge variant="outline" className={PAYMENT_STYLES[booking.payment_status]}>
                 <DollarSign className="w-3 h-3 mr-1" />
-                {booking.payment_status}
+                {t(`payment_${booking.payment_status}`) || booking.payment_status}
               </Badge>
             </div>
 
@@ -75,21 +77,21 @@ export default function BookingCard({ booking, isProvider, onAction }) {
             <div className="flex gap-2 justify-end">
               {isProvider && booking.status === 'pending' && (
                 <>
-                  <Button size="sm" onClick={() => onAction(booking.id, 'confirmed')}>Accept</Button>
-                  <Button size="sm" variant="outline" onClick={() => onAction(booking.id, 'cancelled')}>Decline</Button>
+                  <Button size="sm" onClick={() => onAction(booking.id, 'confirmed')}>{t('accept')}</Button>
+                  <Button size="sm" variant="outline" onClick={() => onAction(booking.id, 'cancelled')}>{t('decline')}</Button>
                 </>
               )}
               {isProvider && booking.status === 'confirmed' && (
-                <Button size="sm" onClick={() => onAction(booking.id, 'in_progress')}>Start Job</Button>
+                <Button size="sm" onClick={() => onAction(booking.id, 'in_progress')}>{t('start_job')}</Button>
               )}
               {isProvider && booking.status === 'in_progress' && (
-                <Button size="sm" onClick={() => onAction(booking.id, 'completed')}>Mark Complete</Button>
+                <Button size="sm" onClick={() => onAction(booking.id, 'completed')}>{t('mark_complete')}</Button>
               )}
               {!isProvider && booking.status === 'completed' && booking.payment_status === 'held' && (
-                <Button size="sm" onClick={() => onAction(booking.id, 'release')}>Release Payment</Button>
+                <Button size="sm" onClick={() => onAction(booking.id, 'release')}>{t('release_payment')}</Button>
               )}
               {!isProvider && booking.status === 'pending' && (
-                <Button size="sm" variant="outline" onClick={() => onAction(booking.id, 'cancelled')}>Cancel</Button>
+                <Button size="sm" variant="outline" onClick={() => onAction(booking.id, 'cancelled')}>{t('cancel')}</Button>
               )}
             </div>
           </div>

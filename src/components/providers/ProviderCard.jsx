@@ -6,8 +6,11 @@ import { MapPin, Clock, ShieldCheck, Briefcase } from 'lucide-react';
 import CategoryBadge from '../shared/CategoryBadge';
 import StarRating from '../shared/StarRating';
 import { motion } from 'framer-motion';
+import { useI18n } from '@/lib/i18n';
 
 export default function ProviderCard({ provider, index = 0 }) {
+  const { t } = useI18n();
+
   return (
     <motion.div
       initial={{ opacity: 0, y: 20 }}
@@ -26,14 +29,12 @@ export default function ProviderCard({ provider, index = 0 }) {
                 />
               ) : (
                 <div className="w-24 h-24 rounded-full bg-primary/10 flex items-center justify-center">
-                  <span className="text-3xl font-bold text-primary">
-                    {provider.full_name?.[0] || '?'}
-                  </span>
+                  <span className="text-3xl font-bold text-primary">{provider.full_name?.[0] || '?'}</span>
                 </div>
               )}
               {provider.identity_verified && (
                 <div className="absolute top-3 right-3 bg-white/90 backdrop-blur rounded-full px-2 py-1 flex items-center gap-1 text-xs font-medium text-emerald-600">
-                  <ShieldCheck className="w-3.5 h-3.5" /> Verified
+                  <ShieldCheck className="w-3.5 h-3.5" /> {t('verified')}
                 </div>
               )}
               <div className="absolute top-3 left-3">
@@ -54,7 +55,7 @@ export default function ProviderCard({ provider, index = 0 }) {
                   )}
                   {provider.experience_years > 0 && (
                     <span className="flex items-center gap-1">
-                      <Briefcase className="w-3.5 h-3.5" /> {provider.experience_years}yr
+                      <Briefcase className="w-3.5 h-3.5" /> {provider.experience_years}{t('yr')}
                     </span>
                   )}
                 </div>
@@ -63,18 +64,18 @@ export default function ProviderCard({ provider, index = 0 }) {
               <div className="flex items-center justify-between">
                 <StarRating rating={provider.average_rating || 0} />
                 <span className="text-xs text-muted-foreground">
-                  {provider.total_reviews || 0} reviews
+                  {provider.total_reviews || 0} {t('reviews')}
                 </span>
               </div>
 
               <div className="flex items-center justify-between pt-2 border-t border-border/50">
                 <div>
                   <span className="text-2xl font-bold text-primary">${provider.hourly_rate}</span>
-                  <span className="text-sm text-muted-foreground">/hr</span>
+                  <span className="text-sm text-muted-foreground">{t('per_hour')}</span>
                 </div>
                 {provider.availability === 'available' && (
                   <Badge className="bg-emerald-50 text-emerald-600 border-emerald-200 gap-1">
-                    <Clock className="w-3 h-3" /> Available
+                    <Clock className="w-3 h-3" /> {t('available')}
                   </Badge>
                 )}
               </div>

@@ -1,10 +1,9 @@
 import React from 'react';
 import { Input } from '@/components/ui/input';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
-import { Slider } from '@/components/ui/slider';
 import { Search, SlidersHorizontal } from 'lucide-react';
 import { Button } from '@/components/ui/button';
-import { getCategoryConfig } from '../shared/CategoryBadge';
+import { useI18n } from '@/lib/i18n';
 
 const CATEGORIES = [
   'assistant_nurse', 'nurse', 'doctor', 'cleaner',
@@ -12,12 +11,14 @@ const CATEGORIES = [
 ];
 
 export default function ProviderFilters({ filters, onFilterChange }) {
+  const { t } = useI18n();
+
   return (
     <div className="space-y-4">
       <div className="relative">
         <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
         <Input
-          placeholder="Search by name, skill, or location..."
+          placeholder={t('search_placeholder')}
           value={filters.search}
           onChange={(e) => onFilterChange({ ...filters, search: e.target.value })}
           className="pl-10 h-12 bg-card"
@@ -25,53 +26,39 @@ export default function ProviderFilters({ filters, onFilterChange }) {
       </div>
 
       <div className="flex flex-wrap gap-3">
-        <Select
-          value={filters.category}
-          onValueChange={(v) => onFilterChange({ ...filters, category: v })}
-        >
+        <Select value={filters.category} onValueChange={(v) => onFilterChange({ ...filters, category: v })}>
           <SelectTrigger className="w-48 bg-card">
             <SlidersHorizontal className="w-4 h-4 mr-2" />
-            <SelectValue placeholder="All Categories" />
+            <SelectValue placeholder={t('all_categories')} />
           </SelectTrigger>
           <SelectContent>
-            <SelectItem value="all">All Categories</SelectItem>
-            {CATEGORIES.map((cat) => {
-              const config = getCategoryConfig(cat);
-              return (
-                <SelectItem key={cat} value={cat}>
-                  {config.label}
-                </SelectItem>
-              );
-            })}
+            <SelectItem value="all">{t('all_categories')}</SelectItem>
+            {CATEGORIES.map((cat) => (
+              <SelectItem key={cat} value={cat}>{t(`cat_${cat}`)}</SelectItem>
+            ))}
           </SelectContent>
         </Select>
 
-        <Select
-          value={filters.sortBy}
-          onValueChange={(v) => onFilterChange({ ...filters, sortBy: v })}
-        >
+        <Select value={filters.sortBy} onValueChange={(v) => onFilterChange({ ...filters, sortBy: v })}>
+          <SelectTrigger className="w-48 bg-card">
+            <SelectValue placeholder={t('sort_by')} />
+          </SelectTrigger>
+          <SelectContent>
+            <SelectItem value="rating">{t('sort_rating')}</SelectItem>
+            <SelectItem value="price_low">{t('sort_price_low')}</SelectItem>
+            <SelectItem value="price_high">{t('sort_price_high')}</SelectItem>
+            <SelectItem value="experience">{t('sort_experience')}</SelectItem>
+            <SelectItem value="reviews">{t('sort_reviews')}</SelectItem>
+          </SelectContent>
+        </Select>
+
+        <Select value={filters.availability} onValueChange={(v) => onFilterChange({ ...filters, availability: v })}>
           <SelectTrigger className="w-44 bg-card">
-            <SelectValue placeholder="Sort by" />
+            <SelectValue placeholder={t('availability')} />
           </SelectTrigger>
           <SelectContent>
-            <SelectItem value="rating">Highest Rated</SelectItem>
-            <SelectItem value="price_low">Price: Low to High</SelectItem>
-            <SelectItem value="price_high">Price: High to Low</SelectItem>
-            <SelectItem value="experience">Most Experienced</SelectItem>
-            <SelectItem value="reviews">Most Reviews</SelectItem>
-          </SelectContent>
-        </Select>
-
-        <Select
-          value={filters.availability}
-          onValueChange={(v) => onFilterChange({ ...filters, availability: v })}
-        >
-          <SelectTrigger className="w-40 bg-card">
-            <SelectValue placeholder="Availability" />
-          </SelectTrigger>
-          <SelectContent>
-            <SelectItem value="all">All</SelectItem>
-            <SelectItem value="available">Available Now</SelectItem>
+            <SelectItem value="all">{t('all')}</SelectItem>
+            <SelectItem value="available">{t('available_now')}</SelectItem>
           </SelectContent>
         </Select>
 
@@ -81,7 +68,7 @@ export default function ProviderFilters({ filters, onFilterChange }) {
             size="sm"
             onClick={() => onFilterChange({ search: '', category: 'all', sortBy: 'rating', availability: 'all' })}
           >
-            Clear filters
+            {t('clear_filters')}
           </Button>
         )}
       </div>

@@ -10,14 +10,17 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
+import LanguagePicker from './LanguagePicker';
+import { useI18n } from '@/lib/i18n';
 
 export default function Navbar({ user }) {
   const [mobileOpen, setMobileOpen] = useState(false);
   const location = useLocation();
+  const { t } = useI18n();
 
   const navLinks = [
-    { label: 'Find Providers', path: '/browse', icon: Search },
-    { label: 'My Bookings', path: '/bookings', icon: Calendar },
+    { label: t('nav_find'), path: '/browse', icon: Search },
+    { label: t('nav_bookings'), path: '/bookings', icon: Calendar },
   ];
 
   const isActive = (path) => location.pathname === path;
@@ -48,11 +51,12 @@ export default function Navbar({ user }) {
             ))}
           </div>
 
-          <div className="hidden md:flex items-center gap-3">
+          <div className="hidden md:flex items-center gap-2">
+            <LanguagePicker />
             <Link to="/my-profile">
               <Button variant="outline" size="sm" className="gap-2">
                 <User className="w-4 h-4" />
-                {user?.full_name || 'Profile'}
+                {user?.full_name || t('nav_profile')}
               </Button>
             </Link>
             <DropdownMenu>
@@ -66,25 +70,28 @@ export default function Navbar({ user }) {
               <DropdownMenuContent align="end" className="w-48">
                 <DropdownMenuItem asChild>
                   <Link to="/my-profile" className="gap-2">
-                    <User className="w-4 h-4" /> My Profile
+                    <User className="w-4 h-4" /> {t('my_profile')}
                   </Link>
                 </DropdownMenuItem>
                 <DropdownMenuItem asChild>
                   <Link to="/bookings" className="gap-2">
-                    <Calendar className="w-4 h-4" /> My Bookings
+                    <Calendar className="w-4 h-4" /> {t('nav_bookings')}
                   </Link>
                 </DropdownMenuItem>
                 <DropdownMenuSeparator />
                 <DropdownMenuItem onClick={() => base44.auth.logout()} className="gap-2 text-destructive">
-                  <LogOut className="w-4 h-4" /> Logout
+                  <LogOut className="w-4 h-4" /> {t('nav_logout')}
                 </DropdownMenuItem>
               </DropdownMenuContent>
             </DropdownMenu>
           </div>
 
-          <button className="md:hidden" onClick={() => setMobileOpen(!mobileOpen)}>
-            {mobileOpen ? <X className="w-6 h-6" /> : <Menu className="w-6 h-6" />}
-          </button>
+          <div className="md:hidden flex items-center gap-2">
+            <LanguagePicker />
+            <button onClick={() => setMobileOpen(!mobileOpen)}>
+              {mobileOpen ? <X className="w-6 h-6" /> : <Menu className="w-6 h-6" />}
+            </button>
+          </div>
         </div>
       </div>
 
@@ -99,11 +106,11 @@ export default function Navbar({ user }) {
           ))}
           <Link to="/my-profile" onClick={() => setMobileOpen(false)}>
             <Button variant="ghost" className="w-full justify-start gap-2">
-              <User className="w-4 h-4" /> My Profile
+              <User className="w-4 h-4" /> {t('my_profile')}
             </Button>
           </Link>
           <Button variant="ghost" onClick={() => base44.auth.logout()} className="w-full justify-start gap-2 text-destructive">
-            <LogOut className="w-4 h-4" /> Logout
+            <LogOut className="w-4 h-4" /> {t('nav_logout')}
           </Button>
         </div>
       )}

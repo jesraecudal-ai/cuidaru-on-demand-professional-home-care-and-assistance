@@ -1,0 +1,104 @@
+{
+  "name": "Booking",
+  "type": "object",
+  "properties": {
+    "client_email": {
+      "type": "string"
+    },
+    "client_name": {
+      "type": "string"
+    },
+    "provider_id": {
+      "type": "string",
+      "description": "ServiceProvider record ID"
+    },
+    "provider_email": {
+      "type": "string"
+    },
+    "provider_name": {
+      "type": "string"
+    },
+    "category": {
+      "type": "string",
+      "enum": [
+        "assistant_nurse",
+        "nurse",
+        "doctor",
+        "cleaner",
+        "nanny",
+        "laundry_worker",
+        "caregiver",
+        "errand_person"
+      ]
+    },
+    "booking_type": {
+      "type": "string",
+      "enum": [
+        "hourly",
+        "daily",
+        "weekly"
+      ]
+    },
+    "start_date": {
+      "type": "string",
+      "format": "date"
+    },
+    "end_date": {
+      "type": "string",
+      "format": "date"
+    },
+    "hours": {
+      "type": "number",
+      "description": "Number of hours (for hourly bookings)"
+    },
+    "rate_applied": {
+      "type": "number"
+    },
+    "subtotal": {
+      "type": "number"
+    },
+    "platform_fee": {
+      "type": "number",
+      "description": "Commission amount"
+    },
+    "total_amount": {
+      "type": "number"
+    },
+    "provider_payout": {
+      "type": "number"
+    },
+    "status": {
+      "type": "string",
+      "enum": [
+        "pending",
+        "confirmed",
+        "in_progress",
+        "completed",
+        "cancelled",
+        "disputed"
+      ],
+      "default": "pending"
+    },
+    "payment_status": {
+      "type": "string",
+      "enum": [
+        "held",
+        "released",
+        "refunded"
+      ],
+      "default": "held"
+    },
+    "notes": {
+      "type": "string"
+    },
+    "address": {
+      "type": "string"
+    }
+  },
+  "required": [
+    "client_email",
+    "provider_id",
+    "booking_type",
+    "start_date"
+  ]
+}

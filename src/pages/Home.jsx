@@ -11,10 +11,19 @@ import { useI18n } from '@/lib/i18n';
 import { base44 } from '@/api/base44Client';
 import { useUserProfile } from '@/lib/useUserProfile';
 
+const heroImages = [
+  'https://images.unsplash.com/photo-1576091160399-86c54dcb98fe?w=800&h=600&fit=crop',
+  'https://images.unsplash.com/photo-1631217314830-e63c9a1c5b44?w=800&h=600&fit=crop',
+  'https://images.unsplash.com/photo-1579154204601-01d82b944c47?w=800&h=600&fit=crop',
+  'https://images.unsplash.com/photo-1576091160550-2173dba999ef?w=800&h=600&fit=crop',
+  'https://images.unsplash.com/photo-1638281846519-e1b7b72f87d7?w=800&h=600&fit=crop',
+];
+
 export default function Home() {
   const { t } = useI18n();
   const { profile, loading } = useUserProfile();
   const navigate = useNavigate();
+  const [currentImageIndex, setCurrentImageIndex] = useState(0);
 
   // Route to onboarding if needed
   useEffect(() => {
@@ -22,6 +31,14 @@ export default function Home() {
       navigate('/onboarding');
     }
   }, [loading, profile]);
+
+  // Carousel rotation
+  useEffect(() => {
+    const interval = setInterval(() => {
+      setCurrentImageIndex(prev => (prev + 1) % heroImages.length);
+    }, 5000);
+    return () => clearInterval(interval);
+  }, []);
 
   const country = profile?.country || 'brazil';
   const countryInfo = usePricing(country);
@@ -36,12 +53,28 @@ export default function Home() {
   return (
     <div className="bg-white">
       {/* Hero */}
-      <section className="relative overflow-hidden bg-gradient-to-br from-blue-600 via-blue-700 to-blue-800 text-white">
-        <div className="absolute inset-0 opacity-10" style={{ backgroundImage: 'radial-gradient(circle at 20% 80%, white 1px, transparent 1px), radial-gradient(circle at 80% 20%, white 1px, transparent 1px)', backgroundSize: '60px 60px' }} />
-        <div className="absolute inset-0 opacity-5">
-          <img src="https://images.unsplash.com/photo-1631217314830-e63c9a1c5b44?w=1200&h=600&fit=crop" alt="healthcare background" className="w-full h-full object-cover" />
-        </div>
-        <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-20 lg:py-28">
+       <section className="relative overflow-hidden bg-gradient-to-br from-blue-600 via-blue-700 to-blue-800 text-white">
+         {/* Carousel background */}
+         <div className="absolute inset-0">
+           {heroImages.map((img, idx) => (
+             <motion.img
+               key={idx}
+               src={img}
+               alt="healthcare professional"
+               className="absolute inset-0 w-full h-full object-cover blur-md"
+               initial={{ opacity: 0 }}
+               animate={{ opacity: idx === currentImageIndex ? 0.15 : 0 }}
+               transition={{ duration: 0.8 }}
+             />
+           ))}
+         </div>
+
+         {/* Dark overlay for text contrast */}
+         <div className="absolute inset-0 bg-gradient-to-r from-blue-900/70 via-blue-800/60 to-blue-900/70" />
+
+         <div className="absolute inset-0 opacity-10" style={{ backgroundImage: 'radial-gradient(circle at 20% 80%, white 1px, transparent 1px), radial-gradient(circle at 80% 20%, white 1px, transparent 1px)', backgroundSize: '60px 60px' }} />
+
+         <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-20 lg:py-28">
           <motion.div initial={{ opacity: 0, y: 30 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.6 }} className="text-center max-w-4xl mx-auto">
             <Badge className="mb-5 bg-white/20 text-white border-white/30 hover:bg-white/20 px-4 py-1.5">
               <Shield className="w-3.5 h-3.5 mr-1.5" />

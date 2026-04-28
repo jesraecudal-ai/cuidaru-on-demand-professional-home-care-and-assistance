@@ -21,6 +21,7 @@ import AdminVerifications from './pages/AdminVerifications';
 import AffiliateDashboard from './pages/AffiliateDashboard';
 import AdminPricing from './pages/AdminPricing';
 import ProviderPayouts from './pages/ProviderPayouts';
+import TermsAndConditions from './pages/TermsAndConditions';
 import Layout from './components/shared/Layout';
 
 const AuthenticatedApp = () => {
@@ -45,6 +46,7 @@ const AuthenticatedApp = () => {
   return (
     <Routes>
       <Route path="/onboarding" element={<Onboarding />} />
+      <Route path="/terms" element={<TermsAndConditions />} />
       <Route element={<Layout />}>
         <Route path="/" element={<Home />} />
         <Route path="/browse" element={<BrowseProviders />} />

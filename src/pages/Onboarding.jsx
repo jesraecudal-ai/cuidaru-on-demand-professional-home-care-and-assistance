@@ -8,6 +8,7 @@ import { Label } from '@/components/ui/label';
 import { COUNTRY_SETTINGS } from '@/lib/constants';
 import { Heart, Briefcase, ChevronRight, GitBranch } from 'lucide-react';
 import AffiliateApplyCode from '@/components/affiliate/AffiliateApplyCode';
+import TermsAndConditionsModal from '@/components/TermsAndConditionsModal';
 import { motion } from 'framer-motion';
 
 export default function Onboarding() {
@@ -17,6 +18,8 @@ export default function Onboarding() {
   const [country, setCountry] = useState('brazil');
   const [loading, setLoading] = useState(false);
   const [userEmail, setUserEmail] = useState(null);
+  const [showTerms, setShowTerms] = useState(true);
+  const [termsAccepted, setTermsAccepted] = useState(false);
 
   useEffect(() => {
     base44.auth.me().then(u => setUserEmail(u?.email)).catch(() => {});
@@ -41,6 +44,15 @@ export default function Onboarding() {
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-blue-50 via-white to-green-50 flex items-center justify-center p-4">
+      <TermsAndConditionsModal
+        open={showTerms && !termsAccepted}
+        onAccept={() => {
+          setTermsAccepted(true);
+          setShowTerms(false);
+        }}
+        onDecline={() => navigate('/')}
+      />
+
       <div className="w-full max-w-lg">
         {/* Logo */}
         <div className="text-center mb-8">
@@ -53,7 +65,7 @@ export default function Onboarding() {
           <p className="text-gray-500">Welcome! Let's get you set up.</p>
         </div>
 
-        {step === 1 && (
+        {termsAccepted && step === 1 && (
           <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }}>
             <h2 className="text-2xl font-bold text-center mb-6 text-gray-800">I am here because...</h2>
             <div className="grid gap-4">

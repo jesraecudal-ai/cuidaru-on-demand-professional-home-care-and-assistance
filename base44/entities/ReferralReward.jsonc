@@ -1,0 +1,63 @@
+{
+  "name": "ReferralReward",
+  "type": "object",
+  "properties": {
+    "user_email": {
+      "type": "string",
+      "description": "Email of user who earned the reward"
+    },
+    "user_role": {
+      "type": "string",
+      "enum": [
+        "client",
+        "provider"
+      ],
+      "description": "Role of the user earning reward"
+    },
+    "reward_type": {
+      "type": "string",
+      "enum": [
+        "booking_fee_waiver",
+        "premium_free_month"
+      ],
+      "description": "Type of reward earned"
+    },
+    "referral_count": {
+      "type": "number",
+      "description": "Number of successful referrals"
+    },
+    "threshold_met": {
+      "type": "number",
+      "description": "Threshold needed (5 for clients, 6 for providers)"
+    },
+    "reward_status": {
+      "type": "string",
+      "enum": [
+        "earned",
+        "applied",
+        "expired"
+      ],
+      "default": "earned",
+      "description": "Status of the reward"
+    },
+    "fee_waivers_used": {
+      "type": "number",
+      "default": 0,
+      "description": "Number of fee waivers already applied (max 3 for clients)"
+    },
+    "premium_free_until": {
+      "type": "string",
+      "description": "Date when free premium expires"
+    },
+    "earned_date": {
+      "type": "string",
+      "description": "When the threshold was met"
+    }
+  },
+  "required": [
+    "user_email",
+    "user_role",
+    "reward_type",
+    "threshold_met"
+  ]
+}

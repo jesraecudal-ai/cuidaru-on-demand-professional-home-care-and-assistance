@@ -7,6 +7,7 @@ import { usePricing } from '@/lib/usePricing';
 import { useUserProfile } from '@/lib/useUserProfile';
 import { toast } from 'sonner';
 import { base44 } from '@/api/base44Client';
+import ReferralRewardCard from '@/components/referral/ReferralRewardCard';
 
 export default function Premium() {
   const { profile, user, refetch } = useUserProfile();
@@ -40,6 +41,11 @@ export default function Premium() {
         </div>
         <h1 className="text-4xl font-bold text-gray-900">Upgrade Your Experience</h1>
         <p className="text-gray-500 mt-3 text-lg max-w-2xl mx-auto">Premium gives providers priority placement and clients zero platform fees.</p>
+      </div>
+
+      {/* Referral Reward Card */}
+      <div className="mb-12">
+        <ReferralRewardCard />
       </div>
 
       <div className="grid md:grid-cols-2 gap-8">

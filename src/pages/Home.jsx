@@ -5,11 +5,12 @@ import { Card, CardContent } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Shield, Star, DollarSign, ArrowRight, CheckCircle2, MapPin, Zap, Lock, GitBranch, Gift } from 'lucide-react';
 import { motion } from 'framer-motion';
-import { CATEGORIES, CATEGORY_COLORS } from '@/lib/constants';
+import { CATEGORY_COLORS } from '@/lib/constants';
 import { usePricing } from '@/lib/usePricing';
 import { useI18n } from '@/lib/i18n';
 import { base44 } from '@/api/base44Client';
 import { useUserProfile } from '@/lib/useUserProfile';
+import CategoryCarousel from '@/components/home/CategoryCarousel';
 
 const heroImages = [
   'https://images.unsplash.com/photo-1576091160399-86c54dcb98fe?w=800&h=600&fit=crop',
@@ -95,30 +96,8 @@ export default function Home() {
         </div>
       </section>
 
-      {/* Categories */}
-      <section className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-24">
-        <div className="text-center mb-16">
-          <h2 className="text-4xl sm:text-5xl font-bold text-gray-900">{t('browse_by_category')}</h2>
-          <p className="mt-4 text-lg text-gray-600">{t('browse_subtitle')}</p>
-        </div>
-        <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-5">
-          {CATEGORIES.map((cat, i) => (
-            <motion.div key={cat.key} initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} transition={{ delay: i * 0.05 }}>
-              <Link to={`/browse?category=${cat.key}`}>
-                <Card className="group hover:shadow-xl transition-all duration-300 hover:-translate-y-2 cursor-pointer border border-gray-200 h-full bg-white">
-                  <CardContent className="p-6 text-center flex flex-col items-center">
-                    <div className={`w-16 h-16 mx-auto rounded-xl bg-gradient-to-br ${CATEGORY_COLORS[cat.key]} flex items-center justify-center mb-4 group-hover:scale-125 transition-transform duration-300 text-3xl shadow-md`}>
-                      {cat.icon}
-                    </div>
-                    <h3 className="font-semibold text-sm text-gray-900">{t(`cat_${cat.key}`)}</h3>
-                    <p className="text-xs text-gray-500 mt-2">{t(`cat_desc_${cat.key}`)}</p>
-                  </CardContent>
-                </Card>
-              </Link>
-            </motion.div>
-          ))}
-        </div>
-      </section>
+      {/* Categories Carousel */}
+      <CategoryCarousel />
 
       {/* Premium Feature Banner */}
       <section className="bg-gradient-to-br from-amber-50 via-orange-50 to-yellow-50 border-t-2 border-amber-200">

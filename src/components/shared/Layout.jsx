@@ -51,8 +51,12 @@ export default function Layout() {
               </div>
             </div>
           </div>
-          <div className="border-t border-gray-100 pt-6 text-center text-sm text-gray-400">
-            {t('footer_rights')}
+          <div className="border-t border-gray-100 pt-6 flex flex-col sm:flex-row items-center justify-between gap-3 text-sm text-gray-400">
+            <span>{t('footer_rights')}</span>
+            <div className="flex items-center gap-1.5 bg-gray-50 border border-gray-200 rounded-lg px-3 py-1.5">
+              <span className="text-xs text-gray-400">Payments powered by</span>
+              <img src="https://upload.wikimedia.org/wikipedia/commons/b/ba/Stripe_Logo%2C_revised_2016.svg" alt="Stripe" className="h-4" />
+            </div>
           </div>
         </div>
       </footer>

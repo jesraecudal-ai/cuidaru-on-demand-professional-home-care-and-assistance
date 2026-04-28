@@ -11,6 +11,8 @@ export default function AnaChatbot() {
   const [messages, setMessages] = useState([]);
   const [inputValue, setInputValue] = useState('');
   const [isLoading, setIsLoading] = useState(false);
+  const [userInfo, setUserInfo] = useState({ name: '', email: '' });
+  const [showForm, setShowForm] = useState(true);
   const messagesEndRef = useRef(null);
 
   const scrollToBottom = () => {
@@ -21,16 +23,26 @@ export default function AnaChatbot() {
     scrollToBottom();
   }, [messages]);
 
-  const handleOpen = async () => {
+  const handleOpen = () => {
     setIsOpen(true);
-    if (!conversationId) {
-      const newConversation = await base44.agents.createConversation({
-        agent_name: 'ana',
-        metadata: { name: 'Help Chat', description: 'User support conversation' }
-      });
-      setConversationId(newConversation.id);
-      setMessages(newConversation.messages || []);
-    }
+  };
+
+  const handleSubmitInfo = async (e) => {
+    e.preventDefault();
+    if (!userInfo.name.trim() || !userInfo.email.trim()) return;
+
+    const newConversation = await base44.agents.createConversation({
+      agent_name: 'ana',
+      metadata: { 
+        name: 'Help Chat', 
+        description: 'User support conversation',
+        user_name: userInfo.name,
+        user_email: userInfo.email
+      }
+    });
+    setConversationId(newConversation.id);
+    setMessages(newConversation.messages || []);
+    setShowForm(false);
   };
 
   const handleClose = () => {
@@ -102,7 +114,45 @@ export default function AnaChatbot() {
             </button>
           </div>
 
+          {/* User Info Form */}
+          {showForm && (
+            <form onSubmit={handleSubmitInfo} className="flex-1 flex flex-col p-4 space-y-3 justify-center">
+              <div className="text-center mb-4">
+                <p className="text-sm text-gray-600 font-medium">Let's get started!</p>
+                <p className="text-xs text-gray-500 mt-1">We'd love to know who we're helping</p>
+              </div>
+              <div>
+                <label className="block text-xs font-medium text-gray-700 mb-1">Name</label>
+                <Input
+                  type="text"
+                  placeholder="Your name"
+                  value={userInfo.name}
+                  onChange={(e) => setUserInfo({ ...userInfo, name: e.target.value })}
+                  className="text-sm"
+                />
+              </div>
+              <div>
+                <label className="block text-xs font-medium text-gray-700 mb-1">Email</label>
+                <Input
+                  type="email"
+                  placeholder="Your email"
+                  value={userInfo.email}
+                  onChange={(e) => setUserInfo({ ...userInfo, email: e.target.value })}
+                  className="text-sm"
+                />
+              </div>
+              <Button
+                type="submit"
+                className="bg-blue-600 hover:bg-blue-700 w-full"
+                disabled={!userInfo.name.trim() || !userInfo.email.trim()}
+              >
+                Start Chat
+              </Button>
+            </form>
+          )}
+
           {/* Messages */}
+          {!showForm && (
           <div className="flex-1 overflow-y-auto p-4 space-y-3">
             {messages.length === 0 ? (
               <div className="flex items-center justify-center h-full">
@@ -152,8 +202,10 @@ export default function AnaChatbot() {
             )}
             <div ref={messagesEndRef} />
           </div>
+          )}
 
           {/* Input */}
+          {!showForm && (
           <form onSubmit={handleSendMessage} className="p-4 border-t border-gray-200 flex gap-2">
             <Input
               type="text"
@@ -172,6 +224,7 @@ export default function AnaChatbot() {
               <Send className="w-4 h-4" />
             </Button>
           </form>
+          )}
         </div>
       )}
     </>

@@ -3,8 +3,10 @@ import { useQuery } from '@tanstack/react-query';
 import { base44 } from '@/api/base44Client';
 import ProviderCard from '../components/providers/ProviderCard';
 import ProviderFilters from '../components/providers/ProviderFilters';
+import ProviderMap from '../components/providers/ProviderMap';
 import { Skeleton } from '@/components/ui/skeleton';
-import { Users, MapPin } from 'lucide-react';
+import { Users, MapPin, LayoutGrid, Map } from 'lucide-react';
+import { Button } from '@/components/ui/button';
 import { useI18n } from '@/lib/i18n';
 import { calcDistance, CATEGORIES } from '@/lib/constants';
 import { useUserProfile } from '@/lib/useUserProfile';
@@ -16,6 +18,7 @@ export default function BrowseProviders() {
   const initialCategory = urlParams.get('category') || 'all';
 
   const [userLocation, setUserLocation] = useState(null);
+  const [viewMode, setViewMode] = useState('grid'); // 'grid' | 'map'
   const [filters, setFilters] = useState({
     search: '',
     category: initialCategory,
@@ -87,14 +90,31 @@ export default function BrowseProviders() {
 
       <ProviderFilters filters={filters} onFilterChange={setFilters} />
 
-      <div className="mt-4 flex items-center gap-2 text-sm text-gray-500">
-        <Users className="w-4 h-4" />
-        {sortedProviders.length} {sortedProviders.length === 1 ? t('provider_found') : t('providers_found')}
-        {!userLocation && (
-          <span className="text-xs text-blue-600 ml-2 cursor-pointer underline" onClick={() => navigator.geolocation?.getCurrentPosition(pos => setUserLocation({ lat: pos.coords.latitude, lon: pos.coords.longitude }))}>
-            Enable location for distance sorting
-          </span>
-        )}
+      <div className="mt-4 flex items-center justify-between gap-2">
+        <div className="flex items-center gap-2 text-sm text-gray-500">
+          <Users className="w-4 h-4" />
+          {sortedProviders.length} {sortedProviders.length === 1 ? t('provider_found') : t('providers_found')}
+          {!userLocation && (
+            <span className="text-xs text-blue-600 ml-2 cursor-pointer underline" onClick={() => navigator.geolocation?.getCurrentPosition(pos => setUserLocation({ lat: pos.coords.latitude, lon: pos.coords.longitude }))}>
+              Enable location for distance sorting
+            </span>
+          )}
+        </div>
+        {/* View toggle */}
+        <div className="flex items-center border border-gray-200 rounded-lg overflow-hidden">
+          <button
+            onClick={() => setViewMode('grid')}
+            className={`flex items-center gap-1.5 px-3 py-1.5 text-sm font-medium transition-colors ${viewMode === 'grid' ? 'bg-blue-600 text-white' : 'bg-white text-gray-600 hover:bg-gray-50'}`}
+          >
+            <LayoutGrid className="w-4 h-4" /> List
+          </button>
+          <button
+            onClick={() => setViewMode('map')}
+            className={`flex items-center gap-1.5 px-3 py-1.5 text-sm font-medium transition-colors ${viewMode === 'map' ? 'bg-blue-600 text-white' : 'bg-white text-gray-600 hover:bg-gray-50'}`}
+          >
+            <Map className="w-4 h-4" /> Map
+          </button>
+        </div>
       </div>
 
       {isLoading ? (
@@ -106,6 +126,15 @@ export default function BrowseProviders() {
           <Users className="w-12 h-12 text-gray-300 mx-auto mb-4" />
           <h3 className="text-lg font-semibold text-gray-700">{t('no_providers')}</h3>
           <p className="text-gray-400 mt-1">{t('no_providers_sub')}</p>
+        </div>
+      ) : viewMode === 'map' ? (
+        <div className="mt-6">
+          <ProviderMap providers={sortedProviders} userLocation={userLocation} />
+          {sortedProviders.filter(p => !p.latitude).length > 0 && (
+            <p className="text-xs text-gray-400 mt-2 text-center">
+              {sortedProviders.filter(p => !p.latitude).length} providers without GPS coordinates are not shown on the map.
+            </p>
+          )}
         </div>
       ) : (
         <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-6 mt-6">

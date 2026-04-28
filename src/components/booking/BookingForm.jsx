@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -6,22 +6,31 @@ import { Label } from '@/components/ui/label';
 import { Textarea } from '@/components/ui/textarea';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Separator } from '@/components/ui/separator';
-import { Calendar, MapPin, Shield, AlertTriangle } from 'lucide-react';
+import { Calendar, MapPin, Shield, AlertTriangle, CalendarDays } from 'lucide-react';
 import { base44 } from '@/api/base44Client';
 import { toast } from 'sonner';
 import { useNavigate } from 'react-router-dom';
 import { useI18n } from '@/lib/i18n';
 import { COUNTRY_SETTINGS, detectBypass } from '@/lib/constants';
+import AvailabilityViewer from '@/components/availability/AvailabilityViewer';
 
 export default function BookingForm({ provider, clientProfile }) {
   const navigate = useNavigate();
   const { t } = useI18n();
   const [loading, setLoading] = useState(false);
   const [bypassWarning, setBypassWarning] = useState(false);
+  const [availability, setAvailability] = useState(null);
   const [form, setForm] = useState({
     booking_type: 'hourly', start_date: '', start_time: '09:00',
     end_date: '', duration: 1, address: '', instructions: '',
   });
+
+  useEffect(() => {
+    if (!provider?.id) return;
+    base44.entities.ProviderAvailability.filter({ provider_id: provider.id }).then(list => {
+      if (list.length > 0) setAvailability(list[0]);
+    });
+  }, [provider?.id]);
 
   const country = clientProfile?.country || provider.country || 'brazil';
   const countryInfo = COUNTRY_SETTINGS[country] || COUNTRY_SETTINGS.brazil;
@@ -104,15 +113,23 @@ export default function BookingForm({ provider, clientProfile }) {
             </Select>
           </div>
 
-          <div className="grid grid-cols-2 gap-3">
-            <div>
-              <Label className="text-xs font-medium text-gray-600">{t('start_date')}</Label>
-              <Input type="date" value={form.start_date} onChange={e => setForm(f => ({ ...f, start_date: e.target.value }))} className="mt-1 h-10" required />
+          {/* Availability Calendar */}
+          <div>
+            <Label className="text-xs font-medium text-gray-600 mb-2 flex items-center gap-1">
+              <CalendarDays className="w-3.5 h-3.5" /> {t('start_date')} — click an available day
+            </Label>
+            <div className="mt-1.5 border border-gray-100 rounded-xl p-3 bg-gray-50">
+              <AvailabilityViewer
+                availability={availability}
+                selectedDate={form.start_date}
+                onDateSelect={date => setForm(f => ({ ...f, start_date: date, start_time: availability?.work_start || '09:00' }))}
+              />
             </div>
-            <div>
-              <Label className="text-xs font-medium text-gray-600">Start Time</Label>
-              <Input type="time" value={form.start_time} onChange={e => setForm(f => ({ ...f, start_time: e.target.value }))} className="mt-1 h-10" required />
-            </div>
+          </div>
+
+          <div>
+            <Label className="text-xs font-medium text-gray-600">Start Time</Label>
+            <Input type="time" value={form.start_time} onChange={e => setForm(f => ({ ...f, start_time: e.target.value }))} className="mt-1 h-10" required />
           </div>
 
           <div>

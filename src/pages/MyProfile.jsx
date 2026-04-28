@@ -7,11 +7,12 @@ import { Label } from '@/components/ui/label';
 import { Textarea } from '@/components/ui/textarea';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Badge } from '@/components/ui/badge';
-import { User, Briefcase, Plus, X, Save, ShieldCheck, Zap, Upload, MapPin } from 'lucide-react';
+import { User, Briefcase, Plus, X, Save, ShieldCheck, Zap, Upload, MapPin, CalendarDays } from 'lucide-react';
 import { toast } from 'sonner';
 import { useI18n } from '@/lib/i18n';
 import { CATEGORIES, COUNTRY_SETTINGS } from '@/lib/constants';
 import { useUserProfile } from '@/lib/useUserProfile';
+import AvailabilityCalendar from '@/components/availability/AvailabilityCalendar';
 
 export default function MyProfile() {
   const { t } = useI18n();
@@ -312,6 +313,21 @@ export default function MyProfile() {
           <Button onClick={handleSave} size="lg" className="w-full gap-2 bg-blue-600 hover:bg-blue-700 h-12">
             <Save className="w-5 h-5" /> {existingProvider ? t('save') : t('create_profile')}
           </Button>
+
+          {/* Availability Calendar — only shown after profile exists */}
+          {existingProvider && (
+            <Card className="border border-gray-100 shadow-sm">
+              <CardHeader>
+                <CardTitle className="flex items-center gap-2 text-lg text-gray-800">
+                  <CalendarDays className="w-5 h-5 text-blue-600" /> Availability & Schedule
+                </CardTitle>
+                <p className="text-sm text-gray-500">Set your working days, hours, and block specific dates. Clients will see your real-time availability when booking.</p>
+              </CardHeader>
+              <CardContent>
+                <AvailabilityCalendar providerId={existingProvider.id} userEmail={user?.email} />
+              </CardContent>
+            </Card>
+          )}
         </div>
       )}
     </div>

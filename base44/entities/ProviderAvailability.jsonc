@@ -1,0 +1,38 @@
+{
+  "name": "ProviderAvailability",
+  "type": "object",
+  "properties": {
+    "provider_id": {
+      "type": "string"
+    },
+    "user_email": {
+      "type": "string"
+    },
+    "working_days": {
+      "type": "array",
+      "items": {
+        "type": "number"
+      },
+      "description": "Days of week: 0=Sun, 1=Mon, ..., 6=Sat"
+    },
+    "work_start": {
+      "type": "string",
+      "description": "e.g. 08:00"
+    },
+    "work_end": {
+      "type": "string",
+      "description": "e.g. 18:00"
+    },
+    "blocked_dates": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "description": "ISO date strings: YYYY-MM-DD"
+    }
+  },
+  "required": [
+    "provider_id",
+    "user_email"
+  ]
+}

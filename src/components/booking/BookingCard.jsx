@@ -2,8 +2,9 @@ import React from 'react';
 import { Card, CardContent } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
-import { Calendar, MapPin, DollarSign, User, Clock, Star } from 'lucide-react';
+import { Calendar, MapPin, DollarSign, User, Clock, Star, MessageCircle, ArrowLeftRight } from 'lucide-react';
 import { format } from 'date-fns';
+import { Link } from 'react-router-dom';
 import { useI18n } from '@/lib/i18n';
 import { BOOKING_STATUSES, COUNTRY_SETTINGS } from '@/lib/constants';
 
@@ -97,6 +98,25 @@ export default function BookingCard({ booking, isProvider, onAction, hasPendingR
             )}
           </div>
         </div>
+        {/* Counter offer banner */}
+        {booking.status === 'counter_offered' && (
+          <div className="mt-3 pt-3 border-t border-violet-100 flex items-center justify-between gap-3">
+            <div className="flex items-center gap-2 text-sm">
+              <ArrowLeftRight className="w-4 h-4 text-violet-500" />
+              <span className="text-violet-700 font-medium">
+                Counter offer: {country.symbol}{booking.counter_offer_amount?.toFixed(2)}
+              </span>
+              <span className="text-xs text-gray-400">
+                by {booking.counter_offer_by === (isProvider ? booking.provider_email : booking.client_email) ? 'you' : (isProvider ? booking.client_name : booking.provider_name)}
+              </span>
+            </div>
+            <Link to="/messages">
+              <Button size="sm" variant="outline" className="h-7 text-xs border-violet-200 text-violet-600 hover:bg-violet-50 gap-1">
+                <MessageCircle className="w-3 h-3" /> Respond in Chat
+              </Button>
+            </Link>
+          </div>
+        )}
         {booking.instructions && (
           <div className="mt-3 pt-3 border-t border-gray-100">
             <p className="text-xs text-gray-500"><span className="font-medium">Instructions:</span> {booking.instructions}</p>

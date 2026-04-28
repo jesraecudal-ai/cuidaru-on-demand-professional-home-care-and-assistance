@@ -23,6 +23,42 @@
     "content": {
       "type": "string"
     },
+    "message_type": {
+      "type": "string",
+      "enum": [
+        "text",
+        "counter_offer"
+      ],
+      "default": "text",
+      "description": "text = normal chat, counter_offer = negotiation card"
+    },
+    "offer_booking_id": {
+      "type": "string",
+      "description": "The booking this counter offer belongs to"
+    },
+    "offer_amount": {
+      "type": "number"
+    },
+    "offer_booking_type": {
+      "type": "string"
+    },
+    "offer_duration": {
+      "type": "number"
+    },
+    "offer_start_date": {
+      "type": "string"
+    },
+    "offer_status": {
+      "type": "string",
+      "enum": [
+        "pending",
+        "accepted",
+        "declined",
+        "superseded"
+      ],
+      "default": "pending",
+      "description": "State of this specific counter offer message"
+    },
     "client_email": {
       "type": "string"
     },

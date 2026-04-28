@@ -46,6 +46,7 @@ export const COUNTRY_SETTINGS = {
 
 export const BOOKING_STATUSES = {
   pending_approval: { label: 'Pending Approval', color: 'bg-amber-100 text-amber-700' },
+  counter_offered: { label: 'Counter Offered', color: 'bg-violet-100 text-violet-700' },
   accepted: { label: 'Accepted', color: 'bg-blue-100 text-blue-700' },
   paid_confirmed: { label: 'Paid & Confirmed', color: 'bg-cyan-100 text-cyan-700' },
   in_progress: { label: 'In Progress', color: 'bg-purple-100 text-purple-700' },

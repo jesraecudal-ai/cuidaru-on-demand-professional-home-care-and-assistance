@@ -3,16 +3,38 @@ import { base44 } from '@/api/base44Client';
 import { Button } from '@/components/ui/button';
 import { Textarea } from '@/components/ui/textarea';
 import { Badge } from '@/components/ui/badge';
-import { Send, Shield } from 'lucide-react';
+import { Send, Shield, ArrowLeftRight } from 'lucide-react';
 import { detectBypass } from '@/lib/constants';
 import { toast } from 'sonner';
 import { format } from 'date-fns';
+import CounterOfferBubble from './CounterOfferBubble';
+import CounterOfferForm from './CounterOfferForm';
 
-export default function ChatWindow({ conversationId, currentUser, currentUserRole, clientEmail, providerId, providerEmail, otherPersonName }) {
+export default function ChatWindow({
+  conversationId, currentUser, currentUserRole,
+  clientEmail, providerId, providerEmail, otherPersonName,
+  booking // optional: active booking for this conversation
+}) {
   const [messages, setMessages] = useState([]);
   const [text, setText] = useState('');
   const [sending, setSending] = useState(false);
+  const [showOfferForm, setShowOfferForm] = useState(false);
+  const [activeBooking, setActiveBooking] = useState(booking || null);
   const bottomRef = useRef(null);
+
+  // Load active booking for this conversation if not passed in
+  useEffect(() => {
+    if (booking) { setActiveBooking(booking); return; }
+    if (!clientEmail || !providerId) return;
+    base44.entities.Booking.filter({ client_email: clientEmail, provider_id: providerId })
+      .then(list => {
+        // Find the most recent non-cancelled booking
+        const active = list
+          .filter(b => !['cancelled', 'payment_released', 'refunded'].includes(b.status))
+          .sort((a, b) => new Date(b.created_date) - new Date(a.created_date))[0];
+        if (active) setActiveBooking(active);
+      });
+  }, [clientEmail, providerId, booking]);
 
   useEffect(() => {
     if (!conversationId) return;
@@ -49,12 +71,121 @@ export default function ChatWindow({ conversationId, currentUser, currentUserRol
       sender_name: currentUser.full_name,
       sender_role: currentUserRole,
       content: trimmed,
+      message_type: 'text',
       client_email: clientEmail,
       provider_id: providerId,
       provider_email: providerEmail,
     });
     setText('');
     setSending(false);
+  };
+
+  const handleSendOffer = async ({ amount, bookingType, duration, startDate, note }) => {
+    if (!activeBooking) return;
+    setSending(true);
+
+    // Mark all previous pending counter offers as superseded
+    const prevOffers = messages.filter(
+      m => m.message_type === 'counter_offer' && m.offer_status === 'pending'
+    );
+    await Promise.all(prevOffers.map(m => base44.entities.ChatMessage.update(m.id, { offer_status: 'superseded' })));
+
+    // Create the counter offer message
+    await base44.entities.ChatMessage.create({
+      conversation_id: conversationId,
+      sender_email: currentUser.email,
+      sender_name: currentUser.full_name,
+      sender_role: currentUserRole,
+      content: note || '[counter_offer]',
+      message_type: 'counter_offer',
+      offer_booking_id: activeBooking.id,
+      offer_amount: amount,
+      offer_booking_type: bookingType,
+      offer_duration: duration,
+      offer_start_date: startDate,
+      offer_status: 'pending',
+      client_email: clientEmail,
+      provider_id: providerId,
+      provider_email: providerEmail,
+    });
+
+    // Update the booking to counter_offered status
+    await base44.entities.Booking.update(activeBooking.id, {
+      status: 'counter_offered',
+      counter_offer_amount: amount,
+      counter_offer_by: currentUser.email,
+      counter_offer_booking_type: bookingType,
+      counter_offer_duration: duration,
+      counter_offer_start_date: startDate,
+      counter_offer_note: note,
+    });
+
+    setActiveBooking(prev => ({ ...prev, status: 'counter_offered', counter_offer_amount: amount, counter_offer_by: currentUser.email }));
+    setShowOfferForm(false);
+    setSending(false);
+    toast.success('Counter offer sent!');
+  };
+
+  const handleAcceptOffer = async (offerMsg) => {
+    setSending(true);
+    // Update this offer message to accepted
+    await base44.entities.ChatMessage.update(offerMsg.id, { offer_status: 'accepted' });
+
+    // Accept the booking with the offered terms
+    await base44.entities.Booking.update(activeBooking.id, {
+      status: 'accepted',
+      total_amount: offerMsg.offer_amount,
+      booking_type: offerMsg.offer_booking_type || activeBooking.booking_type,
+      duration: offerMsg.offer_duration || activeBooking.duration,
+      start_date: offerMsg.offer_start_date || activeBooking.start_date,
+      counter_offer_amount: null,
+      counter_offer_by: null,
+    });
+
+    setActiveBooking(prev => ({ ...prev, status: 'accepted', total_amount: offerMsg.offer_amount }));
+
+    // Send a system-like text message confirming
+    await base44.entities.ChatMessage.create({
+      conversation_id: conversationId,
+      sender_email: currentUser.email,
+      sender_name: currentUser.full_name,
+      sender_role: currentUserRole,
+      content: `✅ Offer accepted! Booking is now confirmed at the agreed amount.`,
+      message_type: 'text',
+      client_email: clientEmail,
+      provider_id: providerId,
+      provider_email: providerEmail,
+    });
+
+    setSending(false);
+    toast.success('Offer accepted! Booking confirmed.');
+  };
+
+  const handleDeclineOffer = async (offerMsg) => {
+    await base44.entities.ChatMessage.update(offerMsg.id, { offer_status: 'declined' });
+
+    // Revert booking to pending_approval so the other party can counter again
+    await base44.entities.Booking.update(activeBooking.id, {
+      status: 'pending_approval',
+      counter_offer_amount: null,
+      counter_offer_by: null,
+    });
+
+    setActiveBooking(prev => ({ ...prev, status: 'pending_approval' }));
+
+    await base44.entities.ChatMessage.create({
+      conversation_id: conversationId,
+      sender_email: currentUser.email,
+      sender_name: currentUser.full_name,
+      sender_role: currentUserRole,
+      content: `❌ Offer declined. Feel free to make a new counter offer.`,
+      message_type: 'text',
+      client_email: clientEmail,
+      provider_id: providerId,
+      provider_email: providerEmail,
+    });
+
+    toast.info('Offer declined.');
   };
 
   const handleKey = (e) => {
@@ -67,8 +198,32 @@ export default function ChatWindow({ conversationId, currentUser, currentUserRol
     return 'bg-gray-100 text-gray-700';
   };
 
+  // Can make a counter offer if there's an active booking that's not yet paid
+  const canCounterOffer = activeBooking && ['pending_approval', 'counter_offered'].includes(activeBooking.status);
+
   return (
     <div className="flex flex-col h-full">
+      {/* Active booking badge */}
+      {activeBooking && (
+        <div className="px-4 py-2 border-b border-gray-100 bg-gray-50 flex items-center gap-2">
+          <span className="text-xs text-gray-500">Booking:</span>
+          <span className={`text-xs px-2 py-0.5 rounded-full font-medium ${
+            activeBooking.status === 'counter_offered' ? 'bg-violet-100 text-violet-700' :
+            activeBooking.status === 'accepted' ? 'bg-blue-100 text-blue-700' :
+            'bg-amber-100 text-amber-700'
+          }`}>
+            {activeBooking.status.replace(/_/g, ' ')}
+          </span>
+          {activeBooking.total_amount && (
+            <span className="text-xs font-semibold text-gray-700 ml-auto">
+              {activeBooking.counter_offer_amount
+                ? `Offered: ${activeBooking.counter_offer_amount}`
+                : `Requested: ${activeBooking.total_amount}`}
+            </span>
+          )}
+        </div>
+      )}
+
       {/* Messages */}
       <div className="flex-1 overflow-y-auto p-4 space-y-3">
         {messages.length === 0 && (
@@ -79,6 +234,29 @@ export default function ChatWindow({ conversationId, currentUser, currentUserRol
         )}
         {messages.map(msg => {
           const isMe = msg.sender_email === currentUser.email;
+
+          if (msg.message_type === 'counter_offer') {
+            return (
+              <div key={msg.id} className={`flex ${isMe ? 'justify-end' : 'justify-start'}`}>
+                <div className={`flex flex-col gap-1 ${isMe ? 'items-end' : 'items-start'}`}>
+                  <div className="flex items-center gap-2">
+                    {!isMe && <span className="text-xs font-medium text-gray-600">{msg.sender_name}</span>}
+                    <Badge className={`text-xs py-0 px-1.5 ${roleColor(msg.sender_role)}`}>{msg.sender_role}</Badge>
+                  </div>
+                  <CounterOfferBubble
+                    msg={msg}
+                    isMe={isMe}
+                    currentUser={currentUser}
+                    booking={activeBooking}
+                    onAccept={handleAcceptOffer}
+                    onDecline={handleDeclineOffer}
+                  />
+                  <span className="text-xs text-gray-400">{format(new Date(msg.created_date), 'MMM d, HH:mm')}</span>
+                </div>
+              </div>
+            );
+          }
+
           return (
             <div key={msg.id} className={`flex ${isMe ? 'justify-end' : 'justify-start'}`}>
               <div className={`max-w-[75%] ${isMe ? 'items-end' : 'items-start'} flex flex-col gap-1`}>
@@ -97,20 +275,42 @@ export default function ChatWindow({ conversationId, currentUser, currentUserRol
         <div ref={bottomRef} />
       </div>
 
-      {/* Input */}
-      <div className="border-t p-3 flex gap-2 items-end bg-white">
-        <Textarea
-          value={text}
-          onChange={e => setText(e.target.value)}
-          onKeyDown={handleKey}
-          placeholder="Type a message... (no personal contacts or external payments)"
-          rows={2}
-          className="flex-1 resize-none text-sm"
+      {/* Counter offer form */}
+      {showOfferForm && activeBooking && (
+        <CounterOfferForm
+          booking={activeBooking}
+          onSubmit={handleSendOffer}
+          onCancel={() => setShowOfferForm(false)}
         />
-        <Button onClick={handleSend} disabled={sending || !text.trim()} size="icon" className="h-10 w-10 shrink-0">
-          <Send className="w-4 h-4" />
-        </Button>
-      </div>
+      )}
+
+      {/* Input */}
+      {!showOfferForm && (
+        <div className="border-t p-3 flex gap-2 items-end bg-white">
+          {canCounterOffer && (
+            <Button
+              size="icon"
+              variant="outline"
+              className="h-10 w-10 shrink-0 border-violet-200 text-violet-600 hover:bg-violet-50"
+              onClick={() => setShowOfferForm(true)}
+              title="Make counter offer"
+            >
+              <ArrowLeftRight className="w-4 h-4" />
+            </Button>
+          )}
+          <Textarea
+            value={text}
+            onChange={e => setText(e.target.value)}
+            onKeyDown={handleKey}
+            placeholder="Type a message..."
+            rows={2}
+            className="flex-1 resize-none text-sm"
+          />
+          <Button onClick={handleSend} disabled={sending || !text.trim()} size="icon" className="h-10 w-10 shrink-0">
+            <Send className="w-4 h-4" />
+          </Button>
+        </div>
+      )}
     </div>
   );
 }

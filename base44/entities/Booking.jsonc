@@ -70,6 +70,7 @@
       "type": "string",
       "enum": [
         "pending_approval",
+        "counter_offered",
         "accepted",
         "paid_confirmed",
         "in_progress",
@@ -93,6 +94,26 @@
         "disputed"
       ],
       "default": "unpaid"
+    },
+    "counter_offer_amount": {
+      "type": "number",
+      "description": "Latest counter offer total amount"
+    },
+    "counter_offer_by": {
+      "type": "string",
+      "description": "Email of who made the last counter offer"
+    },
+    "counter_offer_note": {
+      "type": "string"
+    },
+    "counter_offer_booking_type": {
+      "type": "string"
+    },
+    "counter_offer_duration": {
+      "type": "number"
+    },
+    "counter_offer_start_date": {
+      "type": "string"
     },
     "auto_release_at": {
       "type": "string"

@@ -14,6 +14,7 @@ import { useI18n } from '@/lib/i18n';
 import { CATEGORIES, COUNTRY_SETTINGS } from '@/lib/constants';
 import { useUserProfile } from '@/lib/useUserProfile';
 import AvailabilityCalendar from '@/components/availability/AvailabilityCalendar';
+import LocationPicker from '@/components/location/LocationPicker';
 import IdentityVerification from '@/components/verification/IdentityVerification';
 
 export default function MyProfile() {
@@ -22,8 +23,6 @@ export default function MyProfile() {
   const [existingProvider, setExistingProvider] = useState(null);
   const [newSkill, setNewSkill] = useState('');
   const [newCert, setNewCert] = useState('');
-  const [geoLoading, setGeoLoading] = useState(false);
-
   const [form, setForm] = useState({
     full_name: '', phone: '', category: 'caregiver', bio: '',
     experience_years: 0, hourly_rate: 25, daily_rate: 180, weekly_rate: 800,
@@ -66,15 +65,6 @@ export default function MyProfile() {
       }
     });
   }, [user]);
-
-  const detectLocation = () => {
-    setGeoLoading(true);
-    navigator.geolocation?.getCurrentPosition(pos => {
-      setForm(f => ({ ...f, latitude: pos.coords.latitude, longitude: pos.coords.longitude }));
-      setGeoLoading(false);
-      toast.success('Location detected!');
-    }, () => { setGeoLoading(false); toast.error('Location access denied'); });
-  };
 
   const checkProfileComplete = (data) => {
     return !!(data.avatar_url && data.full_name && data.phone && data.category && data.location_text);
@@ -253,14 +243,16 @@ export default function MyProfile() {
 
               {/* Location */}
               <div>
-                <Label><MapPin className="inline w-3.5 h-3.5 mr-1" />{t('location')} *</Label>
-                <div className="flex gap-2 mt-1.5">
-                  <Input value={form.location_text} onChange={e => setForm(f => ({ ...f, location_text: e.target.value }))} placeholder={t('location_placeholder')} />
-                  <Button type="button" variant="outline" size="sm" onClick={detectLocation} disabled={geoLoading} className="whitespace-nowrap">
-                    {geoLoading ? 'Getting...' : '📍 GPS'}
-                  </Button>
-                </div>
-                {form.latitude && <p className="text-xs text-green-600 mt-1">✓ GPS coordinates saved for distance matching</p>}
+                <Label className="flex items-center gap-1 mb-2"><MapPin className="w-3.5 h-3.5" />{t('location')} *</Label>
+                <LocationPicker
+                  country={country}
+                  locationText={form.location_text}
+                  latitude={form.latitude}
+                  longitude={form.longitude}
+                  onChange={({ location_text, latitude, longitude }) =>
+                    setForm(f => ({ ...f, location_text, latitude, longitude }))
+                  }
+                />
               </div>
 
               <div>

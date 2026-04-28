@@ -7,7 +7,7 @@ import { Label } from '@/components/ui/label';
 import { Textarea } from '@/components/ui/textarea';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Badge } from '@/components/ui/badge';
-import { User, Briefcase, Plus, X, Save, ShieldCheck, Zap, Upload, MapPin, CalendarDays } from 'lucide-react';
+import { User, Briefcase, Plus, X, Save, ShieldCheck, Zap, Upload, MapPin, CalendarDays, Search } from 'lucide-react';
 import { toast } from 'sonner';
 import { useI18n } from '@/lib/i18n';
 import { CATEGORIES, COUNTRY_SETTINGS } from '@/lib/constants';
@@ -30,6 +30,7 @@ export default function MyProfile() {
     avatar_url: '', id_document_url: '',
   });
 
+  const isClient = !userProfile?.role || userProfile?.role === 'client' || userProfile?.role === 'both';
   const isProvider = userProfile?.role === 'provider' || userProfile?.role === 'both' || !!existingProvider;
   const country = userProfile?.country || 'brazil';
   const countryInfo = COUNTRY_SETTINGS[country] || COUNTRY_SETTINGS.brazil;
@@ -131,11 +132,8 @@ export default function MyProfile() {
 
   return (
     <div className="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-      <div className="flex items-center justify-between mb-8">
-        <div>
-          <h1 className="text-3xl font-bold text-gray-900">{t('my_profile')}</h1>
-          <p className="text-gray-500 mt-1">{isProvider ? t('manage_profile') : t('setup_profile')}</p>
-        </div>
+      <div className="flex items-center justify-between mb-6">
+        <h1 className="text-3xl font-bold text-gray-900">{t('my_profile')}</h1>
         <div className="flex gap-2">
           {existingProvider?.is_premium && (
             <Badge className="bg-amber-100 text-amber-700 border-amber-300 gap-1"><Zap className="w-3 h-3" /> Premium</Badge>
@@ -149,25 +147,58 @@ export default function MyProfile() {
         </div>
       </div>
 
-      {!isProvider ? (
-        <Card className="mb-6 border-blue-200 bg-blue-50">
-          <CardContent className="p-5">
-            <p className="text-blue-800 font-medium mb-3">Want to offer your services too?</p>
-            <p className="text-sm text-blue-700 mb-4">Set up a provider profile to get hired and earn money through CareBook.</p>
-            <Button
-              className="bg-blue-600 hover:bg-blue-700 gap-2"
-              onClick={async () => {
-                if (userProfile) {
-                  await base44.entities.UserProfile.update(userProfile.id, { role: 'both' });
+      {/* Role toggle */}
+      {userProfile && (
+        <Card className="mb-6 border border-gray-100 shadow-sm">
+          <CardContent className="p-4">
+            <p className="text-sm font-medium text-gray-600 mb-3">I am on CareBook as:</p>
+            <div className="flex gap-3 flex-wrap">
+              <button
+                onClick={async () => {
+                  const currentRole = userProfile.role;
+                  let newRole;
+                  if (currentRole === 'client') newRole = 'client'; // already only client, no-op
+                  else if (currentRole === 'provider') newRole = 'both';
+                  else if (currentRole === 'both') newRole = 'provider'; // toggle off client
+                  else newRole = 'client';
+                  await base44.entities.UserProfile.update(userProfile.id, { role: newRole });
                   await refetchUserProfile();
-                }
-              }}
-            >
-              <Briefcase className="w-4 h-4" /> Become a Provider
-            </Button>
+                }}
+                className={`flex items-center gap-2 px-4 py-2 rounded-full border-2 text-sm font-medium transition-all ${
+                  isClient
+                    ? 'border-blue-500 bg-blue-50 text-blue-700'
+                    : 'border-gray-200 text-gray-500 hover:border-blue-300'
+                }`}
+              >
+                <Search className="w-4 h-4" /> Client
+                {isClient && <span className="text-xs bg-blue-500 text-white rounded-full px-1.5 py-0.5 leading-none">✓</span>}
+              </button>
+              <button
+                onClick={async () => {
+                  const currentRole = userProfile.role;
+                  let newRole;
+                  if (currentRole === 'provider') newRole = 'provider'; // already only provider, no-op
+                  else if (currentRole === 'client') newRole = 'both';
+                  else if (currentRole === 'both') newRole = 'client'; // toggle off provider
+                  else newRole = 'provider';
+                  await base44.entities.UserProfile.update(userProfile.id, { role: newRole });
+                  await refetchUserProfile();
+                }}
+                className={`flex items-center gap-2 px-4 py-2 rounded-full border-2 text-sm font-medium transition-all ${
+                  isProvider
+                    ? 'border-green-500 bg-green-50 text-green-700'
+                    : 'border-gray-200 text-gray-500 hover:border-green-300'
+                }`}
+              >
+                <Briefcase className="w-4 h-4" /> Provider
+                {isProvider && <span className="text-xs bg-green-500 text-white rounded-full px-1.5 py-0.5 leading-none">✓</span>}
+              </button>
+            </div>
           </CardContent>
         </Card>
-      ) : (
+      )}
+
+      {isProvider ? (
         <div className="space-y-6">
           {/* Profile completeness */}
           {existingProvider && !existingProvider.profile_complete && (
@@ -341,6 +372,14 @@ export default function MyProfile() {
             </Card>
           )}
         </div>
+      ) : (
+        <Card className="border border-gray-100 shadow-sm">
+          <CardContent className="p-8 text-center text-gray-500">
+            <Search className="w-10 h-10 mx-auto mb-3 text-gray-300" />
+            <p className="font-medium text-gray-700 mb-1">You're set up as a client</p>
+            <p className="text-sm">Toggle "Provider" above to also offer your services on CareBook.</p>
+          </CardContent>
+        </Card>
       )}
     </div>
   );

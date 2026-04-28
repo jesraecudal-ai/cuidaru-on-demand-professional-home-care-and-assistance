@@ -15,6 +15,7 @@ import { format } from 'date-fns';
 import FinanceSummaryCards from '@/components/payments/FinanceSummaryCards';
 import TransactionList from '@/components/payments/TransactionList';
 import PayoutRequestModal from '@/components/payments/PayoutRequestModal';
+import MonthlyReportDownload from '@/components/reports/MonthlyReportDownload';
 import { useUserProfile } from '@/lib/useUserProfile';
 import { COUNTRY_SETTINGS } from '@/lib/constants';
 
@@ -327,7 +328,8 @@ export default function Payments() {
         )}
 
         {/* All Transactions */}
-        <TabsContent value="history">
+        <TabsContent value="history" className="space-y-6">
+          <MonthlyReportDownload userRole={isProvider ? 'provider' : 'client'} />
           <Card className="border border-gray-100 shadow-sm">
             <CardHeader>
               <CardTitle className="text-base text-gray-800">Transaction History</CardTitle>

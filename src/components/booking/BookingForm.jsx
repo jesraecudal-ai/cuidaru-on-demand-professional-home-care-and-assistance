@@ -270,8 +270,9 @@ export default function BookingForm({ provider, clientProfile }) {
             <div className="space-y-4">
               <div>
                 <Label className="text-sm font-semibold text-gray-800 mb-2 block">Service location</Label>
+                <p className="text-xs text-gray-600 mb-2">Enter the complete address where the service will take place</p>
                 <Input
-                  placeholder="Enter address or area"
+                  placeholder="e.g., 123 Main Street, Apartment 4B, Montevideo"
                   value={form.address}
                   onChange={e => setForm(f => ({ ...f, address: e.target.value }))}
                   className="h-10"

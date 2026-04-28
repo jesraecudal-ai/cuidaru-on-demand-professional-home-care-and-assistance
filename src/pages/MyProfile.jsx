@@ -25,7 +25,7 @@ export default function MyProfile() {
   const [newSkill, setNewSkill] = useState('');
   const [newCert, setNewCert] = useState('');
   const [form, setForm] = useState({
-    full_name: '', phone: '', category: 'caregiver', bio: '',
+    full_name: '', phone: '', categories: [], bio: '',
     experience_years: 0, hourly_rate: 25, daily_rate: 180, weekly_rate: 800,
     location_text: '', latitude: null, longitude: null,
     availability: 'available', skills: [], certifications: [],
@@ -53,7 +53,7 @@ export default function MyProfile() {
         setForm({
           full_name: p.full_name || user.full_name || '',
           phone: p.phone || '',
-          category: p.category || 'caregiver',
+          categories: p.categories || [],
           bio: p.bio || '',
           experience_years: p.experience_years || 0,
           hourly_rate: p.hourly_rate || 25,
@@ -75,7 +75,7 @@ export default function MyProfile() {
   }, [user]);
 
   const checkProfileComplete = (data) => {
-    return !!(data.avatar_url && data.full_name && data.phone && data.category && data.location_text);
+    return !!(data.avatar_url && data.full_name && data.phone && data.categories?.length > 0 && data.location_text);
   };
 
   const handleSave = async () => {
@@ -222,7 +222,7 @@ export default function MyProfile() {
           {existingProvider && !existingProvider.profile_complete && (
             <Card className="border-amber-200 bg-amber-50">
               <CardContent className="p-4 text-sm text-amber-800">
-                ⚠️ Complete your profile to appear in search results. Required: Photo, Name, Phone, Category, and Location.
+                ⚠️ Complete your profile to appear in search results. Required: Photo, Name, Phone, Categories, and Location.
               </CardContent>
             </Card>
           )}
@@ -258,20 +258,38 @@ export default function MyProfile() {
                 </div>
               </div>
 
-              <div className="grid sm:grid-cols-2 gap-4">
-                <div>
-                  <Label>{t('category')} *</Label>
-                  <Select value={form.category} onValueChange={v => setForm(f => ({ ...f, category: v }))}>
-                    <SelectTrigger className="mt-1.5"><SelectValue /></SelectTrigger>
-                    <SelectContent>
-                      {CATEGORIES.map(cat => <SelectItem key={cat.key} value={cat.key}>{cat.icon} {t(`cat_${cat.key}`)}</SelectItem>)}
-                    </SelectContent>
-                  </Select>
+              <div>
+                <Label>{t('category')} * (up to 6)</Label>
+                <p className="text-xs text-gray-500 mb-2">Select the services you offer</p>
+                <div className="flex flex-wrap gap-2">
+                  {CATEGORIES.map(cat => (
+                    <button
+                      key={cat.key}
+                      type="button"
+                      onClick={() => {
+                        setForm(f => ({
+                          ...f,
+                          categories: f.categories.includes(cat.key)
+                            ? f.categories.filter(c => c !== cat.key)
+                            : f.categories.length < 6 ? [...f.categories, cat.key] : f.categories
+                        }));
+                      }}
+                      disabled={!form.categories.includes(cat.key) && form.categories.length >= 6}
+                      className={`px-3 py-1.5 rounded-full border-2 text-sm font-medium transition-all ${
+                        form.categories.includes(cat.key)
+                          ? 'border-blue-500 bg-blue-50 text-blue-700'
+                          : 'border-gray-200 text-gray-600 hover:border-blue-300 disabled:opacity-50 disabled:cursor-not-allowed'
+                      }`}
+                    >
+                      {cat.icon} {t(`cat_${cat.key}`)}
+                    </button>
+                  ))}
                 </div>
-                <div>
-                  <Label>{t('years_exp')}</Label>
-                  <Input type="number" value={form.experience_years} onChange={e => setForm(f => ({ ...f, experience_years: parseInt(e.target.value) || 0 }))} className="mt-1.5" />
-                </div>
+              </div>
+
+              <div>
+                <Label>{t('years_exp')}</Label>
+                <Input type="number" value={form.experience_years} onChange={e => setForm(f => ({ ...f, experience_years: parseInt(e.target.value) || 0 }))} className="mt-1.5" />
               </div>
 
               <div>

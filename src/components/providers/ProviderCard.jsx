@@ -20,8 +20,9 @@ const categoryMap = {
 
 export default function ProviderCard({ provider, index = 0, userLocation }) {
   const { t } = useI18n();
-  const category = categoryMap[provider.category] || provider.category;
-  const badgeColor = CATEGORY_BADGE_COLORS[category] || 'bg-gray-100 text-gray-700 border-gray-200';
+  // Use primary category from categories array, fallback to old category field
+  const primaryCategory = provider.categories?.[0] || categoryMap[provider.category] || provider.category;
+  const badgeColor = CATEGORY_BADGE_COLORS[primaryCategory] || 'bg-gray-100 text-gray-700 border-gray-200';
 
   return (
     <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: index * 0.04 }}>
@@ -48,7 +49,7 @@ export default function ProviderCard({ provider, index = 0, userLocation }) {
               )}
               <div className="absolute top-2 left-2">
                 <Badge variant="outline" className={`${badgeColor} border text-xs font-medium`}>
-                  {t(`cat_${category}`) || category.replace(/_/g, ' ')}
+                  {t(`cat_${primaryCategory}`) || primaryCategory.replace(/_/g, ' ')}
                 </Badge>
               </div>
             </div>

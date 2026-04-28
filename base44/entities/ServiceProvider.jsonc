@@ -14,20 +14,30 @@
     "avatar_url": {
       "type": "string"
     },
+    "categories": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "enum": [
+          "caregiver",
+          "assistant_nurse",
+          "nurse",
+          "doctor",
+          "social_worker",
+          "house_cleaner",
+          "cook",
+          "laundry_helper",
+          "nanny",
+          "errand_runner"
+        ]
+      },
+      "minItems": 1,
+      "maxItems": 6,
+      "description": "Up to 6 service categories"
+    },
     "category": {
       "type": "string",
-      "enum": [
-        "caregiver",
-        "assistant_nurse",
-        "nurse",
-        "doctor",
-        "social_worker",
-        "house_cleaner",
-        "cook",
-        "laundry_helper",
-        "nanny",
-        "errand_runner"
-      ]
+      "description": "Deprecated - use categories instead"
     },
     "bio": {
       "type": "string"
@@ -144,6 +154,6 @@
   },
   "required": [
     "full_name",
-    "category"
+    "categories"
   ]
 }

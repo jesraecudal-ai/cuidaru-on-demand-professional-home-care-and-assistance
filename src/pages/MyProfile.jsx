@@ -36,6 +36,13 @@ export default function MyProfile() {
   const isProvider = userProfile?.role === 'provider' || userProfile?.role === 'both' || !!existingProvider;
   const country = userProfile?.country || 'brazil';
   const countryInfo = COUNTRY_SETTINGS[country] || COUNTRY_SETTINGS.brazil;
+  const [companyName, setCompanyName] = useState('');
+
+  useEffect(() => {
+    if (userProfile?.company_name) {
+      setCompanyName(userProfile.company_name);
+    }
+  }, [userProfile?.company_name]);
 
   useEffect(() => {
     if (!user) return;
@@ -175,6 +182,36 @@ export default function MyProfile() {
                 {isProvider && <span className="text-xs bg-green-500 text-white rounded-full px-1.5 py-0.5 leading-none">✓</span>}
               </button>
             </div>
+          </CardContent>
+        </Card>
+      )}
+
+      {isClient && (
+        <Card className="mb-6 border border-gray-100 shadow-sm">
+          <CardHeader><CardTitle className="flex items-center gap-2 text-lg text-gray-800"><Briefcase className="w-5 h-5 text-blue-600" /> Business Profile</CardTitle></CardHeader>
+          <CardContent className="space-y-4">
+            <div>
+              <Label htmlFor="company_name">Company Name (Optional)</Label>
+              <p className="text-xs text-gray-500 mb-2">Display your company or business name instead of your personal name</p>
+              <Input
+                id="company_name"
+                value={companyName}
+                onChange={e => setCompanyName(e.target.value)}
+                placeholder="e.g., Acme Healthcare Services"
+                className="mt-1.5"
+              />
+              <p className="text-xs text-gray-400 mt-2">Your verified identity is always kept on file for security</p>
+            </div>
+            <Button
+              onClick={async () => {
+                await base44.entities.UserProfile.update(userProfile.id, { company_name: companyName });
+                await refetchUserProfile();
+                toast.success('Business profile updated!');
+              }}
+              className="bg-blue-600 hover:bg-blue-700"
+            >
+              <Save className="w-4 h-4 mr-2" /> Save Business Name
+            </Button>
           </CardContent>
         </Card>
       )}

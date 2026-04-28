@@ -12,6 +12,7 @@ export default function ProfilePopup({ isOpen, onClose, senderEmail, senderRole,
   const navigate = useNavigate();
   const { profile: currentUserProfile } = useUserProfile();
   const [providerData, setProviderData] = useState(null);
+  const [clientData, setClientData] = useState(null);
   const [loading, setLoading] = useState(true);
   let distance = null;
 
@@ -35,7 +36,11 @@ export default function ProfilePopup({ isOpen, onClose, senderEmail, senderRole,
             }
           }
         } else {
-          // For clients, we just show basic info (no ServiceProvider data)
+          // For clients, fetch their UserProfile to get company name
+          const userProfiles = await base44.entities.UserProfile.filter({ user_email: senderEmail });
+          if (userProfiles.length > 0) {
+            setClientData(userProfiles[0]);
+          }
           setProviderData(null);
         }
       } catch (err) {
@@ -66,15 +71,24 @@ export default function ProfilePopup({ isOpen, onClose, senderEmail, senderRole,
             </DialogHeader>
             <div className="flex items-center gap-3">
               <div className="w-16 h-16 rounded-full bg-blue-100 flex items-center justify-center text-lg font-bold text-blue-600">
-                {senderName?.[0] || '?'}
+                {(clientData?.company_name || senderName)?.[0] || '?'}
               </div>
               <div className="flex-1">
-                <h3 className="font-semibold text-gray-900">{senderName}</h3>
-                <p className="text-xs text-gray-500">{senderEmail}</p>
+                {clientData?.company_name ? (
+                  <>
+                    <h3 className="font-semibold text-gray-900">{clientData.company_name}</h3>
+                    <p className="text-xs text-gray-500">Representing: {senderName}</p>
+                  </>
+                ) : (
+                  <>
+                    <h3 className="font-semibold text-gray-900">{senderName}</h3>
+                    <p className="text-xs text-gray-500">{senderEmail}</p>
+                  </>
+                )}
               </div>
             </div>
-            <p className="text-sm text-gray-600 text-center py-4 bg-gray-50 rounded-lg">
-              Client profile information is limited for privacy.
+            <p className="text-xs text-gray-500 bg-blue-50 border border-blue-100 p-3 rounded-lg">
+              ✓ Verified identity on file — {senderEmail}
             </p>
           </div>
         ) : providerData ? (

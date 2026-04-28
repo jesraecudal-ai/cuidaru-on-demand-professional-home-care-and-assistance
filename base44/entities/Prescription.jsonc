@@ -1,0 +1,141 @@
+{
+  "name": "Prescription",
+  "type": "object",
+  "properties": {
+    "doctor_id": {
+      "type": "string",
+      "description": "Reference to ServiceProvider (doctor)"
+    },
+    "doctor_email": {
+      "type": "string"
+    },
+    "doctor_name": {
+      "type": "string"
+    },
+    "patient_email": {
+      "type": "string"
+    },
+    "patient_name": {
+      "type": "string"
+    },
+    "patient_dob": {
+      "type": "string",
+      "format": "date",
+      "description": "Patient date of birth"
+    },
+    "consultation_result": {
+      "type": "string",
+      "description": "Result of the consultation"
+    },
+    "recommendation": {
+      "type": "string",
+      "description": "Doctor's recommendation"
+    },
+    "medicines": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string",
+            "description": "Medicine name"
+          },
+          "dosage": {
+            "type": "string",
+            "description": "e.g., 500mg"
+          },
+          "frequency": {
+            "type": "string",
+            "description": "e.g., 2 times daily"
+          },
+          "duration": {
+            "type": "string",
+            "description": "e.g., 7 days"
+          },
+          "instructions": {
+            "type": "string",
+            "description": "Additional instructions"
+          }
+        },
+        "required": [
+          "name",
+          "dosage",
+          "frequency"
+        ]
+      },
+      "description": "List of prescribed medicines"
+    },
+    "download_price": {
+      "type": "number",
+      "description": "Doctor's set price for downloading the prescription"
+    },
+    "currency": {
+      "type": "string",
+      "default": "usd"
+    },
+    "status": {
+      "type": "string",
+      "enum": [
+        "draft",
+        "issued",
+        "expired"
+      ],
+      "default": "draft"
+    },
+    "issued_date": {
+      "type": "string",
+      "format": "date"
+    },
+    "expiry_date": {
+      "type": "string",
+      "format": "date",
+      "description": "Prescription expiry date (e.g., 30 days from issue)"
+    },
+    "booking_id": {
+      "type": "string",
+      "description": "Associated booking if created during a consultation"
+    }
+  },
+  "required": [
+    "doctor_id",
+    "doctor_email",
+    "patient_email",
+    "patient_name",
+    "medicines",
+    "download_price"
+  ],
+  "rls": {
+    "create": {
+      "user_condition": {
+        "role": "admin"
+      }
+    },
+    "read": {
+      "$or": [
+        {
+          "data.doctor_email": "{{user.email}}"
+        },
+        {
+          "data.patient_email": "{{user.email}}"
+        },
+        {
+          "user_condition": {
+            "role": "admin"
+          }
+        }
+      ]
+    },
+    "update": {
+      "$or": [
+        {
+          "data.doctor_email": "{{user.email}}"
+        },
+        {
+          "user_condition": {
+            "role": "admin"
+          }
+        }
+      ]
+    }
+  }
+}

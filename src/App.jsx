@@ -21,6 +21,7 @@ import AdminVerifications from './pages/AdminVerifications';
 import AffiliateDashboard from './pages/AffiliateDashboard';
 import AdminPricing from './pages/AdminPricing';
 import ProviderPayouts from './pages/ProviderPayouts';
+import Prescriptions from './pages/Prescriptions';
 import TermsAndConditions from './pages/TermsAndConditions';
 import PrivacyPolicy from './pages/PrivacyPolicy';
 import Help from './pages/Help';
@@ -67,6 +68,7 @@ const AuthenticatedApp = () => {
         <Route path="/admin/verifications" element={<AdminVerifications />} />
         <Route path="/affiliate" element={<AffiliateDashboard />} />
         <Route path="/payouts" element={<ProviderPayouts />} />
+        <Route path="/prescriptions" element={<Prescriptions />} />
       </Route>
       <Route path="*" element={<PageNotFound />} />
     </Routes>

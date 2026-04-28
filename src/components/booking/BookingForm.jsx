@@ -45,7 +45,7 @@ export default function BookingForm({ provider, clientProfile }) {
     end_date: '',
     duration: 1,
     daily_hours: 8,
-    weekly_hours: 6,
+    weekly_days_hours: 6,
     weekly_days: [1, 2, 3, 4, 5], // Mon-Fri by default
     address: '',
     instructions: '',
@@ -66,7 +66,7 @@ export default function BookingForm({ provider, clientProfile }) {
   const getRate = () => {
     if (form.booking_type === 'hourly') return provider.hourly_rate || 0;
     if (form.booking_type === 'daily') return (provider.hourly_rate || 0) * form.daily_hours;
-    return (provider.hourly_rate || 0) * form.weekly_hours;
+    return (provider.hourly_rate || 0) * form.weekly_days_hours * form.weekly_days.length;
   };
 
   const getTotalUnits = () => {
@@ -134,7 +134,7 @@ export default function BookingForm({ provider, clientProfile }) {
         end_date: form.end_date || form.start_date,
         duration: form.duration,
         daily_hours: form.daily_hours,
-        weekly_hours: form.weekly_hours,
+        weekly_days_hours: form.weekly_days_hours,
         weekly_days: form.weekly_days,
         rate_applied: getRate(),
         subtotal,
@@ -307,7 +307,7 @@ export default function BookingForm({ provider, clientProfile }) {
 
               {form.booking_type === 'weekly' && (
                 <div>
-                  <Label className="text-sm font-semibold text-gray-800 mb-2 block">How many weeks and hours per week?</Label>
+                  <Label className="text-sm font-semibold text-gray-800 mb-2 block">How many weeks, hours per day, and which days?</Label>
                   <div className="space-y-3">
                     <div>
                       <p className="text-xs text-gray-600 mb-1">Number of weeks</p>
@@ -337,11 +337,11 @@ export default function BookingForm({ provider, clientProfile }) {
                       </div>
                     </div>
                     <div>
-                      <p className="text-xs text-gray-600 mb-1">Hours per week</p>
+                      <p className="text-xs text-gray-600 mb-1">Hours per day</p>
                       <div className="flex items-center gap-3">
                         <button
                           type="button"
-                          onClick={() => setForm(f => ({ ...f, weekly_hours: Math.max(1, f.weekly_hours - 1) }))}
+                          onClick={() => setForm(f => ({ ...f, weekly_days_hours: Math.max(1, f.weekly_days_hours - 1) }))}
                           className="h-10 w-10 rounded-lg border border-gray-300 hover:bg-gray-100 flex items-center justify-center"
                         >
                           −
@@ -349,14 +349,14 @@ export default function BookingForm({ provider, clientProfile }) {
                         <Input
                           type="number"
                           min={1}
-                          max={40}
-                          value={form.weekly_hours}
-                          onChange={e => setForm(f => ({ ...f, weekly_hours: Math.min(40, Math.max(1, parseInt(e.target.value) || 1)) }))}
+                          max={24}
+                          value={form.weekly_days_hours}
+                          onChange={e => setForm(f => ({ ...f, weekly_days_hours: Math.min(24, Math.max(1, parseInt(e.target.value) || 1)) }))}
                           className="flex-1 h-10 text-center text-lg font-semibold"
                         />
                         <button
                           type="button"
-                          onClick={() => setForm(f => ({ ...f, weekly_hours: Math.min(40, f.weekly_hours + 1) }))}
+                          onClick={() => setForm(f => ({ ...f, weekly_days_hours: Math.min(24, f.weekly_days_hours + 1) }))}
                           className="h-10 w-10 rounded-lg border border-gray-300 hover:bg-gray-100 flex items-center justify-center"
                         >
                           +
@@ -500,7 +500,7 @@ export default function BookingForm({ provider, clientProfile }) {
                   <span className="text-gray-600">
                     {form.booking_type === 'hourly' && `${form.duration} hour${form.duration > 1 ? 's' : ''}`}
                     {form.booking_type === 'daily' && `${form.duration} day${form.duration > 1 ? 's' : ''} × ${form.daily_hours}h/day`}
-                    {form.booking_type === 'weekly' && `${form.duration} week${form.duration > 1 ? 's' : ''} × ${form.weekly_hours}h/week`}
+                    {form.booking_type === 'weekly' && `${form.duration} week${form.duration > 1 ? 's' : ''} × ${form.weekly_days_hours}h/day × ${form.weekly_days.length} days`}
                   </span>
                   <span className="font-semibold">{countryInfo.symbol}{getRate().toFixed(2)} × {getTotalUnits()} = {countryInfo.symbol}{subtotal.toFixed(2)}</span>
                 </div>

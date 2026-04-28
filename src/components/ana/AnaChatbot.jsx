@@ -72,10 +72,15 @@ export default function AnaChatbot() {
       {!isOpen && (
         <button
           onClick={handleOpen}
-          className="fixed bottom-6 right-6 bg-blue-600 hover:bg-blue-700 text-white rounded-full p-4 shadow-lg hover:shadow-xl transition-all z-40"
+          className="fixed bottom-6 right-6 bg-blue-600 hover:bg-blue-700 text-white rounded-full p-4 shadow-lg hover:shadow-xl transition-all z-40 group"
           aria-label="Open Ana chat"
         >
-          <MessageCircle className="w-6 h-6" />
+          <div className="flex items-center justify-center">
+            <MessageCircle className="w-6 h-6" />
+            <span className="absolute bottom-full mb-3 bg-blue-700 text-white px-3 py-1.5 rounded-lg text-sm font-medium whitespace-nowrap opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none animate-bounce">
+              Need help?
+            </span>
+          </div>
         </button>
       )}
 

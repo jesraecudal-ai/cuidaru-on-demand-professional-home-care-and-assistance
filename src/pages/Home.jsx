@@ -51,84 +51,67 @@ export default function Home() {
   ];
 
   return (
-    <div className="bg-white">
+    <div className="bg-gradient-to-b from-white to-slate-50">
       {/* Hero */}
-       <section className="relative overflow-hidden bg-gradient-to-br from-blue-600 via-blue-700 to-blue-800 text-white">
-         {/* Carousel background */}
-         <div className="absolute inset-0">
-           {heroImages.map((img, idx) => (
-             <motion.img
-               key={idx}
-               src={img}
-               alt="healthcare professional"
-               className="absolute inset-0 w-full h-full object-cover blur-md"
-               initial={{ opacity: 0 }}
-               animate={{ opacity: idx === currentImageIndex ? 0.15 : 0 }}
-               transition={{ duration: 0.8 }}
-             />
-           ))}
-         </div>
+      <section className="relative overflow-hidden pt-20 pb-32 lg:pt-32 lg:pb-40">
+        <div className="absolute inset-0 bg-gradient-to-br from-blue-50 via-transparent to-slate-100" />
+        <div className="absolute top-0 right-0 w-96 h-96 bg-blue-100 rounded-full blur-3xl opacity-20" />
+        <div className="absolute bottom-0 left-0 w-96 h-96 bg-cyan-100 rounded-full blur-3xl opacity-20" />
 
-         {/* Dark overlay for text contrast */}
-         <div className="absolute inset-0 bg-gradient-to-r from-blue-900/70 via-blue-800/60 to-blue-900/70" />
-
-         <div className="absolute inset-0 opacity-10" style={{ backgroundImage: 'radial-gradient(circle at 20% 80%, white 1px, transparent 1px), radial-gradient(circle at 80% 20%, white 1px, transparent 1px)', backgroundSize: '60px 60px' }} />
-
-         <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-20 lg:py-28">
-          <motion.div initial={{ opacity: 0, y: 30 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.6 }} className="text-center max-w-4xl mx-auto">
-            <Badge className="mb-5 bg-white/20 text-white border-white/30 hover:bg-white/20 px-4 py-1.5">
-              <Shield className="w-3.5 h-3.5 mr-1.5" />
+        <div className="relative max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
+          <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.6 }} className="text-center max-w-4xl mx-auto">
+            <Badge className="mb-4 bg-blue-100 text-blue-700 border-blue-200 hover:bg-blue-100 px-4 py-1.5">
+              <Zap className="w-3.5 h-3.5 mr-1.5" />
               {t('hero_badge')}
             </Badge>
-            <h1 className="text-4xl sm:text-6xl lg:text-7xl font-bold tracking-tight leading-tight">
+            <h1 className="text-5xl sm:text-6xl lg:text-7xl font-bold tracking-tight text-gray-900 leading-tight">
               {t('hero_title_1')}{' '}
-              <span className="text-green-300">{t('hero_title_2')}</span>
-              <br />{t('hero_title_3')}
+              <span className="bg-gradient-to-r from-blue-600 to-cyan-600 bg-clip-text text-transparent">{t('hero_title_2')}</span>
+              <br/>{t('hero_title_3')}
             </h1>
-            <p className="mt-6 text-lg sm:text-xl text-blue-100 max-w-2xl mx-auto leading-relaxed">
+            <p className="mt-6 text-lg sm:text-xl text-gray-600 max-w-2xl mx-auto leading-relaxed">
               {t('hero_subtitle')}
             </p>
             <div className="mt-10 flex flex-col sm:flex-row gap-4 justify-center">
               <Link to="/browse">
-                <Button size="lg" className="h-14 px-8 text-base bg-white text-blue-700 hover:bg-blue-50 gap-2 shadow-lg">
+                <Button size="lg" className="h-14 px-8 text-base bg-gradient-to-r from-blue-600 to-blue-700 hover:from-blue-700 hover:to-blue-800 text-white gap-2 shadow-lg">
                   {t('hero_cta_find')} <ArrowRight className="w-5 h-5" />
                 </Button>
               </Link>
               {(!profile || profile.role === 'client') && (
                 <Link to="/onboarding">
-                  <Button size="lg" variant="outline" className="h-14 px-8 text-base border-white/40 text-white hover:bg-white/10">
+                  <Button size="lg" variant="outline" className="h-14 px-8 text-base border-gray-300 text-gray-900 hover:bg-gray-100">
                     {t('hero_cta_provider')}
                   </Button>
                 </Link>
               )}
             </div>
-            <div className="mt-10 flex flex-wrap items-center justify-center gap-6 text-sm text-blue-100">
-              <span className="flex items-center gap-2"><Shield className="w-4 h-4 text-green-300" /> {t('hero_trust_1')}</span>
-              <span className="flex items-center gap-2"><Lock className="w-4 h-4 text-green-300" /> {t('hero_trust_2')}</span>
-              <span className="flex items-center gap-2"><Star className="w-4 h-4 text-yellow-300" /> {t('hero_trust_3')}</span>
-              <span className="flex items-center gap-2"><MapPin className="w-4 h-4 text-green-300" /> GPS Matching</span>
+            <div className="mt-12 flex flex-wrap items-center justify-center gap-8 text-sm text-gray-600">
+              <span className="flex items-center gap-2"><CheckCircle2 className="w-4 h-4 text-green-600" /> {t('hero_trust_1')}</span>
+              <span className="flex items-center gap-2"><Shield className="w-4 h-4 text-blue-600" /> {t('hero_trust_2')}</span>
+              <span className="flex items-center gap-2"><Star className="w-4 h-4 text-amber-600" /> {t('hero_trust_3')}</span>
             </div>
           </motion.div>
         </div>
       </section>
 
       {/* Categories */}
-      <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-20">
-        <div className="text-center mb-12">
-          <h2 className="text-3xl sm:text-4xl font-bold text-gray-900">{t('browse_by_category')}</h2>
-          <p className="mt-3 text-gray-500 text-lg">{t('browse_subtitle')}</p>
+      <section className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-24">
+        <div className="text-center mb-16">
+          <h2 className="text-4xl sm:text-5xl font-bold text-gray-900">{t('browse_by_category')}</h2>
+          <p className="mt-4 text-lg text-gray-600">{t('browse_subtitle')}</p>
         </div>
-        <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-4">
+        <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-5">
           {CATEGORIES.map((cat, i) => (
-            <motion.div key={cat.key} initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} transition={{ delay: i * 0.04 }}>
+            <motion.div key={cat.key} initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} transition={{ delay: i * 0.05 }}>
               <Link to={`/browse?category=${cat.key}`}>
-                <Card className="group hover:shadow-lg transition-all duration-300 hover:-translate-y-1 cursor-pointer border border-gray-100 h-full">
-                  <CardContent className="p-5 text-center">
-                    <div className={`w-14 h-14 mx-auto rounded-2xl bg-gradient-to-br ${CATEGORY_COLORS[cat.key]} flex items-center justify-center mb-3 group-hover:scale-110 transition-transform duration-300 text-2xl shadow-sm`}>
+                <Card className="group hover:shadow-xl transition-all duration-300 hover:-translate-y-2 cursor-pointer border border-gray-200 h-full bg-white">
+                  <CardContent className="p-6 text-center flex flex-col items-center">
+                    <div className={`w-16 h-16 mx-auto rounded-xl bg-gradient-to-br ${CATEGORY_COLORS[cat.key]} flex items-center justify-center mb-4 group-hover:scale-125 transition-transform duration-300 text-3xl shadow-md`}>
                       {cat.icon}
                     </div>
-                    <h3 className="font-semibold text-sm text-gray-900 leading-tight">{t(`cat_${cat.key}`)}</h3>
-                    <p className="text-xs text-gray-400 mt-1 leading-tight">{t(`cat_desc_${cat.key}`)}</p>
+                    <h3 className="font-semibold text-sm text-gray-900">{t(`cat_${cat.key}`)}</h3>
+                    <p className="text-xs text-gray-500 mt-2">{t(`cat_desc_${cat.key}`)}</p>
                   </CardContent>
                 </Card>
               </Link>
@@ -138,31 +121,31 @@ export default function Home() {
       </section>
 
       {/* Premium Feature Banner */}
-      <section className="bg-gradient-to-r from-amber-50 to-orange-50 border-y border-amber-200">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
-          <div className="flex flex-col md:flex-row items-center gap-8">
+      <section className="bg-gradient-to-br from-amber-50 via-orange-50 to-yellow-50 border-t-2 border-amber-200">
+        <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-20">
+          <div className="flex flex-col lg:flex-row items-center gap-12">
             <div className="flex-1">
-              <div className="flex items-center gap-2 mb-3">
-                <Zap className="w-5 h-5 text-amber-500" />
-                <span className="font-bold text-amber-700 text-sm uppercase tracking-wide">Premium Boost</span>
+              <div className="flex items-center gap-2 mb-4">
+                <Zap className="w-5 h-5 text-amber-600" />
+                <span className="font-semibold text-amber-700 text-sm uppercase tracking-wider">Premium Advantage</span>
               </div>
-              <h3 className="text-2xl font-bold text-gray-900">Stand out. Get hired faster.</h3>
-              <p className="text-gray-600 mt-2">Premium providers appear first in searches, boosted to nearby clients. Premium clients pay 0% platform fees.</p>
-              <ul className="mt-4 space-y-2">
+              <h3 className="text-3xl sm:text-4xl font-bold text-gray-900 mb-4">Get ahead with premium</h3>
+              <p className="text-gray-700 text-lg mb-6">Stand out in searches and reach more clients. Premium members enjoy priority visibility and zero fees.</p>
+              <ul className="space-y-3 mb-8">
                 {[
-                  'Providers: Appear first in all nearby searches',
+                  'Providers: Featured in top searches',
                   `Providers: From ${countryInfo.symbol}${countryInfo.sub_provider}/${t('per_month') || 'month'}`,
-                  'Clients: 0% platform fee on all bookings',
+                  'Clients: Zero platform fees on bookings',
                   `Clients: From ${countryInfo.symbol}${countryInfo.sub_client}/${t('per_month') || 'month'}`,
                 ].map((item, i) => (
-                  <li key={i} className="flex items-center gap-2 text-sm text-gray-700">
-                    <CheckCircle2 className="w-4 h-4 text-amber-500 flex-shrink-0" /> {item}
+                  <li key={i} className="flex items-center gap-3 text-gray-800">
+                    <CheckCircle2 className="w-5 h-5 text-amber-600 flex-shrink-0" /> {item}
                   </li>
                 ))}
               </ul>
             </div>
-            <Link to="/premium">
-              <Button size="lg" className="bg-amber-500 hover:bg-amber-600 text-white h-12 px-8 gap-2 shadow-lg">
+            <Link to="/premium" className="flex-shrink-0">
+              <Button size="lg" className="bg-gradient-to-r from-amber-500 to-orange-500 hover:from-amber-600 hover:to-orange-600 text-white h-14 px-10 gap-2 shadow-lg text-base">
                 <Zap className="w-5 h-5" /> Explore Premium
               </Button>
             </Link>
@@ -171,19 +154,28 @@ export default function Home() {
       </section>
 
       {/* How It Works */}
-      <section className="bg-gray-50">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-20">
-          <div className="text-center mb-16">
-            <h2 className="text-3xl sm:text-4xl font-bold text-gray-900">{t('how_it_works')}</h2>
-            <p className="mt-3 text-gray-500 text-lg">{t('how_subtitle')}</p>
+      <section className="bg-gradient-to-b from-slate-50 to-white">
+        <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-24">
+          <div className="text-center mb-20">
+            <h2 className="text-4xl sm:text-5xl font-bold text-gray-900">{t('how_it_works')}</h2>
+            <p className="mt-4 text-lg text-gray-600">{t('how_subtitle')}</p>
           </div>
           <div className="grid sm:grid-cols-2 md:grid-cols-4 gap-8">
             {STEPS.map((s, i) => (
-              <motion.div key={i} initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} transition={{ delay: i * 0.1 }} className="text-center">
-                <div className="text-5xl mb-4">{s.icon}</div>
-                <div className="text-xs font-bold text-blue-600 tracking-widest uppercase mb-2">0{i+1}</div>
-                <h3 className="text-lg font-semibold mb-2 text-gray-900">{s.title}</h3>
-                <p className="text-sm text-gray-500 leading-relaxed">{s.desc}</p>
+              <motion.div key={i} initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} transition={{ delay: i * 0.1 }} className="relative">
+                <div className="text-center">
+                  <div className="w-20 h-20 mx-auto rounded-full bg-gradient-to-br from-blue-100 to-cyan-100 flex items-center justify-center mb-6 text-4xl shadow-md">
+                    {s.icon}
+                  </div>
+                  <div className="text-sm font-bold text-blue-600 tracking-widest uppercase mb-3">Step {i+1}</div>
+                  <h3 className="text-lg font-bold text-gray-900 mb-3">{s.title}</h3>
+                  <p className="text-gray-600 text-sm leading-relaxed">{s.desc}</p>
+                </div>
+                {i < STEPS.length - 1 && (
+                  <div className="hidden md:block absolute -right-4 top-10 text-gray-400">
+                    <ArrowRight className="w-6 h-6" />
+                  </div>
+                )}
               </motion.div>
             ))}
           </div>
@@ -191,33 +183,33 @@ export default function Home() {
       </section>
 
       {/* Referral & Affiliate Section */}
-      <section className="bg-gradient-to-r from-purple-50 to-pink-50 border-y border-purple-200">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-20">
-          <div className="text-center mb-12">
-            <h2 className="text-3xl sm:text-4xl font-bold text-gray-900">Earn Rewards & Grow Your Network</h2>
-            <p className="mt-3 text-gray-600 text-lg">Join our referral program and unlock exclusive benefits</p>
+      <section className="bg-gradient-to-br from-purple-50 via-pink-50 to-rose-50 border-t-2 border-purple-200">
+        <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-24">
+          <div className="text-center mb-16">
+            <h2 className="text-4xl sm:text-5xl font-bold text-gray-900">Earn & Grow Your Network</h2>
+            <p className="mt-4 text-lg text-gray-600">Get rewarded for sharing CareBook</p>
           </div>
           <div className="grid md:grid-cols-2 gap-8">
             {/* Referral Rewards Block */}
             <motion.div initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }}>
-              <Card className="h-full border-2 border-purple-200 bg-white hover:shadow-lg transition-shadow">
+              <Card className="h-full border-2 border-purple-200 bg-white hover:shadow-2xl transition-shadow">
                 <CardContent className="p-8">
-                  <div className="w-12 h-12 rounded-2xl bg-purple-100 flex items-center justify-center mb-4">
-                    <Gift className="w-6 h-6 text-purple-600" />
+                  <div className="w-14 h-14 rounded-xl bg-gradient-to-br from-purple-100 to-purple-50 flex items-center justify-center mb-5">
+                    <Gift className="w-7 h-7 text-purple-600" />
                   </div>
-                  <h3 className="text-2xl font-bold text-gray-900 mb-3">Referral Rewards</h3>
-                  <p className="text-gray-600 mb-6">Invite friends and family to CareBook and get rewarded when they join.</p>
+                  <h3 className="text-2xl font-bold text-gray-900 mb-2">Referral Rewards</h3>
+                  <p className="text-gray-600 mb-6 text-sm">Invite friends and family to CareBook and get rewarded.</p>
                   <ul className="space-y-3 mb-8">
-                    <li className="flex items-center gap-3 text-sm text-gray-700">
-                      <CheckCircle2 className="w-4 h-4 text-purple-600 flex-shrink-0" />
-                      <span><strong>Clients:</strong> Invite 5+ friends → Get 3 free bookings with zero platform fees</span>
+                    <li className="flex items-start gap-3 text-sm text-gray-700">
+                      <CheckCircle2 className="w-4 h-4 text-purple-600 flex-shrink-0 mt-0.5" />
+                      <span><strong>Clients:</strong> Invite 5+ friends → Get 3 free bookings</span>
                     </li>
-                    <li className="flex items-center gap-3 text-sm text-gray-700">
-                      <CheckCircle2 className="w-4 h-4 text-purple-600 flex-shrink-0" />
-                      <span><strong>Providers:</strong> Invite 6+ professionals → Get 1 month of free premium</span>
+                    <li className="flex items-start gap-3 text-sm text-gray-700">
+                      <CheckCircle2 className="w-4 h-4 text-purple-600 flex-shrink-0 mt-0.5" />
+                      <span><strong>Providers:</strong> Invite 6+ → Get 1 free premium month</span>
                     </li>
                   </ul>
-                  <Link to="/premium">
+                  <Link to="/premium" className="block">
                     <Button className="w-full bg-purple-600 hover:bg-purple-700 text-white gap-2">
                       <Gift className="w-4 h-4" /> Check Your Rewards
                     </Button>
@@ -228,30 +220,30 @@ export default function Home() {
 
             {/* Affiliate Program Block */}
             <motion.div initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} transition={{ delay: 0.1 }}>
-              <Card className="h-full border-2 border-pink-200 bg-white hover:shadow-lg transition-shadow">
+              <Card className="h-full border-2 border-pink-200 bg-white hover:shadow-2xl transition-shadow">
                 <CardContent className="p-8">
-                  <div className="w-12 h-12 rounded-2xl bg-pink-100 flex items-center justify-center mb-4">
-                    <GitBranch className="w-6 h-6 text-pink-600" />
+                  <div className="w-14 h-14 rounded-xl bg-gradient-to-br from-pink-100 to-pink-50 flex items-center justify-center mb-5">
+                    <GitBranch className="w-7 h-7 text-pink-600" />
                   </div>
-                  <h3 className="text-2xl font-bold text-gray-900 mb-3">Affiliate Program</h3>
-                  <p className="text-gray-600 mb-6">Earn 5% commission on every user you refer who completes their first booking.</p>
+                  <h3 className="text-2xl font-bold text-gray-900 mb-2">Affiliate Program</h3>
+                  <p className="text-gray-600 mb-6 text-sm">Earn 5% commission on every referral's first booking.</p>
                   <ul className="space-y-3 mb-8">
-                    <li className="flex items-center gap-3 text-sm text-gray-700">
-                      <CheckCircle2 className="w-4 h-4 text-pink-600 flex-shrink-0" />
+                    <li className="flex items-start gap-3 text-sm text-gray-700">
+                      <CheckCircle2 className="w-4 h-4 text-pink-600 flex-shrink-0 mt-0.5" />
                       <span>Share your unique affiliate code</span>
                     </li>
-                    <li className="flex items-center gap-3 text-sm text-gray-700">
-                      <CheckCircle2 className="w-4 h-4 text-pink-600 flex-shrink-0" />
-                      <span>Earn 5% on each referred user's first transaction</span>
+                    <li className="flex items-start gap-3 text-sm text-gray-700">
+                      <CheckCircle2 className="w-4 h-4 text-pink-600 flex-shrink-0 mt-0.5" />
+                      <span>Earn 5% on each referred user</span>
                     </li>
-                    <li className="flex items-center gap-3 text-sm text-gray-700">
-                      <CheckCircle2 className="w-4 h-4 text-pink-600 flex-shrink-0" />
-                      <span>Withdraw via Stripe, debit or prepaid card</span>
+                    <li className="flex items-start gap-3 text-sm text-gray-700">
+                      <CheckCircle2 className="w-4 h-4 text-pink-600 flex-shrink-0 mt-0.5" />
+                      <span>Easy withdrawal via Stripe</span>
                     </li>
                   </ul>
-                  <Link to="/affiliate">
+                  <Link to="/affiliate" className="block">
                     <Button className="w-full bg-pink-600 hover:bg-pink-700 text-white gap-2">
-                      <GitBranch className="w-4 h-4" /> Join Affiliate Program
+                      <GitBranch className="w-4 h-4" /> Join Program
                     </Button>
                   </Link>
                 </CardContent>
@@ -262,35 +254,35 @@ export default function Home() {
       </section>
 
       {/* Trust Section */}
-      <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-20">
-        <div className="grid md:grid-cols-2 gap-12 items-center">
-        <div>
-          <h2 className="text-3xl sm:text-4xl font-bold text-gray-900">
-            {t('trust_title_1')} <span className="text-blue-600">{t('trust_title_2')}</span>
-          </h2>
-          <p className="mt-4 text-gray-600 text-lg leading-relaxed">{t('trust_body')}</p>
-          <div className="mt-8 space-y-3">
-            {[t('trust_1'), t('trust_2'), t('trust_3'), t('trust_4'), t('trust_5')].map((item, i) => (
-              <div key={i} className="flex items-center gap-3">
-                <CheckCircle2 className="w-5 h-5 text-green-500 flex-shrink-0" />
-                <span className="text-gray-700">{item}</span>
-              </div>
-            ))}
+      <section className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-24">
+        <div className="grid md:grid-cols-2 gap-16 items-center">
+          <div>
+            <h2 className="text-4xl sm:text-5xl font-bold text-gray-900 leading-tight mb-4">
+              {t('trust_title_1')} <span className="bg-gradient-to-r from-blue-600 to-cyan-600 bg-clip-text text-transparent">{t('trust_title_2')}</span>
+            </h2>
+            <p className="text-gray-600 text-lg leading-relaxed mb-8">{t('trust_body')}</p>
+            <div className="space-y-4 mb-10">
+              {[t('trust_1'), t('trust_2'), t('trust_3'), t('trust_4'), t('trust_5')].map((item, i) => (
+                <div key={i} className="flex items-start gap-3">
+                  <CheckCircle2 className="w-5 h-5 text-green-600 flex-shrink-0 mt-0.5" />
+                  <span className="text-gray-700">{item}</span>
+                </div>
+              ))}
+            </div>
+            <Link to="/browse">
+              <Button size="lg" className="h-13 px-8 bg-gradient-to-r from-blue-600 to-blue-700 hover:from-blue-700 hover:to-blue-800 text-white gap-2 text-base">
+                {t('get_started')} <ArrowRight className="w-4 h-4" />
+              </Button>
+            </Link>
           </div>
-          <Link to="/browse">
-            <Button size="lg" className="mt-8 h-12 px-8 bg-blue-600 hover:bg-blue-700 gap-2">
-              {t('get_started')} <ArrowRight className="w-4 h-4" />
-            </Button>
-          </Link>
-        </div>
-        <div className="relative rounded-2xl overflow-hidden shadow-2xl">
-          <img 
-            src="https://images.unsplash.com/photo-1576091160550-2173dba999ef?w=500&h=600&fit=crop" 
-            alt="Healthcare professional" 
-            className="w-full h-full object-cover"
-          />
-          <div className="absolute inset-0 bg-gradient-to-t from-black/30 to-transparent" />
-        </div>
+          <motion.div initial={{ opacity: 0, x: 20 }} whileInView={{ opacity: 1, x: 0 }} viewport={{ once: true }} className="relative rounded-2xl overflow-hidden shadow-2xl">
+            <img 
+              src="https://images.unsplash.com/photo-1576091160550-2173dba999ef?w=500&h=600&fit=crop" 
+              alt="Healthcare professional" 
+              className="w-full h-full object-cover"
+            />
+            <div className="absolute inset-0 bg-gradient-to-t from-black/20 to-transparent" />
+          </motion.div>
         </div>
       </section>
     </div>

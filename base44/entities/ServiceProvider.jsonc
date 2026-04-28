@@ -28,7 +28,11 @@
           "cook",
           "laundry_helper",
           "nanny",
-          "errand_runner"
+          "errand_runner",
+          "tutor",
+          "teacher",
+          "sports_teacher",
+          "gym"
         ]
       },
       "minItems": 1,

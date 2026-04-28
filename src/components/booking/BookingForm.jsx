@@ -141,7 +141,7 @@ export default function BookingForm({ provider, clientProfile }) {
         )}
       </CardHeader>
 
-      <CardContent className="pt-4">
+      <CardContent className="pt-6">
         <form onSubmit={handleSubmit} className="space-y-4">
           {/* Step 1: Service Type & Duration */}
           {step === 1 && (

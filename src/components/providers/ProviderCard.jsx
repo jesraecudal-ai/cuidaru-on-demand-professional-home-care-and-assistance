@@ -7,9 +7,21 @@ import { CATEGORY_BADGE_COLORS, formatDistance } from '@/lib/constants';
 import { useI18n } from '@/lib/i18n';
 import { motion } from 'framer-motion';
 
+const categoryMap = {
+  'cleanr': 'house_cleaner',
+  'house_cleanr': 'house_cleaner',
+  'cleaner': 'house_cleaner',
+  'errand person': 'errand_runner',
+  'errand_person': 'errand_runner',
+  'laundry worker': 'laundry_helper',
+  'laundry_worker': 'laundry_helper',
+  'laudnry worker': 'laundry_helper',
+};
+
 export default function ProviderCard({ provider, index = 0, userLocation }) {
   const { t } = useI18n();
-  const badgeColor = CATEGORY_BADGE_COLORS[provider.category] || 'bg-gray-100 text-gray-700 border-gray-200';
+  const category = categoryMap[provider.category] || provider.category;
+  const badgeColor = CATEGORY_BADGE_COLORS[category] || 'bg-gray-100 text-gray-700 border-gray-200';
 
   return (
     <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: index * 0.04 }}>
@@ -36,7 +48,7 @@ export default function ProviderCard({ provider, index = 0, userLocation }) {
               )}
               <div className="absolute top-2 left-2">
                 <Badge variant="outline" className={`${badgeColor} border text-xs font-medium`}>
-                  {t(`cat_${provider.category}`) || provider.category.replace(/_/g, ' ')}
+                  {t(`cat_${category}`) || category.replace(/_/g, ' ')}
                 </Badge>
               </div>
             </div>

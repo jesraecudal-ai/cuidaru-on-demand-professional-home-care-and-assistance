@@ -24,6 +24,7 @@ import ProviderPayouts from './pages/ProviderPayouts';
 import TermsAndConditions from './pages/TermsAndConditions';
 import PrivacyPolicy from './pages/PrivacyPolicy';
 import Help from './pages/Help';
+import ShareProfile from './pages/ShareProfile';
 import Layout from './components/shared/Layout';
 
 const AuthenticatedApp = () => {
@@ -51,6 +52,7 @@ const AuthenticatedApp = () => {
       <Route path="/terms" element={<TermsAndConditions />} />
       <Route path="/privacy" element={<PrivacyPolicy />} />
       <Route path="/help" element={<Help />} />
+      <Route path="/share/:id" element={<ShareProfile />} />
       <Route element={<Layout />}>
         <Route path="/" element={<Home />} />
         <Route path="/browse" element={<BrowseProviders />} />

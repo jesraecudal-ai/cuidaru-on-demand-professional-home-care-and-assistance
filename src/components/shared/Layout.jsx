@@ -52,19 +52,35 @@ export default function Layout() {
               </div>
             </div>
           </div>
-          <div className="border-t border-gray-100 pt-6 flex flex-col sm:flex-row items-center justify-between gap-4 text-sm text-gray-400">
-            <span>{t('footer_rights')}</span>
-            <div className="flex flex-wrap items-center gap-3">
-              <div className="flex items-center gap-1.5 bg-gray-50 border border-gray-200 rounded-lg px-3 py-1.5">
-                <span className="text-xs text-gray-400">Powered by</span>
-                <img src="https://upload.wikimedia.org/wikipedia/commons/b/ba/Stripe_Logo%2C_revised_2016.svg" alt="Stripe" className="h-4" />
+          <div className="border-t border-gray-100 pt-6">
+            <div className="flex flex-col sm:flex-row items-center justify-between gap-4 text-sm text-gray-400 mb-4">
+              <span>{t('footer_rights')}</span>
+              <div className="flex flex-wrap items-center gap-3">
+                <div className="flex items-center gap-1.5 bg-gray-50 border border-gray-200 rounded-lg px-3 py-1.5">
+                  <span className="text-xs text-gray-400">Powered by</span>
+                  <img src="https://upload.wikimedia.org/wikipedia/commons/b/ba/Stripe_Logo%2C_revised_2016.svg" alt="Stripe" className="h-4" />
+                </div>
+                <div className="flex items-center gap-2">
+                  <img src="https://upload.wikimedia.org/wikipedia/commons/5/5e/Visa_Inc._logo.svg" alt="Visa" className="h-5 object-contain opacity-70" />
+                  <img src="https://upload.wikimedia.org/wikipedia/commons/2/2a/Mastercard-logo.svg" alt="Mastercard" className="h-5 object-contain opacity-70" />
+                  <img src="https://upload.wikimedia.org/wikipedia/commons/f/fa/American_Express_logo_%282018%29.svg" alt="Amex" className="h-5 object-contain opacity-70" />
+                  <img src="https://upload.wikimedia.org/wikipedia/commons/b/b0/Apple_Pay_logo.svg" alt="Apple Pay" className="h-4 object-contain opacity-70" />
+                  <img src="https://upload.wikimedia.org/wikipedia/commons/f/f2/Google_Pay_Logo.svg" alt="Google Pay" className="h-4 object-contain opacity-70" />
+                </div>
               </div>
-              <div className="flex items-center gap-2">
-                <img src="https://upload.wikimedia.org/wikipedia/commons/5/5e/Visa_Inc._logo.svg" alt="Visa" className="h-5 object-contain opacity-70" />
-                <img src="https://upload.wikimedia.org/wikipedia/commons/2/2a/Mastercard-logo.svg" alt="Mastercard" className="h-5 object-contain opacity-70" />
-                <img src="https://upload.wikimedia.org/wikipedia/commons/f/fa/American_Express_logo_%282018%29.svg" alt="Amex" className="h-5 object-contain opacity-70" />
-                <img src="https://upload.wikimedia.org/wikipedia/commons/b/b0/Apple_Pay_logo.svg" alt="Apple Pay" className="h-4 object-contain opacity-70" />
-                <img src="https://upload.wikimedia.org/wikipedia/commons/f/f2/Google_Pay_Logo.svg" alt="Google Pay" className="h-4 object-contain opacity-70" />
+            </div>
+            <div className="flex flex-wrap items-center justify-center gap-3 pt-3 border-t border-gray-100">
+              <div className="flex items-center gap-1.5 bg-green-50 border border-green-200 rounded-lg px-2.5 py-1">
+                <Shield className="w-3.5 h-3.5 text-green-700" />
+                <span className="text-xs font-semibold text-green-700">ISO 27001</span>
+              </div>
+              <div className="flex items-center gap-1.5 bg-blue-50 border border-blue-200 rounded-lg px-2.5 py-1">
+                <Shield className="w-3.5 h-3.5 text-blue-700" />
+                <span className="text-xs font-semibold text-blue-700">SOC 2 Type II</span>
+              </div>
+              <div className="flex items-center gap-1.5 bg-purple-50 border border-purple-200 rounded-lg px-2.5 py-1">
+                <Shield className="w-3.5 h-3.5 text-purple-700" />
+                <span className="text-xs font-semibold text-purple-700">GDPR</span>
               </div>
             </div>
           </div>

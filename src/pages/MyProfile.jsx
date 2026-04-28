@@ -310,7 +310,7 @@ export default function MyProfile() {
 
               <div>
                 <Label>{t('years_exp')}</Label>
-                <Input type="number" value={form.experience_years} onChange={e => {const val = e.target.value; setForm(f => ({ ...f, experience_years: val === '' ? '' : parseInt(val) || 0 }));}} className="mt-1.5" />
+                <Input type="number" value={form.experience_years || ''} onChange={e => {const val = e.target.value; setForm(f => ({ ...f, experience_years: val === '' ? 0 : parseInt(val) || 0 }));}} className="mt-1.5" />
               </div>
 
               <div>

@@ -10,6 +10,8 @@ import { base44 } from '@/api/base44Client';
 import { toast } from 'sonner';
 import { useNavigate } from 'react-router-dom';
 import { useI18n } from '@/lib/i18n';
+import DoctorAvailabilityCalendar from '../doctors/DoctorAvailabilityCalendar';
+import { useState, useEffect } from 'react';
 
 export default function BookingForm({ provider, clientProfile }) {
   const navigate = useNavigate();
@@ -17,7 +19,7 @@ export default function BookingForm({ provider, clientProfile }) {
   const [loading, setLoading] = useState(false);
   const [bypassWarning, setBypassWarning] = useState(false);
 
-  const isDoctor = provider?.categories?.includes('doctor');
+  const isDoctor = provider?.categories?.includes('doctor') || provider?.category === 'doctor';
 
   if (!isDoctor) {
     // Non-doctor providers still use the old booking system
@@ -31,6 +33,7 @@ export default function BookingForm({ provider, clientProfile }) {
 function ConsultationBookingPanel({ provider, clientProfile }) {
   const navigate = useNavigate();
   const [loading, setLoading] = useState(false);
+  const [showCalendar, setShowCalendar] = useState(false);
   const [form, setForm] = useState({
     consultation_type: 'chat',
     scheduled_date: '',
@@ -111,14 +114,15 @@ function ConsultationBookingPanel({ provider, clientProfile }) {
   const minDateTimeStr = minDateTime.toISOString().slice(0, 16);
 
   return (
-    <Card className="sticky top-24 shadow-lg border border-gray-100">
-      <CardHeader className="pb-4 px-6 pt-5 bg-gradient-to-r from-blue-600 to-blue-700 text-white rounded-t-xl">
-        <CardTitle className="flex items-center gap-2 text-sm font-semibold text-white">
-          <Calendar className="w-4 h-4" /> Book Consultation
-        </CardTitle>
-      </CardHeader>
+    <div className="space-y-4">
+      <Card className="shadow-lg border border-gray-100">
+        <CardHeader className="pb-4 px-6 pt-5 bg-gradient-to-r from-blue-600 to-blue-700 text-white rounded-t-xl">
+          <CardTitle className="flex items-center gap-2 text-sm font-semibold text-white">
+            <Calendar className="w-4 h-4" /> Book Consultation
+          </CardTitle>
+        </CardHeader>
 
-      <CardContent className="pt-6 space-y-4">
+        <CardContent className="pt-6 space-y-4">
         {!provider.consultation_fee && (
           <div className="bg-amber-50 border border-amber-200 rounded-lg p-3 text-sm text-amber-800">
             This doctor has not set a consultation fee yet.
@@ -215,6 +219,32 @@ function ConsultationBookingPanel({ provider, clientProfile }) {
         </div>
       </CardContent>
     </Card>
+
+    {/* Doctor Availability Calendar */}
+    <Card className="shadow-lg border border-gray-100">
+      <CardHeader className="pb-3">
+        <Button
+          variant="ghost"
+          onClick={() => setShowCalendar(!showCalendar)}
+          className="w-full justify-between px-0"
+        >
+          <CardTitle className="flex items-center gap-2 text-sm font-semibold">
+            <Calendar className="w-4 h-4" /> Availability Calendar
+          </CardTitle>
+          <span className="text-xs text-gray-500">{showCalendar ? '−' : '+'}</span>
+        </Button>
+      </CardHeader>
+      {showCalendar && (
+        <CardContent className="pt-0">
+          <DoctorAvailabilityCalendar
+            provider={provider}
+            isOwnProfile={false}
+            userEmail={clientProfile?.user_email}
+          />
+        </CardContent>
+      )}
+    </Card>
+    </div>
   );
 }
 

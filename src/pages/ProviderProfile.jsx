@@ -145,7 +145,7 @@ export default function ProviderProfile() {
           </div>
 
           {/* Rates — only for non-doctors */}
-          {!provider?.categories?.includes('doctor') && (
+          {!provider?.categories?.includes('doctor') && !provider?.category?.includes('doctor') && (
             <div className="bg-white rounded-xl border border-gray-100 p-6 shadow-sm">
               <h2 className="text-lg font-semibold mb-4 text-gray-900">{t('rates')}</h2>
               <div className="grid grid-cols-3 gap-4">
@@ -164,7 +164,7 @@ export default function ProviderProfile() {
           )}
 
           {/* Consultation Fee & Availability Calendar — only for doctors */}
-          {provider?.categories?.includes('doctor') && (
+          {(provider?.categories?.includes('doctor') || provider?.category === 'doctor') && (
             <>
               <div className="bg-white rounded-xl border border-blue-100 p-6 shadow-sm">
                 <h2 className="text-lg font-semibold mb-4 text-gray-900">Consultation Fee</h2>

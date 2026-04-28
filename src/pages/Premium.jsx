@@ -36,12 +36,12 @@ export default function Premium() {
   return (
     <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
       <div className="text-center mb-12">
-        <div className="inline-flex items-center gap-2 bg-amber-100 text-amber-700 rounded-full px-4 py-1.5 text-sm font-semibold mb-4">
-          <Zap className="w-4 h-4" /> CareBook Premium
-        </div>
-        <h1 className="text-4xl font-bold text-gray-900">Upgrade Your Experience</h1>
-        <p className="text-gray-500 mt-3 text-lg max-w-2xl mx-auto">Premium gives providers priority placement and clients zero platform fees.</p>
-      </div>
+         <div className="inline-flex items-center gap-2 bg-amber-100 text-amber-700 rounded-full px-4 py-1.5 text-sm font-semibold mb-4">
+           <Zap className="w-4 h-4" /> Cuidaro+
+         </div>
+         <h1 className="text-4xl font-bold text-gray-900">Upgrade Your Experience</h1>
+         <p className="text-gray-500 mt-3 text-lg max-w-2xl mx-auto">Cuidaro+ gives providers priority placement and clients zero platform fees.</p>
+       </div>
 
       {/* Referral Reward Card */}
       <div className="mb-12">
@@ -55,7 +55,7 @@ export default function Premium() {
           <div className="h-2 bg-gradient-to-r from-amber-400 to-orange-400" />
           <CardHeader className="pt-8">
             <div className="text-4xl mb-2">💼</div>
-            <CardTitle className="text-xl text-gray-900">Provider Premium</CardTitle>
+            <CardTitle className="text-xl text-gray-900">Provider Cuidaro+</CardTitle>
             <div className="flex items-baseline gap-1 mt-3">
               <span className="text-4xl font-bold text-amber-600">{c.symbol}{c.sub_provider}</span>
               <span className="text-gray-400">/month</span>
@@ -75,7 +75,7 @@ export default function Premium() {
               </div>
             ))}
             <Button className="w-full mt-4 bg-amber-500 hover:bg-amber-600 text-white h-11" onClick={() => handleSubscribe('provider')}>
-              <Zap className="w-4 h-4 mr-2" /> Activate Provider Premium
+              <Zap className="w-4 h-4 mr-2" /> Activate Provider Cuidaro+
             </Button>
           </CardContent>
         </Card>
@@ -86,7 +86,7 @@ export default function Premium() {
           <div className="h-2 bg-gradient-to-r from-blue-500 to-cyan-500" />
           <CardHeader className="pt-8">
             <div className="text-4xl mb-2">👑</div>
-            <CardTitle className="text-xl text-gray-900">Client Premium</CardTitle>
+            <CardTitle className="text-xl text-gray-900">Client Cuidaro+</CardTitle>
             <div className="flex items-baseline gap-1 mt-3">
               <span className="text-4xl font-bold text-blue-600">{c.symbol}{c.sub_client}</span>
               <span className="text-gray-400">/month</span>
@@ -106,7 +106,7 @@ export default function Premium() {
               </div>
             ))}
             <Button className="w-full mt-4 bg-blue-600 hover:bg-blue-700 text-white h-11" onClick={() => handleSubscribe('client')}>
-              <Star className="w-4 h-4 mr-2" /> Activate Client Premium
+              <Star className="w-4 h-4 mr-2" /> Activate Client Cuidaro+
             </Button>
           </CardContent>
         </Card>
@@ -115,7 +115,7 @@ export default function Premium() {
       {/* Country info */}
       <div className="mt-8 text-center text-sm text-gray-500">
         <span>{c.flag} Prices shown in {c.currency} for {c.label}. </span>
-        <span>Platform fee: {c.fee_pct}% (0% with Client Premium).</span>
+        <span>Platform fee: {c.fee_pct}% (0% with Client Cuidaro+).</span>
       </div>
     </div>
   );

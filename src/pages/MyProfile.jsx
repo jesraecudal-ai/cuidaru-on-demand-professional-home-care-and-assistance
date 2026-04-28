@@ -357,7 +357,7 @@ export default function MyProfile() {
                 />
                 <div className="absolute inset-0 bg-gradient-to-r from-purple-400/60 to-pink-500/60" />
               </div>
-              <CardHeader><CardTitle className="flex items-center gap-2 text-lg text-gray-800"><Briefcase className="w-5 h-5 text-blue-600" /> {t('rates_title')} ({countryInfo.symbol})</CardTitle></CardHeader>
+              <CardHeader><CardTitle className="flex items-center gap-2 text-lg text-gray-800"><Briefcase className="w-5 h-5 text-blue-600" /> {t('rates_title')} ({countryInfo?.symbol || '$'})</CardTitle></CardHeader>
               <CardContent>
                 <div className="grid sm:grid-cols-3 gap-4">
                   <div><Label>{t('hourly_rate')}</Label><Input type="number" value={form.hourly_rate} onChange={e => {const val = e.target.value; setForm(f => ({ ...f, hourly_rate: val === '' ? '' : parseFloat(val) || 0 }));}} className="mt-1.5" /></div>
@@ -379,7 +379,7 @@ export default function MyProfile() {
                 />
                 <div className="absolute inset-0 bg-gradient-to-r from-blue-400/60 to-cyan-500/60" />
               </div>
-              <CardHeader><CardTitle className="flex items-center gap-2 text-lg text-gray-800"><Briefcase className="w-5 h-5 text-blue-600" /> Consultation Fee ({countryInfo.symbol})</CardTitle></CardHeader>
+              <CardHeader><CardTitle className="flex items-center gap-2 text-lg text-gray-800"><Briefcase className="w-5 h-5 text-blue-600" /> Consultation Fee ({countryInfo?.symbol || '$'})</CardTitle></CardHeader>
               <CardContent>
                 <div>
                   <Label>Fee per Consultation</Label>
@@ -451,11 +451,11 @@ export default function MyProfile() {
               <p className="text-sm text-gray-500">Verify your identity to earn a trusted badge. Required documents vary by country.</p>
             </CardHeader>
             <CardContent>
-              {existingProvider ? (
+              {existingProvider && user ? (
                 <IdentityVerification
                   provider={existingProvider}
                   country={country}
-                  onUpdated={() => base44.entities.ServiceProvider.filter({ user_email: user.email }).then(list => list[0] && setExistingProvider(list[0]))}
+                  onUpdated={() => user?.email && base44.entities.ServiceProvider.filter({ user_email: user.email }).then(list => list[0] && setExistingProvider(list[0]))}
                 />
               ) : (
                 <p className="text-sm text-gray-400">Save your profile first, then you can upload your identity documents.</p>

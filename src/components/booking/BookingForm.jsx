@@ -44,6 +44,9 @@ export default function BookingForm({ provider, clientProfile }) {
     start_time: '09:00',
     end_date: '',
     duration: 1,
+    daily_hours: 8,
+    weekly_hours: 6,
+    weekly_days: [1, 2, 3, 4, 5], // Mon-Fri by default
     address: '',
     instructions: '',
   });
@@ -62,11 +65,17 @@ export default function BookingForm({ provider, clientProfile }) {
 
   const getRate = () => {
     if (form.booking_type === 'hourly') return provider.hourly_rate || 0;
-    if (form.booking_type === 'daily') return provider.daily_rate || (provider.hourly_rate * 8) || 0;
-    return provider.weekly_rate || (provider.hourly_rate * 40) || 0;
+    if (form.booking_type === 'daily') return (provider.hourly_rate || 0) * form.daily_hours;
+    return (provider.hourly_rate || 0) * form.weekly_hours;
   };
 
-  const subtotal = getRate() * (form.duration || 1);
+  const getTotalUnits = () => {
+    if (form.booking_type === 'hourly') return form.duration;
+    if (form.booking_type === 'daily') return form.duration;
+    return form.duration;
+  };
+
+  const subtotal = getRate() * getTotalUnits();
   const platformFee = subtotal * (feePct / 100);
   const total = subtotal + platformFee;
   const providerPayout = subtotal;
@@ -124,6 +133,9 @@ export default function BookingForm({ provider, clientProfile }) {
         start_time: form.start_time,
         end_date: form.end_date || form.start_date,
         duration: form.duration,
+        daily_hours: form.daily_hours,
+        weekly_hours: form.weekly_hours,
+        weekly_days: form.weekly_days,
         rate_applied: getRate(),
         subtotal,
         platform_fee_pct: feePct,
@@ -149,6 +161,8 @@ export default function BookingForm({ provider, clientProfile }) {
   const durationLabel = form.booking_type === 'hourly' ? 'hours' : form.booking_type === 'daily' ? 'days' : 'weeks';
   const durationMax = form.booking_type === 'hourly' ? 24 : form.booking_type === 'daily' ? 30 : 52;
   
+  const dayNames = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
+  
   const isDifferentCountry = clientProfile?.country && provider?.country && clientProfile.country !== provider.country;
 
   return (
@@ -172,7 +186,7 @@ export default function BookingForm({ provider, clientProfile }) {
           )}
 
           {/* Step 1: Service Type & Duration */}
-          {step === 1 && (
+           {step === 1 && (
             <div className="space-y-4">
               <div>
                 <Label className="text-sm font-semibold text-gray-800 mb-2 block">What type of service?</Label>
@@ -199,34 +213,183 @@ export default function BookingForm({ provider, clientProfile }) {
                 </div>
               </div>
 
-              <div>
-                <Label className="text-sm font-semibold text-gray-800 mb-2 block">How many {durationLabel}?</Label>
-                <div className="flex items-center gap-3">
-                  <button
-                    type="button"
-                    onClick={() => setForm(f => ({ ...f, duration: Math.max(1, f.duration - 1) }))}
-                    className="h-10 w-10 rounded-lg border border-gray-300 hover:bg-gray-100 flex items-center justify-center"
-                  >
-                    −
-                  </button>
-                  <Input
-                    type="number"
-                    min={1}
-                    max={durationMax}
-                    value={form.duration}
-                    onChange={e => setForm(f => ({ ...f, duration: Math.min(durationMax, Math.max(1, parseInt(e.target.value) || 1)) }))}
-                    className="flex-1 h-10 text-center text-lg font-semibold"
-                  />
-                  <button
-                    type="button"
-                    onClick={() => setForm(f => ({ ...f, duration: Math.min(durationMax, f.duration + 1) }))}
-                    className="h-10 w-10 rounded-lg border border-gray-300 hover:bg-gray-100 flex items-center justify-center"
-                  >
-                    +
-                  </button>
+              {form.booking_type === 'hourly' && (
+                <div>
+                  <Label className="text-sm font-semibold text-gray-800 mb-2 block">How many hours?</Label>
+                  <div className="flex items-center gap-3">
+                    <button
+                      type="button"
+                      onClick={() => setForm(f => ({ ...f, duration: Math.max(1, f.duration - 1) }))}
+                      className="h-10 w-10 rounded-lg border border-gray-300 hover:bg-gray-100 flex items-center justify-center"
+                    >
+                      −
+                    </button>
+                    <Input
+                      type="number"
+                      min={1}
+                      max={24}
+                      value={form.duration}
+                      onChange={e => setForm(f => ({ ...f, duration: Math.min(24, Math.max(1, parseInt(e.target.value) || 1)) }))}
+                      className="flex-1 h-10 text-center text-lg font-semibold"
+                    />
+                    <button
+                      type="button"
+                      onClick={() => setForm(f => ({ ...f, duration: Math.min(24, f.duration + 1) }))}
+                      className="h-10 w-10 rounded-lg border border-gray-300 hover:bg-gray-100 flex items-center justify-center"
+                    >
+                      +
+                    </button>
+                  </div>
                 </div>
-                <p className="text-xs text-gray-500 mt-1">Max {durationMax} {durationLabel}</p>
-              </div>
+              )}
+
+              {form.booking_type === 'daily' && (
+                <div>
+                  <Label className="text-sm font-semibold text-gray-800 mb-2 block">How many days and hours per day?</Label>
+                  <div className="space-y-3">
+                    <div>
+                      <p className="text-xs text-gray-600 mb-1">Number of days</p>
+                      <div className="flex items-center gap-3">
+                        <button
+                          type="button"
+                          onClick={() => setForm(f => ({ ...f, duration: Math.max(1, f.duration - 1) }))}
+                          className="h-10 w-10 rounded-lg border border-gray-300 hover:bg-gray-100 flex items-center justify-center"
+                        >
+                          −
+                        </button>
+                        <Input
+                          type="number"
+                          min={1}
+                          max={30}
+                          value={form.duration}
+                          onChange={e => setForm(f => ({ ...f, duration: Math.min(30, Math.max(1, parseInt(e.target.value) || 1)) }))}
+                          className="flex-1 h-10 text-center text-lg font-semibold"
+                        />
+                        <button
+                          type="button"
+                          onClick={() => setForm(f => ({ ...f, duration: Math.min(30, f.duration + 1) }))}
+                          className="h-10 w-10 rounded-lg border border-gray-300 hover:bg-gray-100 flex items-center justify-center"
+                        >
+                          +
+                        </button>
+                      </div>
+                    </div>
+                    <div>
+                      <p className="text-xs text-gray-600 mb-1">Hours per day</p>
+                      <div className="flex items-center gap-3">
+                        <button
+                          type="button"
+                          onClick={() => setForm(f => ({ ...f, daily_hours: Math.max(1, f.daily_hours - 1) }))}
+                          className="h-10 w-10 rounded-lg border border-gray-300 hover:bg-gray-100 flex items-center justify-center"
+                        >
+                          −
+                        </button>
+                        <Input
+                          type="number"
+                          min={1}
+                          max={24}
+                          value={form.daily_hours}
+                          onChange={e => setForm(f => ({ ...f, daily_hours: Math.min(24, Math.max(1, parseInt(e.target.value) || 1)) }))}
+                          className="flex-1 h-10 text-center text-lg font-semibold"
+                        />
+                        <button
+                          type="button"
+                          onClick={() => setForm(f => ({ ...f, daily_hours: Math.min(24, f.daily_hours + 1) }))}
+                          className="h-10 w-10 rounded-lg border border-gray-300 hover:bg-gray-100 flex items-center justify-center"
+                        >
+                          +
+                        </button>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              )}
+
+              {form.booking_type === 'weekly' && (
+                <div>
+                  <Label className="text-sm font-semibold text-gray-800 mb-2 block">How many weeks and hours per week?</Label>
+                  <div className="space-y-3">
+                    <div>
+                      <p className="text-xs text-gray-600 mb-1">Number of weeks</p>
+                      <div className="flex items-center gap-3">
+                        <button
+                          type="button"
+                          onClick={() => setForm(f => ({ ...f, duration: Math.max(1, f.duration - 1) }))}
+                          className="h-10 w-10 rounded-lg border border-gray-300 hover:bg-gray-100 flex items-center justify-center"
+                        >
+                          −
+                        </button>
+                        <Input
+                          type="number"
+                          min={1}
+                          max={52}
+                          value={form.duration}
+                          onChange={e => setForm(f => ({ ...f, duration: Math.min(52, Math.max(1, parseInt(e.target.value) || 1)) }))}
+                          className="flex-1 h-10 text-center text-lg font-semibold"
+                        />
+                        <button
+                          type="button"
+                          onClick={() => setForm(f => ({ ...f, duration: Math.min(52, f.duration + 1) }))}
+                          className="h-10 w-10 rounded-lg border border-gray-300 hover:bg-gray-100 flex items-center justify-center"
+                        >
+                          +
+                        </button>
+                      </div>
+                    </div>
+                    <div>
+                      <p className="text-xs text-gray-600 mb-1">Hours per week</p>
+                      <div className="flex items-center gap-3">
+                        <button
+                          type="button"
+                          onClick={() => setForm(f => ({ ...f, weekly_hours: Math.max(1, f.weekly_hours - 1) }))}
+                          className="h-10 w-10 rounded-lg border border-gray-300 hover:bg-gray-100 flex items-center justify-center"
+                        >
+                          −
+                        </button>
+                        <Input
+                          type="number"
+                          min={1}
+                          max={40}
+                          value={form.weekly_hours}
+                          onChange={e => setForm(f => ({ ...f, weekly_hours: Math.min(40, Math.max(1, parseInt(e.target.value) || 1)) }))}
+                          className="flex-1 h-10 text-center text-lg font-semibold"
+                        />
+                        <button
+                          type="button"
+                          onClick={() => setForm(f => ({ ...f, weekly_hours: Math.min(40, f.weekly_hours + 1) }))}
+                          className="h-10 w-10 rounded-lg border border-gray-300 hover:bg-gray-100 flex items-center justify-center"
+                        >
+                          +
+                        </button>
+                      </div>
+                    </div>
+                    <div>
+                      <p className="text-xs text-gray-600 mb-1">Working days</p>
+                      <div className="grid grid-cols-7 gap-1">
+                        {dayNames.map((day, idx) => (
+                          <button
+                            key={idx}
+                            type="button"
+                            onClick={() => setForm(f => ({
+                              ...f,
+                              weekly_days: f.weekly_days.includes(idx)
+                                ? f.weekly_days.filter(d => d !== idx)
+                                : [...f.weekly_days, idx].sort()
+                            }))}
+                            className={`h-9 text-xs font-semibold rounded-lg border-2 transition-all ${
+                              form.weekly_days.includes(idx)
+                                ? 'border-blue-600 bg-blue-50 text-blue-700'
+                                : 'border-gray-300 bg-white text-gray-600 hover:border-blue-300'
+                            }`}
+                          >
+                            {day}
+                          </button>
+                        ))}
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              )}
 
               <Button
                 type="button"
@@ -334,8 +497,12 @@ export default function BookingForm({ provider, clientProfile }) {
               {/* Summary */}
               <div className="bg-gray-50 rounded-xl p-4 space-y-2">
                 <div className="flex justify-between text-sm">
-                  <span className="text-gray-600">{form.duration} {durationLabel === 'hours' ? 'hr' : durationLabel === 'days' ? 'day' : 'wk'}{form.duration > 1 ? 's' : ''}</span>
-                  <span className="font-semibold">{countryInfo.symbol}{getRate()} × {form.duration} = {countryInfo.symbol}{subtotal.toFixed(2)}</span>
+                  <span className="text-gray-600">
+                    {form.booking_type === 'hourly' && `${form.duration} hour${form.duration > 1 ? 's' : ''}`}
+                    {form.booking_type === 'daily' && `${form.duration} day${form.duration > 1 ? 's' : ''} × ${form.daily_hours}h/day`}
+                    {form.booking_type === 'weekly' && `${form.duration} week${form.duration > 1 ? 's' : ''} × ${form.weekly_hours}h/week`}
+                  </span>
+                  <span className="font-semibold">{countryInfo.symbol}{getRate().toFixed(2)} × {getTotalUnits()} = {countryInfo.symbol}{subtotal.toFixed(2)}</span>
                 </div>
                 <div className="flex justify-between text-sm">
                   <span className="text-gray-600">Platform fee ({feePct}%){isPremiumClient && ' 🎉'}</span>

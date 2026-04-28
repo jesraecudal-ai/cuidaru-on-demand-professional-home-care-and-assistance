@@ -123,7 +123,7 @@ export default function MyProfile() {
   return (
     <div className="bg-white">
       {/* Hero with background image */}
-      <div className="relative h-48 bg-gradient-to-r from-blue-600 to-blue-700 overflow-hidden">
+      <div className="relative h-32 sm:h-48 bg-gradient-to-r from-blue-600 to-blue-700 overflow-hidden">
         <img 
           src="https://images.unsplash.com/photo-1576091160550-2173dba999ef?w=1200&h=300&fit=crop" 
           alt="Professional healthcare" 
@@ -132,10 +132,10 @@ export default function MyProfile() {
         <div className="absolute inset-0 bg-gradient-to-r from-blue-600/80 to-blue-700/80" />
       </div>
 
-      <div className="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-        <div className="flex items-center justify-between mb-6">
-          <h1 className="text-3xl font-bold text-gray-900">{t('my_profile')}</h1>
-        <div className="flex gap-2">
+      <div className="max-w-3xl mx-auto px-3 sm:px-6 lg:px-8 py-4 sm:py-8">
+        <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 sm:gap-6 mb-4 sm:mb-6">
+          <h1 className="text-2xl sm:text-3xl font-bold text-gray-900">{t('my_profile')}</h1>
+        <div className="flex flex-wrap gap-2">
           {existingProvider?.is_premium && (
             <Badge className="bg-amber-100 text-amber-700 border-amber-300 gap-1"><Zap className="w-3 h-3" /> Premium</Badge>
           )}
@@ -150,10 +150,10 @@ export default function MyProfile() {
 
       {/* Role toggle */}
       {userProfile && (
-        <Card className="mb-6 border border-gray-100 shadow-sm">
-          <CardContent className="p-4">
-            <p className="text-sm font-medium text-gray-600 mb-3">I am on CareBook as:</p>
-            <div className="flex gap-3 flex-wrap">
+        <Card className="mb-4 sm:mb-6 border border-gray-100 shadow-sm">
+        <CardContent className="p-3 sm:p-4">
+          <p className="text-xs sm:text-sm font-medium text-gray-600 mb-3">I am on CareBook as:</p>
+          <div className="flex gap-2 sm:gap-3 flex-wrap">
               <button
                 onClick={async () => {
                   const currentRole = userProfile.role;
@@ -165,7 +165,7 @@ export default function MyProfile() {
                   await base44.entities.UserProfile.update(userProfile.id, { role: newRole });
                   await refetchUserProfile();
                 }}
-                className={`flex items-center gap-2 px-4 py-2 rounded-full border-2 text-sm font-medium transition-all ${
+                className={`flex items-center gap-1 sm:gap-2 px-3 sm:px-4 py-2 rounded-full border-2 text-xs sm:text-sm font-medium transition-all ${
                   isClient
                     ? 'border-blue-500 bg-blue-50 text-blue-700'
                     : 'border-gray-200 text-gray-500 hover:border-blue-300'
@@ -185,7 +185,7 @@ export default function MyProfile() {
                   await base44.entities.UserProfile.update(userProfile.id, { role: newRole });
                   await refetchUserProfile();
                 }}
-                className={`flex items-center gap-2 px-4 py-2 rounded-full border-2 text-sm font-medium transition-all ${
+                className={`flex items-center gap-1 sm:gap-2 px-3 sm:px-4 py-2 rounded-full border-2 text-xs sm:text-sm font-medium transition-all ${
                   isProvider
                     ? 'border-green-500 bg-green-50 text-green-700'
                     : 'border-gray-200 text-gray-500 hover:border-green-300'
@@ -200,9 +200,9 @@ export default function MyProfile() {
       )}
 
       {isClient && userProfile && (
-        <Card className="mb-6 border border-gray-100 shadow-sm">
-          <CardHeader><CardTitle className="flex items-center gap-2 text-lg text-gray-800"><Briefcase className="w-5 h-5 text-blue-600" /> Business Profile</CardTitle></CardHeader>
-          <CardContent className="space-y-4">
+        <Card className="mb-4 sm:mb-6 border border-gray-100 shadow-sm">
+          <CardHeader><CardTitle className="flex items-center gap-2 text-base sm:text-lg text-gray-800"><Briefcase className="w-4 h-4 sm:w-5 sm:h-5 text-blue-600" /> Business Profile</CardTitle></CardHeader>
+          <CardContent className="space-y-3 sm:space-y-4">
             <div>
               <Label htmlFor="company_name">Company Name (Optional)</Label>
               <p className="text-xs text-gray-500 mb-2">Display your company or business name instead of your personal name</p>
@@ -270,7 +270,7 @@ export default function MyProfile() {
 
           {/* Basic Info with image */}
           <Card className="border border-gray-100 shadow-sm overflow-hidden">
-            <div className="h-32 bg-gradient-to-r from-green-400 to-blue-500 relative overflow-hidden">
+            <div className="h-20 sm:h-32 bg-gradient-to-r from-green-400 to-blue-500 relative overflow-hidden">
               <img 
                 src="https://images.unsplash.com/photo-1631217314830-e63c9a1c5b44?w=600&h=200&fit=crop" 
                 alt="Healthcare professional" 
@@ -278,14 +278,14 @@ export default function MyProfile() {
               />
               <div className="absolute inset-0 bg-gradient-to-r from-green-400/60 to-blue-500/60" />
             </div>
-            <CardHeader><CardTitle className="flex items-center gap-2 text-lg text-gray-800"><User className="w-5 h-5 text-blue-600" /> {t('basic_info')}</CardTitle></CardHeader>
-            <CardContent className="space-y-4">
+            <CardHeader><CardTitle className="flex items-center gap-2 text-base sm:text-lg text-gray-800"><User className="w-4 h-4 sm:w-5 sm:h-5 text-blue-600" /> {t('basic_info')}</CardTitle></CardHeader>
+            <CardContent className="space-y-3 sm:space-y-4">
               {/* Avatar */}
-              <div className="flex items-center gap-4">
-                <div className="w-20 h-20 rounded-2xl border-2 border-gray-200 bg-gray-50 flex items-center justify-center overflow-hidden">
+              <div className="flex items-center gap-3 sm:gap-4">
+                <div className="w-16 h-16 sm:w-20 sm:h-20 rounded-2xl border-2 border-gray-200 bg-gray-50 flex items-center justify-center overflow-hidden">
                   {form.avatar_url ? (
                     <img src={form.avatar_url} alt="" className="w-full h-full object-cover" />
-                  ) : <span className="text-2xl font-bold text-blue-600">{form.full_name?.[0] || '?'}</span>}
+                  ) : <span className="text-lg sm:text-2xl font-bold text-blue-600">{form.full_name?.[0] || '?'}</span>}
                 </div>
                 <div>
                   <Label htmlFor="avatar" className="cursor-pointer">
@@ -296,9 +296,9 @@ export default function MyProfile() {
                 </div>
               </div>
 
-              <div className="grid sm:grid-cols-2 gap-4">
-                <div>
-                  <Label>{t('full_name')} *</Label>
+              <div className="grid sm:grid-cols-2 gap-3 sm:gap-4">
+                 <div>
+                   <Label className="text-sm">{t('full_name')} *</Label>
                   <Input value={form.full_name} onChange={e => setForm(f => ({ ...f, full_name: e.target.value }))} className="mt-1.5" />
                 </div>
                 <div>
@@ -308,9 +308,9 @@ export default function MyProfile() {
               </div>
 
               <div>
-                <Label>{t('category')} * (up to 6)</Label>
+                <Label className="text-sm sm:text-base">{t('category')} * (up to 6)</Label>
                 <p className="text-xs text-gray-500 mb-2">Select the services you offer</p>
-                <div className="flex flex-wrap gap-2">
+                <div className="flex flex-wrap gap-1.5 sm:gap-2">
                   {CATEGORIES.map(cat => (
                     <button
                       key={cat.key}
@@ -324,7 +324,7 @@ export default function MyProfile() {
                         }));
                       }}
                       disabled={!form.categories.includes(cat.key) && form.categories.length >= 6}
-                      className={`px-3 py-1.5 rounded-full border-2 text-sm font-medium transition-all ${
+                      className={`px-2.5 sm:px-3 py-1.5 rounded-full border-2 text-xs sm:text-sm font-medium transition-all ${
                         form.categories.includes(cat.key)
                           ? 'border-blue-500 bg-blue-50 text-blue-700'
                           : 'border-gray-200 text-gray-600 hover:border-blue-300 disabled:opacity-50 disabled:cursor-not-allowed'
@@ -377,7 +377,7 @@ export default function MyProfile() {
           {/* Rates — only for non-doctors */}
           {!form.categories.includes('doctor') && (
             <Card className="border border-gray-100 shadow-sm overflow-hidden">
-              <div className="h-24 bg-gradient-to-r from-purple-400 to-pink-500 relative overflow-hidden">
+              <div className="h-16 sm:h-24 bg-gradient-to-r from-purple-400 to-pink-500 relative overflow-hidden">
                 <img 
                   src="https://images.unsplash.com/photo-1579154204601-01d82b944c47?w=600&h=200&fit=crop" 
                   alt="Healthcare pricing" 
@@ -399,7 +399,7 @@ export default function MyProfile() {
           {/* Consultation Fee — only for doctors */}
           {form.categories.includes('doctor') && (
             <Card className="border border-blue-100 shadow-sm overflow-hidden">
-              <div className="h-24 bg-gradient-to-r from-blue-400 to-cyan-500 relative overflow-hidden">
+              <div className="h-16 sm:h-24 bg-gradient-to-r from-blue-400 to-cyan-500 relative overflow-hidden">
                 <img 
                   src="https://images.unsplash.com/photo-1576091160399-86c54dcb98fe?w=600&h=200&fit=crop" 
                   alt="Consultation pricing" 
@@ -420,7 +420,7 @@ export default function MyProfile() {
 
           {/* Skills with image */}
           <Card className="border border-gray-100 shadow-sm overflow-hidden">
-            <div className="h-24 bg-gradient-to-r from-orange-400 to-red-500 relative overflow-hidden">
+            <div className="h-16 sm:h-24 bg-gradient-to-r from-orange-400 to-red-500 relative overflow-hidden">
               <img 
                 src="https://images.unsplash.com/photo-1576091160550-2173dba999ef?w=600&h=200&fit=crop" 
                 alt="Professional skills" 
@@ -464,7 +464,7 @@ export default function MyProfile() {
 
           {/* ID Verification with image */}
           <Card className="border border-gray-100 shadow-sm overflow-hidden">
-            <div className="h-24 bg-gradient-to-r from-green-600 to-teal-500 relative overflow-hidden">
+            <div className="h-16 sm:h-24 bg-gradient-to-r from-green-600 to-teal-500 relative overflow-hidden">
               <img 
                 src="https://images.unsplash.com/photo-1576091160399-86c54dcb98fe?w=600&h=200&fit=crop" 
                 alt="Security verification" 
@@ -496,14 +496,14 @@ export default function MyProfile() {
             <DocumentUploadSection providerId={existingProvider.id} userEmail={user?.email} />
           )}
 
-          <Button onClick={handleSave} size="lg" className="w-full gap-2 bg-blue-600 hover:bg-blue-700 h-12">
-            <Save className="w-5 h-5" /> {existingProvider ? t('save') : t('create_profile')}
-          </Button>
+          <Button onClick={handleSave} size="lg" className="w-full gap-2 bg-blue-600 hover:bg-blue-700 h-11 sm:h-12 text-sm sm:text-base">
+             <Save className="w-4 sm:w-5 h-4 sm:h-5" /> {existingProvider ? t('save') : t('create_profile')}
+           </Button>
 
           {/* Availability Calendar — for doctors only after profile exists */}
           {existingProvider && form.categories.includes('doctor') && (
             <Card className="border border-gray-100 shadow-sm overflow-hidden">
-              <div className="h-24 bg-gradient-to-r from-indigo-400 to-purple-500 relative overflow-hidden">
+              <div className="h-16 sm:h-24 bg-gradient-to-r from-indigo-400 to-purple-500 relative overflow-hidden">
                 <img 
                   src="https://images.unsplash.com/photo-1579154204601-01d82b944c47?w=600&h=200&fit=crop" 
                   alt="Availability scheduling" 

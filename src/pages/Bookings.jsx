@@ -5,7 +5,7 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import BookingCard from '../components/booking/BookingCard';
 import ReviewForm from '../components/reviews/ReviewForm';
 import { Skeleton } from '@/components/ui/skeleton';
-import { Calendar, Briefcase, AlertTriangle } from 'lucide-react';
+import { Calendar, Briefcase, AlertTriangle, ShieldAlert } from 'lucide-react';
 import { toast } from 'sonner';
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog';
 import { Textarea } from '@/components/ui/textarea';
@@ -39,6 +39,13 @@ export default function Bookings() {
     queryKey: ['providerBookings', providerProfile?.id],
     queryFn: () => base44.entities.Booking.filter({ provider_id: providerProfile.id }, '-created_date'),
     enabled: !!providerProfile?.id,
+  });
+
+  const { data: myDisputes = [] } = useQuery({
+    queryKey: ['myDisputes', user?.email],
+    queryFn: () => base44.entities.Dispute.list('-created_date'),
+    enabled: !!user?.email,
+    select: (all) => all.filter(d => d.client_email === user.email || d.provider_email === user.email),
   });
 
   const { data: existingReviews = [] } = useQuery({
@@ -95,10 +102,29 @@ export default function Bookings() {
   };
 
   const handleDispute = async () => {
+    const booking = disputeState.booking;
+    const isProvider = !!providerProfile && booking.provider_id === providerProfile.id;
+
     await updateMutation.mutateAsync({
       id: disputeState.bookingId,
       data: { status: 'disputed', payment_status: 'disputed', dispute_reason: disputeReason, disputed_by: user?.email }
     });
+
+    // Create a Dispute entity record for admin management
+    await base44.entities.Dispute.create({
+      booking_id: disputeState.bookingId,
+      client_email: booking.client_email,
+      client_name: booking.client_name,
+      provider_id: booking.provider_id,
+      provider_email: booking.provider_email,
+      provider_name: booking.provider_name,
+      filed_by_email: user.email,
+      filed_by_name: user.full_name,
+      filed_by_role: isProvider ? 'provider' : 'client',
+      reason: disputeReason,
+      status: 'open',
+    });
+
     toast.warning('Dispute filed. Admin will review and resolve within 48 hours.');
     setDisputeState(null);
     setDisputeReason('');
@@ -122,6 +148,11 @@ export default function Bookings() {
           {isProvider && (
             <TabsTrigger value="provider" className="gap-2">
               <Briefcase className="w-4 h-4" /> {t('as_provider')}
+            </TabsTrigger>
+          )}
+          {myDisputes.length > 0 && (
+            <TabsTrigger value="disputes" className="gap-2 text-orange-600">
+              <ShieldAlert className="w-4 h-4" /> Disputes {myDisputes.filter(d => d.status === 'open' || d.status === 'under_review').length > 0 && `(${myDisputes.filter(d => d.status === 'open' || d.status === 'under_review').length})`}
             </TabsTrigger>
           )}
         </TabsList>
@@ -168,6 +199,33 @@ export default function Bookings() {
                 {providerBookings.map(b => <BookingCard key={b.id} booking={b} isProvider onAction={handleAction} />)}
               </div>
             )}
+          </TabsContent>
+        )}
+
+        {myDisputes.length > 0 && (
+          <TabsContent value="disputes">
+            <div className="space-y-4">
+              {myDisputes.map(d => {
+                const statusColors = { open: 'bg-red-100 text-red-700', under_review: 'bg-amber-100 text-amber-700', resolved_client: 'bg-blue-100 text-blue-700', resolved_provider: 'bg-green-100 text-green-700', resolved_split: 'bg-purple-100 text-purple-700', closed: 'bg-gray-100 text-gray-600' };
+                return (
+                  <div key={d.id} className="bg-white rounded-xl border border-orange-100 p-5 space-y-3">
+                    <div className="flex items-center justify-between flex-wrap gap-2">
+                      <span className="flex items-center gap-2 font-semibold text-gray-800 text-sm">
+                        <AlertTriangle className="w-4 h-4 text-orange-500" /> Booking #{d.booking_id?.slice(-6)}
+                      </span>
+                      <span className={`text-xs px-2.5 py-1 rounded-full font-medium ${statusColors[d.status] || 'bg-gray-100 text-gray-600'}`}>{d.status.replace('_', ' ')}</span>
+                    </div>
+                    <p className="text-sm text-gray-600"><span className="font-medium">Your reason:</span> {d.reason}</p>
+                    {d.resolution_details && (
+                      <div className="bg-blue-50 rounded-lg p-3">
+                        <p className="text-xs font-medium text-blue-700 mb-1">Admin Resolution</p>
+                        <p className="text-sm text-gray-700">{d.resolution_details}</p>
+                      </div>
+                    )}
+                  </div>
+                );
+              })}
+            </div>
           </TabsContent>
         )}
       </Tabs>

@@ -1,0 +1,68 @@
+{
+  "name": "Dispute",
+  "type": "object",
+  "properties": {
+    "booking_id": {
+      "type": "string"
+    },
+    "client_email": {
+      "type": "string"
+    },
+    "client_name": {
+      "type": "string"
+    },
+    "provider_id": {
+      "type": "string"
+    },
+    "provider_email": {
+      "type": "string"
+    },
+    "provider_name": {
+      "type": "string"
+    },
+    "filed_by_email": {
+      "type": "string"
+    },
+    "filed_by_name": {
+      "type": "string"
+    },
+    "filed_by_role": {
+      "type": "string",
+      "enum": [
+        "client",
+        "provider"
+      ]
+    },
+    "reason": {
+      "type": "string"
+    },
+    "status": {
+      "type": "string",
+      "enum": [
+        "open",
+        "under_review",
+        "resolved_client",
+        "resolved_provider",
+        "resolved_split",
+        "closed"
+      ],
+      "default": "open"
+    },
+    "admin_notes": {
+      "type": "string"
+    },
+    "resolution_details": {
+      "type": "string"
+    },
+    "resolved_by": {
+      "type": "string"
+    }
+  },
+  "required": [
+    "booking_id",
+    "client_email",
+    "provider_id",
+    "reason",
+    "filed_by_email"
+  ]
+}

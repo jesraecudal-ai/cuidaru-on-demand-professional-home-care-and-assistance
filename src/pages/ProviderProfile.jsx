@@ -5,6 +5,7 @@ import { Badge } from '@/components/ui/badge';
 import { MapPin, Briefcase, ShieldCheck, Star, Award, Clock, Zap } from 'lucide-react';
 import BookingForm from '../components/booking/BookingForm';
 import ReviewCard from '../components/reviews/ReviewCard';
+import StartChatButton from '../components/chat/StartChatButton';
 import { Skeleton } from '@/components/ui/skeleton';
 import { useI18n } from '@/lib/i18n';
 import { CATEGORY_BADGE_COLORS, formatDistance, calcDistance } from '@/lib/constants';
@@ -168,7 +169,8 @@ export default function ProviderProfile() {
           </div>
         </div>
 
-        <div className="lg:col-span-1">
+        <div className="lg:col-span-1 space-y-4">
+          <StartChatButton provider={provider} />
           <BookingForm provider={provider} clientProfile={clientProfile} />
         </div>
       </div>

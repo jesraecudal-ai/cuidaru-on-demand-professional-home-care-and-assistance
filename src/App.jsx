@@ -15,6 +15,8 @@ import MyProfile from './pages/MyProfile';
 import Onboarding from './pages/Onboarding';
 import Premium from './pages/Premium';
 import Payments from './pages/Payments';
+import Messages from './pages/Messages';
+import AdminDisputes from './pages/AdminDisputes';
 import Layout from './components/shared/Layout';
 
 const AuthenticatedApp = () => {
@@ -47,6 +49,8 @@ const AuthenticatedApp = () => {
         <Route path="/my-profile" element={<MyProfile />} />
         <Route path="/premium" element={<Premium />} />
         <Route path="/payments" element={<Payments />} />
+        <Route path="/messages" element={<Messages />} />
+        <Route path="/admin/disputes" element={<AdminDisputes />} />
       </Route>
       <Route path="*" element={<PageNotFound />} />
     </Routes>

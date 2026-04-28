@@ -77,14 +77,14 @@ export default function BrowseProviders() {
     return [...premium, ...nonPremium];
   }, [providers, filters, userLocation]);
 
-  // Only providers can browse other providers
-  const isProvider = profile?.role === 'provider' || profile?.role === 'both';
-  if (!isProvider) {
+  // Only clients can browse providers
+  const isClient = !profile?.role || profile?.role === 'client' || profile?.role === 'both';
+  if (!isClient) {
     return (
       <div className="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8 py-16 text-center">
         <Users className="w-12 h-12 text-gray-300 mx-auto mb-4" />
         <h2 className="text-xl font-semibold text-gray-700 mb-2">Browse Providers</h2>
-        <p className="text-gray-500">Only service providers can browse other providers on CareBook. If you're interested in becoming a provider, toggle Provider in your profile settings.</p>
+        <p className="text-gray-500">Only clients can browse providers on CareBook. If you want to see providers, toggle Client in your profile settings.</p>
       </div>
     );
   }

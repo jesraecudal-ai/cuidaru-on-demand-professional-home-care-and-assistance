@@ -27,5 +27,5 @@ export function useUserProfile() {
     } catch (e) {}
   };
 
-  return { user, profile, loading, refetch };
+  return { user, profile, loading, refetch: refetch, refetchUserProfile: refetch };
 }

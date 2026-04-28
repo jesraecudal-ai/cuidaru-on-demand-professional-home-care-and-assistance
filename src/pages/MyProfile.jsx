@@ -27,6 +27,7 @@ export default function MyProfile() {
   const [form, setForm] = useState({
     full_name: '', phone: '', categories: [], bio: '',
     experience_years: 0, hourly_rate: 25, daily_rate: 180, weekly_rate: 800,
+    consultation_fee: 0,
     location_text: '', latitude: null, longitude: null,
     availability: 'available', skills: [], certifications: [],
     avatar_url: '', id_document_url: '',
@@ -59,6 +60,7 @@ export default function MyProfile() {
           hourly_rate: p.hourly_rate || 25,
           daily_rate: p.daily_rate || 180,
           weekly_rate: p.weekly_rate || 800,
+          consultation_fee: p.consultation_fee || 0,
           location_text: p.location_text || '',
           latitude: p.latitude || null,
           longitude: p.longitude || null,
@@ -361,6 +363,13 @@ export default function MyProfile() {
                 <div><Label>{t('daily_rate')}</Label><Input type="number" value={form.daily_rate} onChange={e => setForm(f => ({ ...f, daily_rate: parseFloat(e.target.value) || 0 }))} className="mt-1.5" /></div>
                 <div><Label>{t('weekly_rate')}</Label><Input type="number" value={form.weekly_rate} onChange={e => setForm(f => ({ ...f, weekly_rate: parseFloat(e.target.value) || 0 }))} className="mt-1.5" /></div>
               </div>
+              {form.categories.includes('doctor') && (
+                <div>
+                  <Label className="mt-4 block">Consultation Fee (Optional)</Label>
+                  <p className="text-xs text-gray-500 mb-2">One-time fee for a consultation session</p>
+                  <Input type="number" value={form.consultation_fee} onChange={e => setForm(f => ({ ...f, consultation_fee: parseFloat(e.target.value) || 0 }))} placeholder="e.g., 50" className="mt-1.5" />
+                </div>
+              )}
             </CardContent>
           </Card>
 

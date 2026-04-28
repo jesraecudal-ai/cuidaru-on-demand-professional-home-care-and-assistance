@@ -60,6 +60,10 @@
     "weekly_rate": {
       "type": "number"
     },
+    "consultation_fee": {
+      "type": "number",
+      "description": "One-time consultation fee for doctors"
+    },
     "location_text": {
       "type": "string"
     },

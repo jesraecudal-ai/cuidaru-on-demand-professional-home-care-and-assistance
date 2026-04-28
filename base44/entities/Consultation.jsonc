@@ -1,0 +1,120 @@
+{
+  "name": "Consultation",
+  "type": "object",
+  "properties": {
+    "doctor_id": {
+      "type": "string",
+      "description": "Reference to ServiceProvider (doctor)"
+    },
+    "doctor_email": {
+      "type": "string"
+    },
+    "doctor_name": {
+      "type": "string"
+    },
+    "client_email": {
+      "type": "string"
+    },
+    "client_name": {
+      "type": "string"
+    },
+    "consultation_type": {
+      "type": "string",
+      "enum": [
+        "video",
+        "phone",
+        "chat"
+      ],
+      "default": "chat"
+    },
+    "scheduled_date": {
+      "type": "string",
+      "format": "date-time",
+      "description": "When the consultation is scheduled for"
+    },
+    "duration_minutes": {
+      "type": "number",
+      "default": 30,
+      "description": "Consultation duration in minutes"
+    },
+    "fee": {
+      "type": "number",
+      "description": "Consultation fee set by doctor"
+    },
+    "currency": {
+      "type": "string",
+      "default": "usd"
+    },
+    "status": {
+      "type": "string",
+      "enum": [
+        "pending",
+        "confirmed",
+        "completed",
+        "cancelled"
+      ],
+      "default": "pending"
+    },
+    "payment_status": {
+      "type": "string",
+      "enum": [
+        "unpaid",
+        "paid"
+      ],
+      "default": "unpaid"
+    },
+    "notes": {
+      "type": "string",
+      "description": "Client's consultation notes/reason"
+    },
+    "meeting_link": {
+      "type": "string",
+      "description": "Video/phone call link if applicable"
+    },
+    "conversation_id": {
+      "type": "string",
+      "description": "Chat message conversation ID"
+    }
+  },
+  "required": [
+    "doctor_id",
+    "doctor_email",
+    "client_email",
+    "fee"
+  ],
+  "rls": {
+    "create": {
+      "data.client_email": "{{user.email}}"
+    },
+    "read": {
+      "$or": [
+        {
+          "data.doctor_email": "{{user.email}}"
+        },
+        {
+          "data.client_email": "{{user.email}}"
+        },
+        {
+          "user_condition": {
+            "role": "admin"
+          }
+        }
+      ]
+    },
+    "update": {
+      "$or": [
+        {
+          "data.doctor_email": "{{user.email}}"
+        },
+        {
+          "data.client_email": "{{user.email}}"
+        },
+        {
+          "user_condition": {
+            "role": "admin"
+          }
+        }
+      ]
+    }
+  }
+}

@@ -22,6 +22,7 @@ import AffiliateDashboard from './pages/AffiliateDashboard';
 import AdminPricing from './pages/AdminPricing';
 import ProviderPayouts from './pages/ProviderPayouts';
 import Prescriptions from './pages/Prescriptions';
+import Consultations from './pages/Consultations';
 import TermsAndConditions from './pages/TermsAndConditions';
 import PrivacyPolicy from './pages/PrivacyPolicy';
 import Help from './pages/Help';
@@ -69,6 +70,7 @@ const AuthenticatedApp = () => {
         <Route path="/affiliate" element={<AffiliateDashboard />} />
         <Route path="/payouts" element={<ProviderPayouts />} />
         <Route path="/prescriptions" element={<Prescriptions />} />
+        <Route path="/consultations" element={<Consultations />} />
       </Route>
       <Route path="*" element={<PageNotFound />} />
     </Routes>

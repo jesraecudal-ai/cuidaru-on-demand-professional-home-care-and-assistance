@@ -6,7 +6,7 @@ import { Label } from '@/components/ui/label';
 import { Textarea } from '@/components/ui/textarea';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Separator } from '@/components/ui/separator';
-import { Calendar, MapPin, Shield, AlertTriangle, ChevronRight, ChevronLeft, Star } from 'lucide-react';
+import { Calendar, MapPin, Shield, AlertTriangle, ChevronRight, ChevronLeft, Star, Navigation2 } from 'lucide-react';
 import { base44 } from '@/api/base44Client';
 import { toast } from 'sonner';
 import { useNavigate } from 'react-router-dom';
@@ -72,8 +72,27 @@ export default function BookingForm({ provider, clientProfile }) {
   const providerPayout = subtotal;
 
   const handleInstructionChange = (val) => {
-    setBypassWarning(detectBypass(val));
-    setForm(f => ({ ...f, instructions: val }));
+   setBypassWarning(detectBypass(val));
+   setForm(f => ({ ...f, instructions: val }));
+  };
+
+  const handleGetCurrentLocation = () => {
+   if (!navigator.geolocation) {
+     toast.error('GPS not supported on this device');
+     return;
+   }
+   toast.loading('Getting your location...');
+   navigator.geolocation.getCurrentPosition(
+     (position) => {
+       const { latitude, longitude } = position.coords;
+       const address = `GPS: ${latitude.toFixed(6)}, ${longitude.toFixed(6)}`;
+       setForm(f => ({ ...f, address }));
+       toast.success('Location added');
+     },
+     () => {
+       toast.error('Unable to get location. Please check permissions.');
+     }
+   );
   };
 
   const handleSubmit = async (e) => {
@@ -270,14 +289,25 @@ export default function BookingForm({ provider, clientProfile }) {
             <div className="space-y-4">
               <div>
                 <Label className="text-sm font-semibold text-gray-800 mb-2 block">Service location</Label>
-                <p className="text-xs text-gray-600 mb-2">Enter the complete address where the service will take place</p>
-                <Input
-                  placeholder="e.g., 123 Main Street, Apartment 4B, Montevideo"
-                  value={form.address}
-                  onChange={e => setForm(f => ({ ...f, address: e.target.value }))}
-                  className="h-10"
-                  required
-                />
+                <p className="text-xs text-gray-600 mb-2">Enter the complete address or use GPS</p>
+                <div className="flex gap-2">
+                  <Input
+                    placeholder="e.g., 123 Main Street, Apartment 4B, Montevideo"
+                    value={form.address}
+                    onChange={e => setForm(f => ({ ...f, address: e.target.value }))}
+                    className="h-10 flex-1"
+                    required
+                  />
+                  <Button
+                    type="button"
+                    onClick={handleGetCurrentLocation}
+                    variant="outline"
+                    className="h-10 px-3"
+                    title="Use current GPS location"
+                  >
+                    <Navigation2 className="w-4 h-4" />
+                  </Button>
+                </div>
               </div>
 
               <div>

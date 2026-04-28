@@ -9,6 +9,10 @@ export const CATEGORIES = [
   { key: 'laundry_helper', icon: '👕' },
   { key: 'nanny', icon: '👶' },
   { key: 'errand_runner', icon: '🏃' },
+  { key: 'tutor', icon: '📚' },
+  { key: 'teacher', icon: '🎓' },
+  { key: 'sports_teacher', icon: '⚽' },
+  { key: 'gym', icon: '💪' },
 ];
 
 export const CATEGORY_COLORS = {
@@ -22,6 +26,10 @@ export const CATEGORY_COLORS = {
   laundry_helper: 'from-violet-500 to-fuchsia-500',
   nanny: 'from-amber-500 to-orange-500',
   errand_runner: 'from-sky-500 to-blue-500',
+  tutor: 'from-purple-500 to-pink-500',
+  teacher: 'from-blue-600 to-indigo-600',
+  sports_teacher: 'from-green-500 to-lime-500',
+  gym: 'from-red-500 to-orange-500',
 };
 
 export const CATEGORY_BADGE_COLORS = {
@@ -35,6 +43,10 @@ export const CATEGORY_BADGE_COLORS = {
   laundry_helper: 'bg-violet-100 text-violet-700 border-violet-200',
   nanny: 'bg-amber-100 text-amber-700 border-amber-200',
   errand_runner: 'bg-sky-100 text-sky-700 border-sky-200',
+  tutor: 'bg-purple-100 text-purple-700 border-purple-200',
+  teacher: 'bg-blue-100 text-blue-700 border-blue-200',
+  sports_teacher: 'bg-green-100 text-green-700 border-green-200',
+  gym: 'bg-red-100 text-red-700 border-red-200',
 };
 
 export const COUNTRY_SETTINGS = {

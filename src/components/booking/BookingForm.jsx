@@ -20,13 +20,11 @@ export default function BookingForm({ provider, clientProfile }) {
 
   const isDoctor = provider?.categories?.includes('doctor') || provider?.category === 'doctor';
 
-  if (!isDoctor) {
-    // Non-doctor providers still use the old booking system
-    return <OldBookingForm provider={provider} clientProfile={clientProfile} />;
-  }
-
   // For doctors: show consultation booking
-  return <ConsultationBookingPanel provider={provider} clientProfile={clientProfile} />;
+  // For non-doctors: show hourly/daily/weekly booking
+  return isDoctor ? 
+    <ConsultationBookingPanel provider={provider} clientProfile={clientProfile} /> :
+    <RegularBookingForm provider={provider} clientProfile={clientProfile} />;
 }
 
 function ConsultationBookingPanel({ provider, clientProfile }) {
@@ -247,8 +245,8 @@ function ConsultationBookingPanel({ provider, clientProfile }) {
   );
 }
 
-// Original booking form for non-doctors
-function OldBookingForm({ provider, clientProfile }) {
+// Booking form for non-doctors (hourly/daily/weekly rates)
+function RegularBookingForm({ provider, clientProfile }) {
   const navigate = useNavigate();
   const [loading, setLoading] = useState(false);
   const [bypassWarning, setBypassWarning] = useState(false);

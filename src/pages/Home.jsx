@@ -3,7 +3,7 @@ import { Link, useNavigate } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
-import { Shield, Star, DollarSign, ArrowRight, CheckCircle2, MapPin, Zap, Lock } from 'lucide-react';
+import { Shield, Star, DollarSign, ArrowRight, CheckCircle2, MapPin, Zap, Lock, GitBranch, Gift } from 'lucide-react';
 import { motion } from 'framer-motion';
 import { CATEGORIES, CATEGORY_COLORS } from '@/lib/constants';
 import { usePricing } from '@/lib/usePricing';
@@ -150,6 +150,77 @@ export default function Home() {
                 <p className="text-sm text-gray-500 leading-relaxed">{s.desc}</p>
               </motion.div>
             ))}
+          </div>
+        </div>
+      </section>
+
+      {/* Referral & Affiliate Section */}
+      <section className="bg-gradient-to-r from-purple-50 to-pink-50 border-y border-purple-200">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-20">
+          <div className="text-center mb-12">
+            <h2 className="text-3xl sm:text-4xl font-bold text-gray-900">Earn Rewards & Grow Your Network</h2>
+            <p className="mt-3 text-gray-600 text-lg">Join our referral program and unlock exclusive benefits</p>
+          </div>
+          <div className="grid md:grid-cols-2 gap-8">
+            {/* Referral Rewards Block */}
+            <motion.div initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }}>
+              <Card className="h-full border-2 border-purple-200 bg-white hover:shadow-lg transition-shadow">
+                <CardContent className="p-8">
+                  <div className="w-12 h-12 rounded-2xl bg-purple-100 flex items-center justify-center mb-4">
+                    <Gift className="w-6 h-6 text-purple-600" />
+                  </div>
+                  <h3 className="text-2xl font-bold text-gray-900 mb-3">Referral Rewards</h3>
+                  <p className="text-gray-600 mb-6">Invite friends and family to CareBook and get rewarded when they join.</p>
+                  <ul className="space-y-3 mb-8">
+                    <li className="flex items-center gap-3 text-sm text-gray-700">
+                      <CheckCircle2 className="w-4 h-4 text-purple-600 flex-shrink-0" />
+                      <span><strong>Clients:</strong> Invite 5+ friends → Get 3 free bookings with zero platform fees</span>
+                    </li>
+                    <li className="flex items-center gap-3 text-sm text-gray-700">
+                      <CheckCircle2 className="w-4 h-4 text-purple-600 flex-shrink-0" />
+                      <span><strong>Providers:</strong> Invite 6+ professionals → Get 1 month of free premium</span>
+                    </li>
+                  </ul>
+                  <Link to="/premium">
+                    <Button className="w-full bg-purple-600 hover:bg-purple-700 text-white gap-2">
+                      <Gift className="w-4 h-4" /> Check Your Rewards
+                    </Button>
+                  </Link>
+                </CardContent>
+              </Card>
+            </motion.div>
+
+            {/* Affiliate Program Block */}
+            <motion.div initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} transition={{ delay: 0.1 }}>
+              <Card className="h-full border-2 border-pink-200 bg-white hover:shadow-lg transition-shadow">
+                <CardContent className="p-8">
+                  <div className="w-12 h-12 rounded-2xl bg-pink-100 flex items-center justify-center mb-4">
+                    <GitBranch className="w-6 h-6 text-pink-600" />
+                  </div>
+                  <h3 className="text-2xl font-bold text-gray-900 mb-3">Affiliate Program</h3>
+                  <p className="text-gray-600 mb-6">Earn 5% commission on every user you refer who completes their first booking.</p>
+                  <ul className="space-y-3 mb-8">
+                    <li className="flex items-center gap-3 text-sm text-gray-700">
+                      <CheckCircle2 className="w-4 h-4 text-pink-600 flex-shrink-0" />
+                      <span>Share your unique affiliate code</span>
+                    </li>
+                    <li className="flex items-center gap-3 text-sm text-gray-700">
+                      <CheckCircle2 className="w-4 h-4 text-pink-600 flex-shrink-0" />
+                      <span>Earn 5% on each referred user's first transaction</span>
+                    </li>
+                    <li className="flex items-center gap-3 text-sm text-gray-700">
+                      <CheckCircle2 className="w-4 h-4 text-pink-600 flex-shrink-0" />
+                      <span>Withdraw via Stripe, debit or prepaid card</span>
+                    </li>
+                  </ul>
+                  <Link to="/affiliate">
+                    <Button className="w-full bg-pink-600 hover:bg-pink-700 text-white gap-2">
+                      <GitBranch className="w-4 h-4" /> Join Affiliate Program
+                    </Button>
+                  </Link>
+                </CardContent>
+              </Card>
+            </motion.div>
           </div>
         </div>
       </section>

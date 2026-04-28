@@ -1,0 +1,45 @@
+{
+  "name": "Notification",
+  "type": "object",
+  "properties": {
+    "user_email": {
+      "type": "string",
+      "description": "The recipient's email"
+    },
+    "type": {
+      "type": "string",
+      "enum": [
+        "booking_accepted",
+        "message_received",
+        "payment_released",
+        "booking_pending",
+        "dispute_filed",
+        "booking_cancelled"
+      ],
+      "description": "Type of notification"
+    },
+    "title": {
+      "type": "string"
+    },
+    "body": {
+      "type": "string"
+    },
+    "link": {
+      "type": "string",
+      "description": "URL path to navigate to"
+    },
+    "is_read": {
+      "type": "boolean",
+      "default": false
+    },
+    "reference_id": {
+      "type": "string",
+      "description": "ID of the related entity (booking, message, etc.)"
+    }
+  },
+  "required": [
+    "user_email",
+    "type",
+    "title"
+  ]
+}

@@ -11,6 +11,7 @@ import LanguagePicker from './LanguagePicker';
 import { useI18n } from '@/lib/i18n';
 import { useUserProfile } from '@/lib/useUserProfile';
 import { Badge } from '@/components/ui/badge';
+import NotificationBell from '@/components/notifications/NotificationBell';
 
 export default function Navbar() {
   const [mobileOpen, setMobileOpen] = useState(false);
@@ -59,6 +60,7 @@ export default function Navbar() {
           {/* Right side */}
           <div className="hidden md:flex items-center gap-2">
             <LanguagePicker />
+            <NotificationBell />
             {profile?.is_premium && <Badge className="bg-amber-100 text-amber-700 border-amber-300 text-xs gap-1"><Zap className="w-3 h-3" />Premium</Badge>}
             <DropdownMenu>
               <DropdownMenuTrigger asChild>
@@ -87,6 +89,7 @@ export default function Navbar() {
           {/* Mobile */}
           <div className="md:hidden flex items-center gap-2">
             <LanguagePicker />
+            <NotificationBell />
             <button onClick={() => setMobileOpen(!mobileOpen)} className="p-2 text-gray-600">
               {mobileOpen ? <X className="w-6 h-6" /> : <Menu className="w-6 h-6" />}
             </button>

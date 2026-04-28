@@ -7,16 +7,16 @@ import { Label } from '@/components/ui/label';
 import { Textarea } from '@/components/ui/textarea';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Badge } from '@/components/ui/badge';
-import { User, Briefcase, Plus, X, Save, ShieldCheck, Zap, Upload, MapPin, CalendarDays, Search } from 'lucide-react';
+import { User, Briefcase, Plus, X, Save, ShieldCheck, Zap, Upload, MapPin, CalendarDays, Search, Clock } from 'lucide-react';
 // Upload still used for avatar
 import { toast } from 'sonner';
 import { useI18n } from '@/lib/i18n';
 import { CATEGORIES, COUNTRY_SETTINGS } from '@/lib/constants';
 import { useUserProfile } from '@/lib/useUserProfile';
-import AvailabilityCalendar from '@/components/availability/AvailabilityCalendar';
 import LocationPicker from '@/components/location/LocationPicker';
 import IdentityVerification from '@/components/verification/IdentityVerification';
 import DocumentUploadSection from '@/components/providers/DocumentUploadSection';
+import DoctorAvailabilityCalendar from '@/components/doctors/DoctorAvailabilityCalendar';
 
 export default function MyProfile() {
   const { t } = useI18n();
@@ -472,8 +472,8 @@ export default function MyProfile() {
             <Save className="w-5 h-5" /> {existingProvider ? t('save') : t('create_profile')}
           </Button>
 
-          {/* Availability Calendar — only shown after profile exists */}
-          {existingProvider && (
+          {/* Availability Calendar — for doctors only after profile exists */}
+          {existingProvider && form.categories.includes('doctor') && (
             <Card className="border border-gray-100 shadow-sm overflow-hidden">
               <div className="h-24 bg-gradient-to-r from-indigo-400 to-purple-500 relative overflow-hidden">
                 <img 
@@ -485,12 +485,16 @@ export default function MyProfile() {
               </div>
               <CardHeader>
                 <CardTitle className="flex items-center gap-2 text-lg text-gray-800">
-                  <CalendarDays className="w-5 h-5 text-blue-600" /> Availability & Schedule
+                  <CalendarDays className="w-5 h-5 text-blue-600" /> Consultation Availability
                 </CardTitle>
-                <p className="text-sm text-gray-500">Set your working days, hours, and block specific dates. Clients will see your real-time availability when booking.</p>
+                <p className="text-sm text-gray-500">Set your working days, hours, block dates, and view booked consultations. Clients will see your availability when booking.</p>
               </CardHeader>
               <CardContent>
-                <AvailabilityCalendar providerId={existingProvider.id} userEmail={user?.email} />
+                <DoctorAvailabilityCalendar 
+                  provider={existingProvider} 
+                  isOwnProfile={true}
+                  userEmail={user?.email}
+                />
               </CardContent>
             </Card>
           )}

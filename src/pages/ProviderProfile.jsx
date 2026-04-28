@@ -10,6 +10,7 @@ import { Skeleton } from '@/components/ui/skeleton';
 import { useI18n } from '@/lib/i18n';
 import { CATEGORY_BADGE_COLORS, formatDistance, calcDistance } from '@/lib/constants';
 import { useUserProfile } from '@/lib/useUserProfile';
+import DoctorAvailabilityCalendar from '../components/doctors/DoctorAvailabilityCalendar';
 
 export default function ProviderProfile() {
   const { t } = useI18n();
@@ -162,15 +163,23 @@ export default function ProviderProfile() {
             </div>
           )}
 
-          {/* Consultation Fee — only for doctors */}
+          {/* Consultation Fee & Availability Calendar — only for doctors */}
           {provider?.categories?.includes('doctor') && (
-            <div className="bg-white rounded-xl border border-blue-100 p-6 shadow-sm">
-              <h2 className="text-lg font-semibold mb-4 text-gray-900">Consultation Fee</h2>
-              <div className="text-center p-4 rounded-lg bg-blue-50">
-                <p className="text-2xl font-bold text-blue-700">${provider.consultation_fee?.toFixed(2) || 'Not set'}</p>
-                <p className="text-sm text-gray-500 mt-1">per consultation</p>
+            <>
+              <div className="bg-white rounded-xl border border-blue-100 p-6 shadow-sm">
+                <h2 className="text-lg font-semibold mb-4 text-gray-900">Consultation Fee</h2>
+                <div className="text-center p-4 rounded-lg bg-blue-50">
+                  <p className="text-2xl font-bold text-blue-700">${provider.consultation_fee?.toFixed(2) || 'Not set'}</p>
+                  <p className="text-sm text-gray-500 mt-1">per consultation</p>
+                </div>
               </div>
-            </div>
+
+              <DoctorAvailabilityCalendar 
+                provider={provider} 
+                isOwnProfile={false}
+                userEmail={clientProfile?.user_email}
+              />
+            </>
           )}
 
           {/* Reviews */}

@@ -6,6 +6,7 @@ import { MapPin, ShieldCheck, Zap, Star } from 'lucide-react';
 import { CATEGORY_BADGE_COLORS, formatDistance } from '@/lib/constants';
 import { useI18n } from '@/lib/i18n';
 import { motion } from 'framer-motion';
+import DualProfilePicture from '@/components/shared/DualProfilePicture';
 
 const categoryMap = {
   'cleanr': 'house_cleaner',
@@ -35,7 +36,15 @@ export default function ProviderCard({ provider, index = 0, userLocation }) {
           )}
           <CardContent className="p-0">
             <div className="relative h-44 bg-gradient-to-br from-blue-50 to-green-50 flex items-center justify-center overflow-hidden">
-              {provider.avatar_url ? (
+              {provider.company_logo_url ? (
+                <DualProfilePicture
+                  userAvatar={provider.avatar_url}
+                  userInitial={provider.full_name?.[0] || '?'}
+                  companyLogo={provider.company_logo_url}
+                  companyName={provider.company_name}
+                  size="lg"
+                />
+              ) : provider.avatar_url ? (
                 <img src={provider.avatar_url} alt={provider.full_name} className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" />
               ) : (
                 <div className="w-20 h-20 rounded-full bg-blue-100 flex items-center justify-center">

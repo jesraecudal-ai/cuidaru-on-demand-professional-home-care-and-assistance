@@ -18,6 +18,10 @@
       "type": "string",
       "description": "Optional company name for clients to display on their profile"
     },
+    "company_logo_url": {
+      "type": "string",
+      "description": "Optional company logo URL for clients"
+    },
     "country": {
       "type": "string",
       "enum": [

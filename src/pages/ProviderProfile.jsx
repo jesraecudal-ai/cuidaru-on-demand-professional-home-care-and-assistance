@@ -143,22 +143,35 @@ export default function ProviderProfile() {
             )}
           </div>
 
-          {/* Rates */}
-          <div className="bg-white rounded-xl border border-gray-100 p-6 shadow-sm">
-            <h2 className="text-lg font-semibold mb-4 text-gray-900">{t('rates')}</h2>
-            <div className="grid grid-cols-3 gap-4">
-              {[
-                { label: t('per_hour_full'), val: provider.hourly_rate },
-                { label: t('per_day'), val: provider.daily_rate || (provider.hourly_rate * 8) },
-                { label: t('per_week'), val: provider.weekly_rate || (provider.hourly_rate * 40) },
-              ].map((r, i) => (
-                <div key={i} className="text-center p-4 rounded-lg bg-blue-50">
-                  <p className="text-2xl font-bold text-blue-700">{r.val}</p>
-                  <p className="text-sm text-gray-500">{r.label}</p>
-                </div>
-              ))}
+          {/* Rates — only for non-doctors */}
+          {!provider?.categories?.includes('doctor') && (
+            <div className="bg-white rounded-xl border border-gray-100 p-6 shadow-sm">
+              <h2 className="text-lg font-semibold mb-4 text-gray-900">{t('rates')}</h2>
+              <div className="grid grid-cols-3 gap-4">
+                {[
+                  { label: t('per_hour_full'), val: provider.hourly_rate },
+                  { label: t('per_day'), val: provider.daily_rate || (provider.hourly_rate * 8) },
+                  { label: t('per_week'), val: provider.weekly_rate || (provider.hourly_rate * 40) },
+                ].map((r, i) => (
+                  <div key={i} className="text-center p-4 rounded-lg bg-blue-50">
+                    <p className="text-2xl font-bold text-blue-700">{r.val}</p>
+                    <p className="text-sm text-gray-500">{r.label}</p>
+                  </div>
+                ))}
+              </div>
             </div>
-          </div>
+          )}
+
+          {/* Consultation Fee — only for doctors */}
+          {provider?.categories?.includes('doctor') && (
+            <div className="bg-white rounded-xl border border-blue-100 p-6 shadow-sm">
+              <h2 className="text-lg font-semibold mb-4 text-gray-900">Consultation Fee</h2>
+              <div className="text-center p-4 rounded-lg bg-blue-50">
+                <p className="text-2xl font-bold text-blue-700">${provider.consultation_fee?.toFixed(2) || 'Not set'}</p>
+                <p className="text-sm text-gray-500 mt-1">per consultation</p>
+              </div>
+            </div>
+          )}
 
           {/* Reviews */}
           <div className="bg-white rounded-xl border border-gray-100 p-6 shadow-sm">

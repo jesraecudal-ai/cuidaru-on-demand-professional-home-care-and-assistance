@@ -346,32 +346,49 @@ export default function MyProfile() {
             </CardContent>
           </Card>
 
-          {/* Rates with image */}
-          <Card className="border border-gray-100 shadow-sm overflow-hidden">
-            <div className="h-24 bg-gradient-to-r from-purple-400 to-pink-500 relative overflow-hidden">
-              <img 
-                src="https://images.unsplash.com/photo-1579154204601-01d82b944c47?w=600&h=200&fit=crop" 
-                alt="Healthcare pricing" 
-                className="w-full h-full object-cover opacity-25"
-              />
-              <div className="absolute inset-0 bg-gradient-to-r from-purple-400/60 to-pink-500/60" />
-            </div>
-            <CardHeader><CardTitle className="flex items-center gap-2 text-lg text-gray-800"><Briefcase className="w-5 h-5 text-blue-600" /> {t('rates_title')} ({countryInfo.symbol})</CardTitle></CardHeader>
-            <CardContent>
-              <div className="grid sm:grid-cols-3 gap-4">
-                <div><Label>{t('hourly_rate')}</Label><Input type="number" value={form.hourly_rate} onChange={e => setForm(f => ({ ...f, hourly_rate: parseFloat(e.target.value) || 0 }))} className="mt-1.5" /></div>
-                <div><Label>{t('daily_rate')}</Label><Input type="number" value={form.daily_rate} onChange={e => setForm(f => ({ ...f, daily_rate: parseFloat(e.target.value) || 0 }))} className="mt-1.5" /></div>
-                <div><Label>{t('weekly_rate')}</Label><Input type="number" value={form.weekly_rate} onChange={e => setForm(f => ({ ...f, weekly_rate: parseFloat(e.target.value) || 0 }))} className="mt-1.5" /></div>
+          {/* Rates — only for non-doctors */}
+          {!form.categories.includes('doctor') && (
+            <Card className="border border-gray-100 shadow-sm overflow-hidden">
+              <div className="h-24 bg-gradient-to-r from-purple-400 to-pink-500 relative overflow-hidden">
+                <img 
+                  src="https://images.unsplash.com/photo-1579154204601-01d82b944c47?w=600&h=200&fit=crop" 
+                  alt="Healthcare pricing" 
+                  className="w-full h-full object-cover opacity-25"
+                />
+                <div className="absolute inset-0 bg-gradient-to-r from-purple-400/60 to-pink-500/60" />
               </div>
-              {form.categories.includes('doctor') && (
+              <CardHeader><CardTitle className="flex items-center gap-2 text-lg text-gray-800"><Briefcase className="w-5 h-5 text-blue-600" /> {t('rates_title')} ({countryInfo.symbol})</CardTitle></CardHeader>
+              <CardContent>
+                <div className="grid sm:grid-cols-3 gap-4">
+                  <div><Label>{t('hourly_rate')}</Label><Input type="number" value={form.hourly_rate} onChange={e => setForm(f => ({ ...f, hourly_rate: parseFloat(e.target.value) || 0 }))} className="mt-1.5" /></div>
+                  <div><Label>{t('daily_rate')}</Label><Input type="number" value={form.daily_rate} onChange={e => setForm(f => ({ ...f, daily_rate: parseFloat(e.target.value) || 0 }))} className="mt-1.5" /></div>
+                  <div><Label>{t('weekly_rate')}</Label><Input type="number" value={form.weekly_rate} onChange={e => setForm(f => ({ ...f, weekly_rate: parseFloat(e.target.value) || 0 }))} className="mt-1.5" /></div>
+                </div>
+              </CardContent>
+            </Card>
+          )}
+
+          {/* Consultation Fee — only for doctors */}
+          {form.categories.includes('doctor') && (
+            <Card className="border border-blue-100 shadow-sm overflow-hidden">
+              <div className="h-24 bg-gradient-to-r from-blue-400 to-cyan-500 relative overflow-hidden">
+                <img 
+                  src="https://images.unsplash.com/photo-1576091160399-86c54dcb98fe?w=600&h=200&fit=crop" 
+                  alt="Consultation pricing" 
+                  className="w-full h-full object-cover opacity-25"
+                />
+                <div className="absolute inset-0 bg-gradient-to-r from-blue-400/60 to-cyan-500/60" />
+              </div>
+              <CardHeader><CardTitle className="flex items-center gap-2 text-lg text-gray-800"><Briefcase className="w-5 h-5 text-blue-600" /> Consultation Fee ({countryInfo.symbol})</CardTitle></CardHeader>
+              <CardContent>
                 <div>
-                  <Label className="mt-4 block">Consultation Fee (Optional)</Label>
-                  <p className="text-xs text-gray-500 mb-2">One-time fee for a consultation session</p>
+                  <Label>Fee per Consultation</Label>
+                  <p className="text-xs text-gray-500 mb-2">One-time fee clients pay to book a consultation with you</p>
                   <Input type="number" value={form.consultation_fee} onChange={e => setForm(f => ({ ...f, consultation_fee: parseFloat(e.target.value) || 0 }))} placeholder="e.g., 50" className="mt-1.5" />
                 </div>
-              )}
-            </CardContent>
-          </Card>
+              </CardContent>
+            </Card>
+          )}
 
           {/* Skills with image */}
           <Card className="border border-gray-100 shadow-sm overflow-hidden">

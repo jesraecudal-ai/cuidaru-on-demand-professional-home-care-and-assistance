@@ -11,7 +11,6 @@ import { toast } from 'sonner';
 import { useNavigate } from 'react-router-dom';
 import { useI18n } from '@/lib/i18n';
 import DoctorAvailabilityCalendar from '../doctors/DoctorAvailabilityCalendar';
-import { useState, useEffect } from 'react';
 
 export default function BookingForm({ provider, clientProfile }) {
   const navigate = useNavigate();

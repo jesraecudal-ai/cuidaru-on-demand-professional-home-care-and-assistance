@@ -132,9 +132,9 @@ export default function BookingForm({ provider, clientProfile }) {
 
   return (
     <Card className="sticky top-24 shadow-lg border border-gray-100">
-      <CardHeader className="pb-4 bg-gradient-to-r from-blue-600 to-blue-700 text-white rounded-t-xl">
-        <CardTitle className="flex items-center gap-2 text-base text-white">
-          <Calendar className="w-4 h-4" /> Book {provider.full_name}
+      <CardHeader className="pb-4 px-6 pt-5 bg-gradient-to-r from-blue-600 to-blue-700 text-white rounded-t-xl">
+        <CardTitle className="flex items-center gap-2 text-sm font-semibold text-white break-words">
+          <Calendar className="w-4 h-4 flex-shrink-0" /> Book {provider.full_name}
         </CardTitle>
         {isPremiumClient && (
           <p className="text-xs text-blue-100 mt-1">✨ Premium client — 0% platform fee</p>

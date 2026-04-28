@@ -129,6 +129,8 @@ export default function BookingForm({ provider, clientProfile }) {
 
   const durationLabel = form.booking_type === 'hourly' ? 'hours' : form.booking_type === 'daily' ? 'days' : 'weeks';
   const durationMax = form.booking_type === 'hourly' ? 24 : form.booking_type === 'daily' ? 30 : 52;
+  
+  const isDifferentCountry = clientProfile?.country && provider?.country && clientProfile.country !== provider.country;
 
   return (
     <Card className="sticky top-24 shadow-lg border border-gray-100">
@@ -143,6 +145,13 @@ export default function BookingForm({ provider, clientProfile }) {
 
       <CardContent className="pt-6">
         <form onSubmit={handleSubmit} className="space-y-4">
+          {isDifferentCountry && (
+            <div className="bg-blue-50 border border-blue-200 rounded-lg p-3 flex items-start gap-2">
+              <MapPin className="w-4 h-4 text-blue-600 mt-0.5 flex-shrink-0" />
+              <p className="text-xs text-blue-700">⚠️ This provider is based in a different country. International bookings may have different terms and availability.</p>
+            </div>
+          )}
+
           {/* Step 1: Service Type & Duration */}
           {step === 1 && (
             <div className="space-y-4">

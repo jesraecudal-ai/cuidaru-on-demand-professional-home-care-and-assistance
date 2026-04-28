@@ -275,6 +275,232 @@ function OldBookingForm({ provider, clientProfile }) {
     });
   }, [provider?.id]);
 
-  // [rest of old booking form code - keeping it same as original]
-  return <div className="text-center p-6 text-gray-500">Old booking form placeholder</div>;
+  const validateForm = () => {
+    if (!form.start_date) {
+      toast.error('Please select a start date');
+      return false;
+    }
+    if (form.booking_type !== 'hourly' && !form.end_date) {
+      toast.error('Please select an end date');
+      return false;
+    }
+    if (!provider.hourly_rate && form.booking_type === 'hourly') {
+      toast.error('This provider has not set hourly rates');
+      return false;
+    }
+    if (!provider.daily_rate && form.booking_type === 'daily') {
+      toast.error('This provider has not set daily rates');
+      return false;
+    }
+    if (!provider.weekly_rate && form.booking_type === 'weekly') {
+      toast.error('This provider has not set weekly rates');
+      return false;
+    }
+    return true;
+  };
+
+  const calculateCost = () => {
+    let subtotal = 0;
+    const rate = form.booking_type === 'hourly' ? provider.hourly_rate :
+                 form.booking_type === 'daily' ? provider.daily_rate :
+                 provider.weekly_rate;
+
+    if (form.booking_type === 'hourly') {
+      subtotal = form.duration * rate;
+    } else if (form.booking_type === 'daily') {
+      const days = Math.ceil((new Date(form.end_date) - new Date(form.start_date)) / (1000 * 60 * 60 * 24)) + 1;
+      subtotal = days * rate;
+    } else if (form.booking_type === 'weekly') {
+      const weeks = Math.ceil((new Date(form.end_date) - new Date(form.start_date)) / (1000 * 60 * 60 * 24 * 7)) + 1;
+      subtotal = weeks * rate;
+    }
+
+    const platformFeePercent = 10;
+    const platformFee = subtotal * (platformFeePercent / 100);
+    const total = subtotal + platformFee;
+
+    return { subtotal, platformFee, total, platformFeePercent };
+  };
+
+  const handleCreateBooking = async () => {
+    if (!validateForm()) return;
+
+    setLoading(true);
+    try {
+      const user = await base44.auth.me();
+      const { subtotal, platformFee, total } = calculateCost();
+
+      const bookingData = {
+        client_email: user.email,
+        client_name: user.full_name,
+        provider_id: provider.id,
+        provider_email: provider.user_email,
+        provider_name: provider.full_name,
+        category: provider.categories?.[0] || provider.category,
+        booking_type: form.booking_type,
+        start_date: form.start_date,
+        start_time: form.start_time,
+        end_date: form.end_date || form.start_date,
+        duration: form.duration,
+        rate_applied: form.booking_type === 'hourly' ? provider.hourly_rate :
+                      form.booking_type === 'daily' ? provider.daily_rate :
+                      provider.weekly_rate,
+        subtotal,
+        platform_fee_pct: 10,
+        platform_fee: platformFee,
+        total_amount: total,
+        provider_payout: subtotal,
+        address: form.address,
+        instructions: form.instructions,
+        country: provider.country
+      };
+
+      await base44.entities.Booking.create(bookingData);
+      toast.success('Booking request sent!');
+      navigate('/bookings');
+    } catch (error) {
+      toast.error('Failed to create booking');
+      console.error(error);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const { subtotal, platformFee, total } = calculateCost();
+
+  return (
+    <Card className="sticky top-24 shadow-lg border border-gray-100">
+      <CardHeader className="pb-4 px-6 pt-5 bg-gradient-to-r from-blue-600 to-blue-700 text-white rounded-t-xl">
+        <CardTitle className="text-sm font-semibold text-white">Book {provider.full_name}</CardTitle>
+      </CardHeader>
+
+      <CardContent className="pt-6 space-y-4">
+        {/* Booking Type Selection */}
+        <div>
+          <Label className="block text-sm font-medium text-gray-700 mb-2">Booking Type</Label>
+          <div className="grid grid-cols-3 gap-2">
+            {[
+              { value: 'hourly', label: 'Hourly', rate: provider.hourly_rate },
+              { value: 'daily', label: 'Daily', rate: provider.daily_rate },
+              { value: 'weekly', label: 'Weekly', rate: provider.weekly_rate }
+            ].map(type => (
+              <button
+                key={type.value}
+                onClick={() => setForm(f => ({ ...f, booking_type: type.value }))}
+                className={`p-3 rounded-lg border-2 transition-all text-center ${
+                  form.booking_type === type.value
+                    ? 'border-blue-600 bg-blue-50'
+                    : 'border-gray-200 hover:border-gray-300'
+                }`}
+              >
+                <div className="text-sm font-semibold text-gray-900">{type.label}</div>
+                <div className="text-xs text-gray-600 mt-1">${type.rate?.toFixed(2) || 'N/A'}</div>
+              </button>
+            ))}
+          </div>
+        </div>
+
+        {/* Date and Time */}
+        <div>
+          <Label className="block text-sm font-medium text-gray-700 mb-1.5">Start Date</Label>
+          <Input
+            type="date"
+            value={form.start_date}
+            onChange={e => setForm(f => ({ ...f, start_date: e.target.value }))}
+            min={new Date().toISOString().split('T')[0]}
+          />
+        </div>
+
+        {form.booking_type === 'hourly' && (
+          <>
+            <div>
+              <Label className="block text-sm font-medium text-gray-700 mb-1.5">Start Time</Label>
+              <Input
+                type="time"
+                value={form.start_time}
+                onChange={e => setForm(f => ({ ...f, start_time: e.target.value }))}
+              />
+            </div>
+
+            <div>
+              <Label className="block text-sm font-medium text-gray-700 mb-1.5">Duration (hours)</Label>
+              <Input
+                type="number"
+                min="1"
+                max="12"
+                value={form.duration}
+                onChange={e => setForm(f => ({ ...f, duration: parseInt(e.target.value) || 1 }))}
+              />
+            </div>
+          </>
+        )}
+
+        {form.booking_type !== 'hourly' && (
+          <div>
+            <Label className="block text-sm font-medium text-gray-700 mb-1.5">End Date</Label>
+            <Input
+              type="date"
+              value={form.end_date}
+              onChange={e => setForm(f => ({ ...f, end_date: e.target.value }))}
+              min={form.start_date}
+            />
+          </div>
+        )}
+
+        {/* Location & Instructions */}
+        <div>
+          <Label className="block text-sm font-medium text-gray-700 mb-1.5">Address/Location</Label>
+          <Input
+            placeholder="Where should the service take place?"
+            value={form.address}
+            onChange={e => setForm(f => ({ ...f, address: e.target.value }))}
+          />
+        </div>
+
+        <div>
+          <Label className="block text-sm font-medium text-gray-700 mb-1.5">Special Instructions</Label>
+          <Textarea
+            placeholder="Any special requests or notes for the provider?"
+            value={form.instructions}
+            onChange={e => setForm(f => ({ ...f, instructions: e.target.value }))}
+            rows={2}
+          />
+        </div>
+
+        {/* Pricing Summary */}
+        <div className="border-t pt-4 space-y-2 bg-gray-50 rounded-lg p-3">
+          <div className="flex justify-between text-sm">
+            <span className="text-gray-600">Subtotal:</span>
+            <span className="font-semibold">${subtotal.toFixed(2)}</span>
+          </div>
+          <div className="flex justify-between text-sm">
+            <span className="text-gray-600">Platform Fee (10%):</span>
+            <span className="font-semibold">${platformFee.toFixed(2)}</span>
+          </div>
+          <div className="flex justify-between text-sm border-t pt-2">
+            <span className="font-semibold text-gray-900">Total:</span>
+            <span className="font-bold text-blue-600">${total.toFixed(2)}</span>
+          </div>
+        </div>
+
+        {!provider.hourly_rate && !provider.daily_rate && !provider.weekly_rate && (
+          <div className="bg-amber-50 border border-amber-200 rounded-lg p-3 flex gap-3">
+            <AlertTriangle className="w-5 h-5 text-amber-600 flex-shrink-0 mt-0.5" />
+            <div className="text-sm text-amber-800">
+              <p className="font-semibold">Rates not set</p>
+              <p className="text-xs mt-1">This provider hasn't set their rates yet.</p>
+            </div>
+          </div>
+        )}
+
+        <Button
+          onClick={handleCreateBooking}
+          disabled={loading || !provider.hourly_rate || !provider.daily_rate || !provider.weekly_rate}
+          className="w-full bg-blue-600 hover:bg-blue-700"
+        >
+          {loading ? 'Creating Booking...' : `Request Booking — $${total.toFixed(2)}`}
+        </Button>
+      </CardContent>
+    </Card>
+  );
 }

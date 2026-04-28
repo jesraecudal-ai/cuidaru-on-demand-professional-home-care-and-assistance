@@ -48,7 +48,7 @@ export default function Bookings() {
     select: (all) => all.filter(d => d.client_email === user.email || d.provider_email === user.email),
   });
 
-  const { data: existingReviews = [] } = useQuery({
+  const { data: existingReviews = [], refetch: refetchReviews } = useQuery({
     queryKey: ['myReviews', user?.email],
     queryFn: () => base44.entities.Review.filter({ reviewer_email: user.email }),
     enabled: !!user?.email,
@@ -130,8 +130,17 @@ export default function Bookings() {
     setDisputeReason('');
   };
 
+  // Reviews already left by current user (as client or provider)
+  const reviewedBookingIds = new Set(existingReviews.map(r => r.booking_id));
+
+  // Client: completed jobs not yet reviewed by client
   const completedUnreviewed = clientBookings.filter(
-    b => b.status === 'payment_released' && !existingReviews.some(r => r.booking_id === b.id)
+    b => b.status === 'payment_released' && !reviewedBookingIds.has(b.id)
+  );
+
+  // Provider: completed jobs not yet reviewed by provider
+  const providerUnreviewed = providerBookings.filter(
+    b => b.status === 'payment_released' && !reviewedBookingIds.has(b.id)
   );
 
   const isProvider = !!providerProfile;
@@ -176,8 +185,16 @@ export default function Bookings() {
               <h3 className="font-semibold text-lg text-gray-800 mb-4">{t('pending_reviews')}</h3>
               <div className="space-y-4">
                 {completedUnreviewed.map(b => (
-                  <ReviewForm key={b.id} bookingId={b.id} providerId={b.provider_id} reviewerName={user?.full_name}
-                    onSubmitted={() => queryClient.invalidateQueries({ queryKey: ['myReviews'] })} />
+                  <ReviewForm
+                    key={b.id}
+                    bookingId={b.id}
+                    providerId={b.provider_id}
+                    reviewerName={user?.full_name}
+                    reviewerRole="client"
+                    revieweeEmail={b.provider_email}
+                    revieweeName={b.provider_name}
+                    onSubmitted={() => queryClient.invalidateQueries({ queryKey: ['myReviews'] })}
+                  />
                 ))}
               </div>
             </div>
@@ -197,6 +214,25 @@ export default function Bookings() {
             ) : (
               <div className="space-y-4">
                 {providerBookings.map(b => <BookingCard key={b.id} booking={b} isProvider onAction={handleAction} />)}
+              </div>
+            )}
+            {providerUnreviewed.length > 0 && (
+              <div className="mt-8">
+                <h3 className="font-semibold text-lg text-gray-800 mb-4">Rate Your Clients</h3>
+                <div className="space-y-4">
+                  {providerUnreviewed.map(b => (
+                    <ReviewForm
+                      key={b.id}
+                      bookingId={b.id}
+                      providerId={providerProfile?.id}
+                      reviewerName={user?.full_name}
+                      reviewerRole="provider"
+                      revieweeEmail={b.client_email}
+                      revieweeName={b.client_name}
+                      onSubmitted={() => queryClient.invalidateQueries({ queryKey: ['myReviews'] })}
+                    />
+                  ))}
+                </div>
               </div>
             )}
           </TabsContent>
@@ -235,9 +271,15 @@ export default function Bookings() {
         <DialogContent>
           <DialogHeader><DialogTitle>How was the service?</DialogTitle></DialogHeader>
           {reviewBooking && (
-            <ReviewForm bookingId={reviewBooking.id} providerId={reviewBooking.provider_id}
+            <ReviewForm
+              bookingId={reviewBooking.id}
+              providerId={reviewBooking.provider_id}
               reviewerName={user?.full_name}
-              onSubmitted={() => { setReviewBooking(null); queryClient.invalidateQueries({ queryKey: ['myReviews'] }); }} />
+              reviewerRole="client"
+              revieweeEmail={reviewBooking.provider_email}
+              revieweeName={reviewBooking.provider_name}
+              onSubmitted={() => { setReviewBooking(null); queryClient.invalidateQueries({ queryKey: ['myReviews'] }); }}
+            />
           )}
         </DialogContent>
       </Dialog>

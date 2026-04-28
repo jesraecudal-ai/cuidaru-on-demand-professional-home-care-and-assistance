@@ -40,6 +40,14 @@
     "onboarding_complete": {
       "type": "boolean",
       "default": false
+    },
+    "average_rating": {
+      "type": "number",
+      "default": 0
+    },
+    "total_reviews": {
+      "type": "number",
+      "default": 0
     }
   },
   "required": [

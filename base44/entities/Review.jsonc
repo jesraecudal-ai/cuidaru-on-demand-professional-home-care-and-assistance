@@ -14,6 +14,22 @@
     "reviewer_name": {
       "type": "string"
     },
+    "reviewer_role": {
+      "type": "string",
+      "enum": [
+        "client",
+        "provider"
+      ],
+      "default": "client",
+      "description": "Who wrote this review"
+    },
+    "reviewee_email": {
+      "type": "string",
+      "description": "Who is being reviewed"
+    },
+    "reviewee_name": {
+      "type": "string"
+    },
     "rating": {
       "type": "number"
     },
@@ -27,6 +43,7 @@
   "required": [
     "booking_id",
     "provider_id",
-    "rating"
+    "rating",
+    "reviewer_role"
   ]
 }

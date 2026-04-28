@@ -7,13 +7,18 @@ export default function ReviewCard({ review }) {
   const { t } = useI18n();
   return (
     <div className="py-4 border-b border-gray-100 last:border-0">
-      <div className="flex items-center justify-between">
+      <div className="flex items-center justify-between flex-wrap gap-2">
         <div className="flex items-center gap-3">
           <div className="w-9 h-9 rounded-full bg-blue-100 flex items-center justify-center">
             <span className="text-sm font-bold text-blue-600">{review.reviewer_name?.[0] || '?'}</span>
           </div>
           <div>
-            <p className="font-medium text-sm text-gray-900">{review.reviewer_name}</p>
+            <div className="flex items-center gap-2">
+              <p className="font-medium text-sm text-gray-900">{review.reviewer_name}</p>
+              {review.reviewer_role === 'provider' && (
+                <span className="text-xs bg-green-100 text-green-700 px-1.5 py-0.5 rounded-full">Provider</span>
+              )}
+            </div>
             <p className="text-xs text-gray-400">{review.created_date && format(new Date(review.created_date), 'MMM d, yyyy')}</p>
           </div>
         </div>

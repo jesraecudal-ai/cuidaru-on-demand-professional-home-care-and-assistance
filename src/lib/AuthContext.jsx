@@ -2,10 +2,12 @@ import React, { createContext, useState, useContext, useEffect } from 'react';
 import { base44 } from '@/api/base44Client';
 import { appParams } from '@/lib/app-params';
 import { createAxiosClient } from '@base44/sdk/dist/utils/axios-client';
+import { useI18n } from '@/lib/i18n';
 
 const AuthContext = createContext();
 
 export const AuthProvider = ({ children }) => {
+  const { setCountry } = useI18n();
   const [user, setUser] = useState(null);
   const [isAuthenticated, setIsAuthenticated] = useState(false);
   const [isLoadingAuth, setIsLoadingAuth] = useState(true);
@@ -96,6 +98,18 @@ export const AuthProvider = ({ children }) => {
       const currentUser = await base44.auth.me();
       setUser(currentUser);
       setIsAuthenticated(true);
+      
+      // Try to get user's country from UserProfile and set language
+      try {
+        const userProfiles = await base44.entities.UserProfile.filter({ user_email: currentUser.email });
+        if (userProfiles.length > 0) {
+          const country = userProfiles[0].country;
+          setCountry(country);
+        }
+      } catch (profileError) {
+        console.warn('Could not load user profile for country detection:', profileError);
+      }
+      
       setIsLoadingAuth(false);
       setAuthChecked(true);
     } catch (error) {

@@ -993,17 +993,41 @@ const translations = {
 const I18nContext = createContext(null);
 
 export function I18nProvider({ children }) {
-  const [lang, setLang] = useState(() => localStorage.getItem('carebook_lang') || 'en');
+  const [lang, setLang] = useState(() => {
+    // Check if user has manually set a language (stored preference)
+    const storedLang = localStorage.getItem('carebook_lang');
+    if (storedLang) return storedLang;
+    
+    // Try to detect from user's country (will be set after auth)
+    const userCountry = localStorage.getItem('carebook_country');
+    if (userCountry === 'brazil') return 'pt';
+    if (userCountry === 'uruguay' || userCountry === 'usa' || userCountry === 'canada') return 'es'; // Uruguay uses Spanish
+    
+    // Default to English
+    return 'en';
+  });
 
   const changeLang = (code) => {
     setLang(code);
     localStorage.setItem('carebook_lang', code);
   };
 
+  const setCountry = (country) => {
+    localStorage.setItem('carebook_country', country);
+    // Auto-set language based on country if user hasn't manually chosen one
+    if (!localStorage.getItem('carebook_lang')) {
+      if (country === 'brazil') {
+        setLang('pt');
+      } else if (country === 'uruguay') {
+        setLang('es');
+      }
+    }
+  };
+
   const t = (key) => translations[lang]?.[key] || translations.en?.[key] || key;
 
   return (
-    <I18nContext.Provider value={{ lang, changeLang, t, languages: LANGUAGES }}>
+    <I18nContext.Provider value={{ lang, changeLang, t, languages: LANGUAGES, setCountry }}>
       {children}
     </I18nContext.Provider>
   );

@@ -21,11 +21,11 @@ export default function Layout() {
           <div className="grid grid-cols-2 md:grid-cols-4 gap-8 mb-8">
             <div>
               <div className="flex items-center gap-2 mb-3">
-                <div className="w-7 h-7 rounded-lg bg-blue-600 flex items-center justify-center">
-                  <Heart className="w-4 h-4 text-white" />
-                </div>
-                <span className="font-bold text-gray-900">CareBook</span>
-              </div>
+                 <div className="w-7 h-7 rounded-lg bg-blue-600 flex items-center justify-center">
+                   <Heart className="w-4 h-4 text-white" />
+                 </div>
+                 <span className="font-bold text-gray-900">Cuidaro</span>
+               </div>
               <p className="text-sm text-gray-500 leading-relaxed">{t('footer_tagline')}</p>
             </div>
             <div>
@@ -40,7 +40,7 @@ export default function Layout() {
               <h4 className="font-semibold text-gray-900 mb-3 text-sm">{t('footer_providers')}</h4>
               <div className="space-y-2 text-sm text-gray-500">
                 <Link to="/my-profile" className="block hover:text-blue-600">{t('footer_become')}</Link>
-                <Link to="/premium" className="block hover:text-blue-600">Premium</Link>
+                <Link to="/premium" className="block hover:text-blue-600">Cuidaro+</Link>
                 <p>{t('footer_resources')}</p>
               </div>
             </div>

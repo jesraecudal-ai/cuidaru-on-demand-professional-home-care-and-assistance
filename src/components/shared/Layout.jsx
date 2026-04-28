@@ -61,11 +61,11 @@ export default function Layout() {
                   <img src="https://upload.wikimedia.org/wikipedia/commons/b/ba/Stripe_Logo%2C_revised_2016.svg" alt="Stripe" className="h-4" />
                 </div>
                 <div className="flex items-center gap-2">
-                  <img src="https://upload.wikimedia.org/wikipedia/commons/5/5e/Visa_Inc._logo.svg" alt="Visa" className="h-5 object-contain opacity-70" />
-                  <img src="https://upload.wikimedia.org/wikipedia/commons/2/2a/Mastercard-logo.svg" alt="Mastercard" className="h-5 object-contain opacity-70" />
-                  <img src="https://upload.wikimedia.org/wikipedia/commons/f/fa/American_Express_logo_%282018%29.svg" alt="Amex" className="h-5 object-contain opacity-70" />
-                  <img src="https://upload.wikimedia.org/wikipedia/commons/b/b0/Apple_Pay_logo.svg" alt="Apple Pay" className="h-4 object-contain opacity-70" />
-                  <img src="https://upload.wikimedia.org/wikipedia/commons/f/f2/Google_Pay_Logo.svg" alt="Google Pay" className="h-4 object-contain opacity-70" />
+                  <span className="text-xs font-semibold text-gray-600">Visa</span>
+                  <span className="text-xs font-semibold text-gray-600">Mastercard</span>
+                  <span className="text-xs font-semibold text-gray-600">Amex</span>
+                  <span className="text-xs font-semibold text-gray-600">Apple Pay</span>
+                  <span className="text-xs font-semibold text-gray-600">Google Pay</span>
                 </div>
               </div>
             </div>

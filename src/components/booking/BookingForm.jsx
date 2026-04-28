@@ -23,16 +23,16 @@ export default function BookingForm({ provider, clientProfile }) {
   const [bypassWarning, setBypassWarning] = useState(false);
   const [availability, setAvailability] = useState(null);
 
-  // Check if client has pending reviews they must complete first
+  // Check if client has an unreviewed completed booking with THIS specific provider
   const { data: clientBookings = [] } = useQuery({
-    queryKey: ['clientBookingsForReviewGate', clientProfile?.user_email],
-    queryFn: () => base44.entities.Booking.filter({ client_email: clientProfile.user_email, status: 'payment_released' }),
-    enabled: !!clientProfile?.user_email,
+    queryKey: ['clientBookingsForReviewGate', clientProfile?.user_email, provider?.id],
+    queryFn: () => base44.entities.Booking.filter({ client_email: clientProfile.user_email, provider_id: provider.id, status: 'payment_released' }),
+    enabled: !!clientProfile?.user_email && !!provider?.id,
   });
   const { data: myReviews = [] } = useQuery({
-    queryKey: ['myReviewsForGate', clientProfile?.user_email],
-    queryFn: () => base44.entities.Review.filter({ reviewer_email: clientProfile.user_email }),
-    enabled: !!clientProfile?.user_email,
+    queryKey: ['myReviewsForGate', clientProfile?.user_email, provider?.id],
+    queryFn: () => base44.entities.Review.filter({ reviewer_email: clientProfile.user_email, provider_id: provider.id }),
+    enabled: !!clientProfile?.user_email && !!provider?.id,
   });
   const reviewedIds = new Set(myReviews.map(r => r.booking_id));
   const hasPendingReview = clientBookings.some(b => !reviewedIds.has(b.id));

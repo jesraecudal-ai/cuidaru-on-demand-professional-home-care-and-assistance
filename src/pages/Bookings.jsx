@@ -213,7 +213,11 @@ export default function Bookings() {
               </div>
             ) : (
               <div className="space-y-4">
-                {providerBookings.map(b => <BookingCard key={b.id} booking={b} isProvider onAction={handleAction} hasPendingReview={providerUnreviewed.length > 0} />)}
+                {providerBookings.map(b => {
+                  // Block accepting only if there's an unreviewed completed booking with THIS specific client
+                  const pendingWithClient = providerUnreviewed.some(u => u.client_email === b.client_email);
+                  return <BookingCard key={b.id} booking={b} isProvider onAction={handleAction} hasPendingReview={pendingWithClient} />;
+                })}
               </div>
             )}
             {providerUnreviewed.length > 0 && (

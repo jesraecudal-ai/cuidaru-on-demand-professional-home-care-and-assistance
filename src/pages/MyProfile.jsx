@@ -30,7 +30,7 @@ export default function MyProfile() {
     avatar_url: '', id_document_url: '',
   });
 
-  const isProvider = userProfile?.role === 'provider';
+  const isProvider = userProfile?.role === 'provider' || userProfile?.role === 'both' || !!existingProvider;
   const country = userProfile?.country || 'brazil';
   const countryInfo = COUNTRY_SETTINGS[country] || COUNTRY_SETTINGS.brazil;
 
@@ -151,8 +151,20 @@ export default function MyProfile() {
 
       {!isProvider ? (
         <Card className="mb-6 border-blue-200 bg-blue-50">
-          <CardContent className="p-4 text-sm text-blue-800">
-            You signed up as a <strong>client</strong>. To become a provider, update your role in settings or contact support.
+          <CardContent className="p-5">
+            <p className="text-blue-800 font-medium mb-3">Want to offer your services too?</p>
+            <p className="text-sm text-blue-700 mb-4">Set up a provider profile to get hired and earn money through CareBook.</p>
+            <Button
+              className="bg-blue-600 hover:bg-blue-700 gap-2"
+              onClick={async () => {
+                if (userProfile) {
+                  await base44.entities.UserProfile.update(userProfile.id, { role: 'both' });
+                  await refetchUserProfile();
+                }
+              }}
+            >
+              <Briefcase className="w-4 h-4" /> Become a Provider
+            </Button>
           </CardContent>
         </Card>
       ) : (

@@ -25,7 +25,7 @@ export default function Onboarding() {
     } else {
       await base44.entities.UserProfile.create({ user_email: me.email, role, country, onboarding_complete: true });
     }
-    if (role === 'provider') {
+    if (role === 'provider' || role === 'both') {
       navigate('/my-profile');
     } else {
       navigate('/browse');
@@ -76,6 +76,20 @@ export default function Onboarding() {
                     <p className="text-sm text-gray-500">Offer your skills and get paid securely</p>
                   </div>
                   {role === 'provider' && <ChevronRight className="ml-auto text-green-500 w-5 h-5" />}
+                </CardContent>
+              </Card>
+
+              <Card
+                className={`cursor-pointer border-2 transition-all hover:shadow-lg ${role === 'both' ? 'border-purple-500 bg-purple-50' : 'border-gray-200 hover:border-purple-300'}`}
+                onClick={() => setRole('both')}
+              >
+                <CardContent className="p-6 flex items-center gap-4">
+                  <div className="w-14 h-14 rounded-2xl bg-purple-100 flex items-center justify-center text-2xl">🤝</div>
+                  <div>
+                    <h3 className="text-lg font-semibold text-gray-900">Both — hire & work</h3>
+                    <p className="text-sm text-gray-500">Find help and offer your own services</p>
+                  </div>
+                  {role === 'both' && <ChevronRight className="ml-auto text-purple-500 w-5 h-5" />}
                 </CardContent>
               </Card>
             </div>

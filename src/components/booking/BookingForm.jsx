@@ -280,13 +280,15 @@ export default function BookingForm({ provider, clientProfile }) {
               </div>
 
               <div>
-                <Label className="text-sm font-semibold text-gray-800 mb-2 block">Additional notes (optional)</Label>
+                <Label className="text-sm font-semibold text-gray-800 mb-2 block">Service details & agreement</Label>
+                <p className="text-xs text-gray-600 mb-2">Describe the specific service, schedule, and terms. The provider may adjust these details during negotiation while keeping the price in coordination.</p>
                 <Textarea
-                  placeholder="Any special requests or details..."
+                  placeholder="e.g., Monday-Friday 9am-5pm, help with elderly care, light cooking, etc."
                   value={form.instructions}
                   onChange={e => handleInstructionChange(e.target.value)}
                   rows={3}
                   className="text-sm"
+                  required
                 />
                 {bypassWarning && (
                   <div className="mt-2 flex items-start gap-2 bg-orange-50 border border-orange-200 rounded-lg p-2 text-xs text-orange-700">

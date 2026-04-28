@@ -213,7 +213,7 @@ export default function Bookings() {
               </div>
             ) : (
               <div className="space-y-4">
-                {providerBookings.map(b => <BookingCard key={b.id} booking={b} isProvider onAction={handleAction} />)}
+                {providerBookings.map(b => <BookingCard key={b.id} booking={b} isProvider onAction={handleAction} hasPendingReview={providerUnreviewed.length > 0} />)}
               </div>
             )}
             {providerUnreviewed.length > 0 && (

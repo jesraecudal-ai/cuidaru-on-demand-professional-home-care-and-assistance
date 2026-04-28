@@ -6,7 +6,7 @@ import { Label } from '@/components/ui/label';
 import { Textarea } from '@/components/ui/textarea';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Separator } from '@/components/ui/separator';
-import { Calendar, MapPin, Shield, AlertTriangle, CalendarDays } from 'lucide-react';
+import { Calendar, MapPin, Shield, AlertTriangle, CalendarDays, Star } from 'lucide-react';
 import { base44 } from '@/api/base44Client';
 import { toast } from 'sonner';
 import { useNavigate } from 'react-router-dom';
@@ -14,6 +14,7 @@ import { useI18n } from '@/lib/i18n';
 import { detectBypass } from '@/lib/constants';
 import { usePricing } from '@/lib/usePricing';
 import AvailabilityViewer from '@/components/availability/AvailabilityViewer';
+import { useQuery } from '@tanstack/react-query';
 
 export default function BookingForm({ provider, clientProfile }) {
   const navigate = useNavigate();
@@ -21,6 +22,20 @@ export default function BookingForm({ provider, clientProfile }) {
   const [loading, setLoading] = useState(false);
   const [bypassWarning, setBypassWarning] = useState(false);
   const [availability, setAvailability] = useState(null);
+
+  // Check if client has pending reviews they must complete first
+  const { data: clientBookings = [] } = useQuery({
+    queryKey: ['clientBookingsForReviewGate', clientProfile?.user_email],
+    queryFn: () => base44.entities.Booking.filter({ client_email: clientProfile.user_email, status: 'payment_released' }),
+    enabled: !!clientProfile?.user_email,
+  });
+  const { data: myReviews = [] } = useQuery({
+    queryKey: ['myReviewsForGate', clientProfile?.user_email],
+    queryFn: () => base44.entities.Review.filter({ reviewer_email: clientProfile.user_email }),
+    enabled: !!clientProfile?.user_email,
+  });
+  const reviewedIds = new Set(myReviews.map(r => r.booking_id));
+  const hasPendingReview = clientBookings.some(b => !reviewedIds.has(b.id));
   const [form, setForm] = useState({
     booking_type: 'hourly', start_date: '', start_time: '09:00',
     end_date: '', duration: 1, address: '', instructions: '',
@@ -186,9 +201,19 @@ export default function BookingForm({ provider, clientProfile }) {
             <p className="text-xs text-green-700">{t('escrow_notice')}</p>
           </div>
 
-          <Button type="submit" className="w-full h-11 bg-blue-600 hover:bg-blue-700 text-sm font-semibold" disabled={loading}>
-            {loading ? t('processing') : `${t('book_now')} — ${countryInfo.symbol}${total.toFixed(2)}`}
-          </Button>
+          {hasPendingReview ? (
+            <div className="bg-amber-50 border border-amber-200 rounded-lg p-3 flex items-start gap-2">
+              <Star className="w-4 h-4 text-amber-500 mt-0.5 flex-shrink-0" />
+              <div>
+                <p className="text-xs font-semibold text-amber-800">Review required before booking</p>
+                <p className="text-xs text-amber-700 mt-0.5">You have a completed job waiting for your review. Please go to <a href="/bookings" className="underline font-medium">My Bookings</a> and leave a review first.</p>
+              </div>
+            </div>
+          ) : (
+            <Button type="submit" className="w-full h-11 bg-blue-600 hover:bg-blue-700 text-sm font-semibold" disabled={loading}>
+              {loading ? t('processing') : `${t('book_now')} — ${countryInfo.symbol}${total.toFixed(2)}`}
+            </Button>
+          )}
         </form>
       </CardContent>
     </Card>

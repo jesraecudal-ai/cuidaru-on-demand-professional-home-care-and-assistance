@@ -2,12 +2,12 @@ import React from 'react';
 import { Card, CardContent } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
-import { Calendar, MapPin, DollarSign, User, Clock } from 'lucide-react';
+import { Calendar, MapPin, DollarSign, User, Clock, Star } from 'lucide-react';
 import { format } from 'date-fns';
 import { useI18n } from '@/lib/i18n';
 import { BOOKING_STATUSES, COUNTRY_SETTINGS } from '@/lib/constants';
 
-export default function BookingCard({ booking, isProvider, onAction }) {
+export default function BookingCard({ booking, isProvider, onAction, hasPendingReview }) {
   const { t } = useI18n();
   const statusInfo = BOOKING_STATUSES[booking.status] || { label: booking.status, color: 'bg-gray-100 text-gray-700' };
   const country = COUNTRY_SETTINGS[booking.country] || COUNTRY_SETTINGS.brazil;
@@ -52,7 +52,14 @@ export default function BookingCard({ booking, isProvider, onAction }) {
               {/* Provider actions */}
               {isProvider && booking.status === 'pending_approval' && (
                 <>
-                  <Button size="sm" className="bg-green-600 hover:bg-green-700 h-8 text-xs" onClick={() => onAction(booking.id, 'accepted', booking)}>Accept</Button>
+                  {hasPendingReview ? (
+                    <div className="flex flex-col items-end gap-1">
+                      <Button size="sm" className="bg-green-600 hover:bg-green-700 h-8 text-xs opacity-50 cursor-not-allowed" disabled>Accept</Button>
+                      <p className="text-xs text-amber-600 flex items-center gap-1"><Star className="w-3 h-3" /> Review a past job first</p>
+                    </div>
+                  ) : (
+                    <Button size="sm" className="bg-green-600 hover:bg-green-700 h-8 text-xs" onClick={() => onAction(booking.id, 'accepted', booking)}>Accept</Button>
+                  )}
                   <Button size="sm" variant="outline" className="h-8 text-xs text-red-600 border-red-200" onClick={() => onAction(booking.id, 'cancelled', booking)}>Decline</Button>
                 </>
               )}

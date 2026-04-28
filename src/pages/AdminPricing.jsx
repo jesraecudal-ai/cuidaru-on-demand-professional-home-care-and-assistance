@@ -111,7 +111,7 @@ function CountryPricingCard({ country, existing, onSave, saving }) {
 }
 
 export default function AdminPricing() {
-  const { user } = useUserProfile();
+  const { user, loading: userLoading } = useUserProfile();
   const queryClient = useQueryClient();
   const [savingCountry, setSavingCountry] = useState(null);
 
@@ -119,6 +119,14 @@ export default function AdminPricing() {
     queryKey: ['pricingSettings'],
     queryFn: () => base44.entities.PricingSettings.list(),
   });
+
+  if (userLoading) {
+    return (
+      <div className="max-w-2xl mx-auto px-4 py-20 text-center">
+        <div className="w-8 h-8 border-4 border-blue-100 border-t-blue-600 rounded-full animate-spin mx-auto" />
+      </div>
+    );
+  }
 
   if (user?.role !== 'admin') {
     return (

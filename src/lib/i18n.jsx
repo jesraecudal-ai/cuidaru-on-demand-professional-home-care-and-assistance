@@ -41,6 +41,7 @@ const translations = {
     cat_cook: 'Cook',
     cat_laundry_helper: 'Laundry Helper',
     cat_nanny: 'Nanny',
+    cat_errand_runner: 'Errand Runner',
 
     // Category descriptions
     cat_desc_caregiver: 'Elderly & special needs care',
@@ -52,6 +53,7 @@ const translations = {
     cat_desc_cook: 'Home-cooked meals & catering',
     cat_desc_laundry_helper: 'Laundry & garment care',
     cat_desc_nanny: 'Trusted childcare professionals',
+    cat_desc_errand_runner: 'Errands, deliveries & daily tasks',
     per_month: 'month',
 
     // How it works
@@ -252,6 +254,7 @@ const translations = {
     cat_cook: 'Cozinheiro(a)',
     cat_laundry_helper: 'Lavanderia',
     cat_nanny: 'Babá',
+    cat_errand_runner: 'Mensageiro(a)',
 
     cat_desc_caregiver: 'Cuidados para idosos e necessidades especiais',
     cat_desc_assistant_nurse: 'Suporte para necessidades diárias de saúde',
@@ -262,6 +265,7 @@ const translations = {
     cat_desc_cook: 'Refeições caseiras e catering',
     cat_desc_laundry_helper: 'Lavanderia e cuidados com roupas',
     cat_desc_nanny: 'Babás de confiança',
+    cat_desc_errand_runner: 'Recados, entregas e tarefas do dia a dia',
     per_month: 'mês',
 
     how_it_works: 'Como Funciona',
@@ -451,6 +455,7 @@ const translations = {
     cat_cook: 'Cocinero/a',
     cat_laundry_helper: 'Ayudante de Lavandería',
     cat_nanny: 'Niñera',
+    cat_errand_runner: 'Mensajero/a',
 
     cat_desc_caregiver: 'Cuidados para adultos mayores y necesidades especiales',
     cat_desc_assistant_nurse: 'Apoyo para necesidades diarias de salud',
@@ -461,6 +466,7 @@ const translations = {
     cat_desc_cook: 'Comidas caseras y catering',
     cat_desc_laundry_helper: 'Lavandería y cuidado de ropa',
     cat_desc_nanny: 'Niñeras de confianza',
+    cat_desc_errand_runner: 'Mandados, entregas y tareas del día a día',
     per_month: 'mes',
 
     how_it_works: 'Cómo Funciona',

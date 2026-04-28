@@ -8,6 +8,7 @@ export const CATEGORIES = [
   { key: 'cook', icon: '👨‍🍳' },
   { key: 'laundry_helper', icon: '👕' },
   { key: 'nanny', icon: '👶' },
+  { key: 'errand_runner', icon: '🏃' },
 ];
 
 export const CATEGORY_COLORS = {
@@ -20,6 +21,7 @@ export const CATEGORY_COLORS = {
   cook: 'from-orange-500 to-amber-500',
   laundry_helper: 'from-violet-500 to-fuchsia-500',
   nanny: 'from-amber-500 to-orange-500',
+  errand_runner: 'from-sky-500 to-blue-500',
 };
 
 export const CATEGORY_BADGE_COLORS = {
@@ -32,6 +34,7 @@ export const CATEGORY_BADGE_COLORS = {
   cook: 'bg-orange-100 text-orange-700 border-orange-200',
   laundry_helper: 'bg-violet-100 text-violet-700 border-violet-200',
   nanny: 'bg-amber-100 text-amber-700 border-amber-200',
+  errand_runner: 'bg-sky-100 text-sky-700 border-sky-200',
 };
 
 export const COUNTRY_SETTINGS = {

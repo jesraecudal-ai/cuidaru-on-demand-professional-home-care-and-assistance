@@ -25,7 +25,8 @@
         "house_cleaner",
         "cook",
         "laundry_helper",
-        "nanny"
+        "nanny",
+        "errand_runner"
       ]
     },
     "bio": {

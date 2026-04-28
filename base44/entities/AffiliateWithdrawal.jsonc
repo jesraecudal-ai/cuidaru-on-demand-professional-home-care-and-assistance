@@ -1,0 +1,47 @@
+{
+  "name": "AffiliateWithdrawal",
+  "type": "object",
+  "properties": {
+    "affiliate_id": {
+      "type": "string"
+    },
+    "affiliate_email": {
+      "type": "string"
+    },
+    "amount": {
+      "type": "number"
+    },
+    "method": {
+      "type": "string",
+      "enum": [
+        "stripe",
+        "debit_card",
+        "prepaid_card"
+      ],
+      "default": "stripe"
+    },
+    "payout_details": {
+      "type": "string",
+      "description": "Card last4, Stripe email, etc."
+    },
+    "status": {
+      "type": "string",
+      "enum": [
+        "pending",
+        "processing",
+        "paid",
+        "failed"
+      ],
+      "default": "pending"
+    },
+    "notes": {
+      "type": "string"
+    }
+  },
+  "required": [
+    "affiliate_id",
+    "affiliate_email",
+    "amount",
+    "method"
+  ]
+}

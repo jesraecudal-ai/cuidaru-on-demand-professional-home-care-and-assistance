@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { base44 } from '@/api/base44Client';
 import { Button } from '@/components/ui/button';
@@ -6,7 +6,8 @@ import { Card, CardContent } from '@/components/ui/card';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Label } from '@/components/ui/label';
 import { COUNTRY_SETTINGS } from '@/lib/constants';
-import { Heart, Briefcase, ChevronRight } from 'lucide-react';
+import { Heart, Briefcase, ChevronRight, GitBranch } from 'lucide-react';
+import AffiliateApplyCode from '@/components/affiliate/AffiliateApplyCode';
 import { motion } from 'framer-motion';
 
 export default function Onboarding() {
@@ -15,6 +16,11 @@ export default function Onboarding() {
   const [role, setRole] = useState(null);
   const [country, setCountry] = useState('brazil');
   const [loading, setLoading] = useState(false);
+  const [userEmail, setUserEmail] = useState(null);
+
+  useEffect(() => {
+    base44.auth.me().then(u => setUserEmail(u?.email)).catch(() => {});
+  }, []);
 
   const handleComplete = async () => {
     setLoading(true);
@@ -125,10 +131,32 @@ export default function Onboarding() {
 
             <div className="flex gap-3 mt-6">
               <Button variant="outline" className="flex-1 h-12" onClick={() => setStep(1)}>Back</Button>
+              <Button className="flex-1 h-12" onClick={() => setStep(3)}>
+                Continue <ChevronRight className="w-4 h-4 ml-1" />
+              </Button>
+            </div>
+          </motion.div>
+        )}
+
+        {step === 3 && (
+          <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }}>
+            <div className="text-center mb-6">
+              <div className="w-14 h-14 rounded-2xl bg-purple-100 flex items-center justify-center mx-auto mb-3">
+                <GitBranch className="w-7 h-7 text-purple-600" />
+              </div>
+              <h2 className="text-2xl font-bold text-gray-800">Got a referral code?</h2>
+              <p className="text-gray-500 text-sm mt-1">If someone referred you to CareBook, enter their code to reward them.</p>
+            </div>
+
+            <AffiliateApplyCode userEmail={userEmail} />
+
+            <div className="flex gap-3 mt-6">
+              <Button variant="outline" className="flex-1 h-12" onClick={() => setStep(2)}>Back</Button>
               <Button className="flex-1 h-12" onClick={handleComplete} disabled={loading}>
                 {loading ? 'Setting up...' : "Let's Go!"}
               </Button>
             </div>
+            <p className="text-center text-xs text-gray-400 mt-3">You can skip this — entering a code is optional.</p>
           </motion.div>
         )}
       </div>

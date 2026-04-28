@@ -1,0 +1,60 @@
+{
+  "name": "AffiliateReferral",
+  "type": "object",
+  "properties": {
+    "affiliate_id": {
+      "type": "string",
+      "description": "AffiliateUser entity id"
+    },
+    "affiliate_email": {
+      "type": "string"
+    },
+    "affiliate_code": {
+      "type": "string"
+    },
+    "referred_user_email": {
+      "type": "string"
+    },
+    "referred_user_name": {
+      "type": "string"
+    },
+    "referred_user_role": {
+      "type": "string",
+      "enum": [
+        "client",
+        "provider",
+        "both"
+      ],
+      "description": "Role of the referred user at the time of code use"
+    },
+    "commission_pct": {
+      "type": "number",
+      "default": 5,
+      "description": "Commission percentage applied"
+    },
+    "commission_amount": {
+      "type": "number",
+      "default": 0,
+      "description": "5% of the referred user's first booking/subscription total"
+    },
+    "commission_status": {
+      "type": "string",
+      "enum": [
+        "pending",
+        "earned",
+        "paid"
+      ],
+      "default": "pending"
+    },
+    "booking_id": {
+      "type": "string",
+      "description": "The first booking that triggered the commission"
+    }
+  },
+  "required": [
+    "affiliate_id",
+    "affiliate_email",
+    "affiliate_code",
+    "referred_user_email"
+  ]
+}

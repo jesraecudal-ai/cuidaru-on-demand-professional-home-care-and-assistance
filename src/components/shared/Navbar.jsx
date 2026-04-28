@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { Link, useLocation } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
-import { Menu, X, Search, User, Calendar, LogOut, Zap, Heart, Wallet, MessageCircle, AlertTriangle, Settings, ArrowDownCircle, ShieldCheck } from 'lucide-react';
+import { Menu, X, Search, User, Calendar, LogOut, Zap, Heart, Wallet, MessageCircle, AlertTriangle, Settings, ArrowDownCircle, ShieldCheck, GitBranch } from 'lucide-react';
 import { base44 } from '@/api/base44Client';
 import {
   DropdownMenu, DropdownMenuContent, DropdownMenuItem,
@@ -80,6 +80,7 @@ export default function Navbar() {
                   <DropdownMenuItem asChild><Link to="/payouts" className="gap-2 text-green-700"><ArrowDownCircle className="w-4 h-4" /> My Payouts</Link></DropdownMenuItem>
                 )}
                 <DropdownMenuItem asChild><Link to="/premium" className="gap-2 text-amber-600"><Zap className="w-4 h-4" /> Premium</Link></DropdownMenuItem>
+                <DropdownMenuItem asChild><Link to="/affiliate" className="gap-2 text-purple-600"><GitBranch className="w-4 h-4" /> Affiliate</Link></DropdownMenuItem>
                 {user?.role === 'admin' && <DropdownMenuItem asChild><Link to="/admin/verifications" className="gap-2 text-blue-600"><ShieldCheck className="w-4 h-4" /> Verifications</Link></DropdownMenuItem>}
                 {user?.role === 'admin' && <DropdownMenuItem asChild><Link to="/admin/disputes" className="gap-2 text-orange-600"><AlertTriangle className="w-4 h-4" /> Disputes</Link></DropdownMenuItem>}
                 {user?.role === 'admin' && <DropdownMenuItem asChild><Link to="/admin/pricing" className="gap-2 text-blue-600"><Settings className="w-4 h-4" /> Pricing</Link></DropdownMenuItem>}
@@ -127,6 +128,9 @@ export default function Navbar() {
               <Button variant="ghost" className="w-full justify-start gap-2 text-sm text-green-700"><ArrowDownCircle className="w-4 h-4" /> My Payouts</Button>
             </Link>
           )}
+          <Link to="/affiliate" onClick={() => setMobileOpen(false)}>
+            <Button variant="ghost" className="w-full justify-start gap-2 text-sm text-purple-600"><GitBranch className="w-4 h-4" /> Affiliate</Button>
+          </Link>
           {user?.role === 'admin' && (
             <Link to="/admin/verifications" onClick={() => setMobileOpen(false)}>
               <Button variant="ghost" className="w-full justify-start gap-2 text-sm text-blue-600"><ShieldCheck className="w-4 h-4" /> Verifications</Button>

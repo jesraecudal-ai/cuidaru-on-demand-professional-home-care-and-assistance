@@ -1,0 +1,60 @@
+{
+  "name": "AffiliateUser",
+  "type": "object",
+  "properties": {
+    "user_email": {
+      "type": "string",
+      "description": "The affiliate's email (linked to their platform account)"
+    },
+    "full_name": {
+      "type": "string"
+    },
+    "affiliate_code": {
+      "type": "string",
+      "description": "Unique referral code"
+    },
+    "status": {
+      "type": "string",
+      "enum": [
+        "active",
+        "suspended"
+      ],
+      "default": "active"
+    },
+    "total_referrals": {
+      "type": "number",
+      "default": 0
+    },
+    "total_commission_earned": {
+      "type": "number",
+      "default": 0,
+      "description": "Total USD earned from all commissions"
+    },
+    "pending_commission": {
+      "type": "number",
+      "default": 0,
+      "description": "Amount available to withdraw"
+    },
+    "total_withdrawn": {
+      "type": "number",
+      "default": 0
+    },
+    "payout_method": {
+      "type": "string",
+      "enum": [
+        "stripe",
+        "debit_card",
+        "prepaid_card"
+      ],
+      "default": "stripe"
+    },
+    "payout_details": {
+      "type": "string",
+      "description": "Card last4 or Stripe email"
+    }
+  },
+  "required": [
+    "user_email",
+    "affiliate_code"
+  ]
+}

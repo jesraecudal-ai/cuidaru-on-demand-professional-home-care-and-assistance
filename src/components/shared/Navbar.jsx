@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { Link, useLocation } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
-import { Menu, X, Search, User, Calendar, LogOut, Zap, Heart, Wallet, MessageCircle, AlertTriangle } from 'lucide-react';
+import { Menu, X, Search, User, Calendar, LogOut, Zap, Heart, Wallet, MessageCircle, AlertTriangle, Settings } from 'lucide-react';
 import { base44 } from '@/api/base44Client';
 import {
   DropdownMenu, DropdownMenuContent, DropdownMenuItem,
@@ -78,6 +78,7 @@ export default function Navbar() {
                 <DropdownMenuItem asChild><Link to="/payments" className="gap-2"><Wallet className="w-4 h-4" /> Payments</Link></DropdownMenuItem>
                 <DropdownMenuItem asChild><Link to="/premium" className="gap-2 text-amber-600"><Zap className="w-4 h-4" /> Premium</Link></DropdownMenuItem>
                 {user?.role === 'admin' && <DropdownMenuItem asChild><Link to="/admin/disputes" className="gap-2 text-orange-600"><AlertTriangle className="w-4 h-4" /> Disputes</Link></DropdownMenuItem>}
+                {user?.role === 'admin' && <DropdownMenuItem asChild><Link to="/admin/pricing" className="gap-2 text-blue-600"><Settings className="w-4 h-4" /> Pricing</Link></DropdownMenuItem>}
                 <DropdownMenuSeparator />
                 <DropdownMenuItem onClick={() => base44.auth.logout()} className="gap-2 text-red-600">
                   <LogOut className="w-4 h-4" /> {t('nav_logout')}
@@ -120,6 +121,11 @@ export default function Navbar() {
           {user?.role === 'admin' && (
             <Link to="/admin/disputes" onClick={() => setMobileOpen(false)}>
               <Button variant="ghost" className="w-full justify-start gap-2 text-sm text-orange-600"><AlertTriangle className="w-4 h-4" /> Disputes</Button>
+            </Link>
+          )}
+          {user?.role === 'admin' && (
+            <Link to="/admin/pricing" onClick={() => setMobileOpen(false)}>
+              <Button variant="ghost" className="w-full justify-start gap-2 text-sm text-blue-600"><Settings className="w-4 h-4" /> Pricing</Button>
             </Link>
           )}
           <Link to="/my-profile" onClick={() => setMobileOpen(false)}>

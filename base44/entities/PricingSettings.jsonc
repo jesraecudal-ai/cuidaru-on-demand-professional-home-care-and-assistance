@@ -1,0 +1,37 @@
+{
+  "name": "PricingSettings",
+  "type": "object",
+  "properties": {
+    "country": {
+      "type": "string",
+      "enum": [
+        "brazil",
+        "uruguay",
+        "usa",
+        "canada"
+      ],
+      "description": "Country this pricing applies to"
+    },
+    "currency": {
+      "type": "string"
+    },
+    "symbol": {
+      "type": "string"
+    },
+    "fee_pct": {
+      "type": "number",
+      "description": "Platform fee percentage (e.g. 10 = 10%)"
+    },
+    "sub_client": {
+      "type": "number",
+      "description": "Client premium subscription price per month"
+    },
+    "sub_provider": {
+      "type": "number",
+      "description": "Provider premium subscription price per month"
+    }
+  },
+  "required": [
+    "country"
+  ]
+}

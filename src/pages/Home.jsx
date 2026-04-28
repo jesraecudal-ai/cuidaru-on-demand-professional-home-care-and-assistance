@@ -5,7 +5,8 @@ import { Card, CardContent } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Shield, Star, DollarSign, ArrowRight, CheckCircle2, MapPin, Zap, Lock } from 'lucide-react';
 import { motion } from 'framer-motion';
-import { CATEGORIES, CATEGORY_COLORS, COUNTRY_SETTINGS } from '@/lib/constants';
+import { CATEGORIES, CATEGORY_COLORS } from '@/lib/constants';
+import { usePricing } from '@/lib/usePricing';
 import { useI18n } from '@/lib/i18n';
 import { base44 } from '@/api/base44Client';
 import { useUserProfile } from '@/lib/useUserProfile';
@@ -23,7 +24,7 @@ export default function Home() {
   }, [loading, profile]);
 
   const country = profile?.country || 'brazil';
-  const countryInfo = COUNTRY_SETTINGS[country] || COUNTRY_SETTINGS.brazil;
+  const countryInfo = usePricing(country);
 
   const STEPS = [
     { icon: '🔍', title: t('step1_title'), desc: t('step1_desc') },

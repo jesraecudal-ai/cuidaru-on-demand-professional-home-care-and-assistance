@@ -11,7 +11,8 @@ import { base44 } from '@/api/base44Client';
 import { toast } from 'sonner';
 import { useNavigate } from 'react-router-dom';
 import { useI18n } from '@/lib/i18n';
-import { COUNTRY_SETTINGS, detectBypass } from '@/lib/constants';
+import { detectBypass } from '@/lib/constants';
+import { usePricing } from '@/lib/usePricing';
 import AvailabilityViewer from '@/components/availability/AvailabilityViewer';
 
 export default function BookingForm({ provider, clientProfile }) {
@@ -33,7 +34,7 @@ export default function BookingForm({ provider, clientProfile }) {
   }, [provider?.id]);
 
   const country = clientProfile?.country || provider.country || 'brazil';
-  const countryInfo = COUNTRY_SETTINGS[country] || COUNTRY_SETTINGS.brazil;
+  const countryInfo = usePricing(country);
   const isPremiumClient = clientProfile?.is_premium;
   const feePct = isPremiumClient ? 0 : countryInfo.fee_pct;
 

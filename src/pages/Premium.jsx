@@ -3,7 +3,7 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { Zap, CheckCircle2, Star, Shield, MapPin, TrendingUp } from 'lucide-react';
-import { COUNTRY_SETTINGS } from '@/lib/constants';
+import { usePricing } from '@/lib/usePricing';
 import { useUserProfile } from '@/lib/useUserProfile';
 import { toast } from 'sonner';
 import { base44 } from '@/api/base44Client';
@@ -11,7 +11,7 @@ import { base44 } from '@/api/base44Client';
 export default function Premium() {
   const { profile, user, refetch } = useUserProfile();
   const country = profile?.country || 'brazil';
-  const c = COUNTRY_SETTINGS[country] || COUNTRY_SETTINGS.brazil;
+  const c = usePricing(country);
 
   const handleSubscribe = async (type) => {
     // Simulate subscription activation

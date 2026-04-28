@@ -20,7 +20,7 @@ export default function StartChatButton({ provider }) {
     // conversation_id = clientEmail__providerId
     const conversationId = `${user.email}__${provider.id}`;
 
-    // Create a welcome message if conversation is new
+    // Create a welcome message if conversation is new (even without booking)
     const existing = await base44.entities.ChatMessage.filter({ conversation_id: conversationId });
     if (existing.length === 0) {
       await base44.entities.ChatMessage.create({

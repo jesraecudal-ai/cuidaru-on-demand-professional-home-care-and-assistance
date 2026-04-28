@@ -3,7 +3,7 @@ import { base44 } from '@/api/base44Client';
 import { Button } from '@/components/ui/button';
 import { Textarea } from '@/components/ui/textarea';
 import { Badge } from '@/components/ui/badge';
-import { Send, Shield, ArrowLeftRight } from 'lucide-react';
+import { Send, Shield, ArrowLeftRight, AlertTriangle } from 'lucide-react';
 import { detectBypass } from '@/lib/constants';
 import { toast } from 'sonner';
 import { format } from 'date-fns';
@@ -203,6 +203,19 @@ export default function ChatWindow({
 
   return (
     <div className="flex flex-col h-full">
+      {/* Protection warning for pre-booking chats */}
+      {!activeBooking && (
+        <div className="px-4 py-3 border-b border-amber-200 bg-amber-50 flex items-start gap-2">
+          <AlertTriangle className="w-4 h-4 text-amber-600 mt-0.5 flex-shrink-0" />
+          <div className="flex-1">
+            <p className="text-xs font-semibold text-amber-900">You're chatting without an active booking</p>
+            <p className="text-xs text-amber-700 mt-1">
+              For your protection, keep all communication and payments within CareBook. Exchanging contact details or arranging outside payments voids our protection policies.
+            </p>
+          </div>
+        </div>
+      )}
+
       {/* Active booking badge */}
       {activeBooking && (
         <div className="px-4 py-2 border-b border-gray-100 bg-gray-50 flex items-center gap-2">
@@ -229,7 +242,12 @@ export default function ChatWindow({
         {messages.length === 0 && (
           <div className="text-center py-12 text-gray-400 text-sm">
             <Shield className="w-8 h-8 mx-auto mb-2 text-gray-300" />
-            Start the conversation. All messages are monitored for safety.
+            <p>Start the conversation. All messages are monitored for safety.</p>
+            {!activeBooking && (
+              <p className="text-xs text-amber-600 mt-2 font-medium">
+                ⚠️ No booking yet — keep contact details inside the app for protection
+              </p>
+            )}
           </div>
         )}
         {messages.map(msg => {

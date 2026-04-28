@@ -126,9 +126,15 @@ export default function Payments() {
           </h1>
           <p className="text-gray-500 mt-1">Track your income, escrow funds, and payouts</p>
         </div>
-        <Button variant="outline" size="sm" onClick={loadFinance} className="gap-2">
-          <RefreshCw className="w-4 h-4" /> Refresh
-        </Button>
+        <div className="flex items-center gap-3">
+          <div className="flex items-center gap-1.5 bg-gray-50 border border-gray-200 rounded-lg px-3 py-1.5">
+            <span className="text-xs text-gray-400">Powered by</span>
+            <img src="https://upload.wikimedia.org/wikipedia/commons/b/ba/Stripe_Logo%2C_revised_2016.svg" alt="Stripe" className="h-4" />
+          </div>
+          <Button variant="outline" size="sm" onClick={loadFinance} className="gap-2">
+            <RefreshCw className="w-4 h-4" /> Refresh
+          </Button>
+        </div>
       </div>
 
       {/* Finance Summary */}

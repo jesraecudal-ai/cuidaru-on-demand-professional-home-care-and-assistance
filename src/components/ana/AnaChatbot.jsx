@@ -20,7 +20,9 @@ export default function AnaChatbot() {
   };
 
   useEffect(() => {
-    scrollToBottom();
+    if (messages.length > 0) {
+      scrollToBottom();
+    }
   }, [messages]);
 
   const handleOpen = () => {
@@ -63,20 +65,24 @@ export default function AnaChatbot() {
         role: 'user',
         content: userMessage
       });
-
-      // Subscribe to real-time updates
-      const unsubscribe = base44.agents.subscribeToConversation(conversationId, (data) => {
-        setMessages(data.messages);
-      });
-
-      // Clean up subscription after a timeout
-      setTimeout(() => unsubscribe(), 30000);
     } catch (error) {
       console.error('Error sending message:', error);
-    } finally {
       setIsLoading(false);
     }
   };
+
+  useEffect(() => {
+    if (conversationId && isOpen) {
+      const unsubscribe = base44.agents.subscribeToConversation(conversationId, (data) => {
+        if (data.messages) {
+          setMessages(data.messages);
+          setIsLoading(false);
+        }
+      });
+
+      return () => unsubscribe();
+    }
+  }, [conversationId, isOpen]);
 
   return (
     <>

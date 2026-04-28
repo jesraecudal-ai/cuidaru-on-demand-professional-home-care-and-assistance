@@ -199,7 +199,7 @@ export default function MyProfile() {
         </Card>
       )}
 
-      {isClient && (
+      {isClient && userProfile && (
         <Card className="mb-6 border border-gray-100 shadow-sm">
           <CardHeader><CardTitle className="flex items-center gap-2 text-lg text-gray-800"><Briefcase className="w-5 h-5 text-blue-600" /> Business Profile</CardTitle></CardHeader>
           <CardContent className="space-y-4">
@@ -214,6 +214,34 @@ export default function MyProfile() {
                 className="mt-1.5"
               />
               <p className="text-xs text-gray-400 mt-2">Your verified identity is always kept on file for security</p>
+            </div>
+            <div>
+              <Label htmlFor="company_logo">Company Logo (Optional)</Label>
+              <p className="text-xs text-gray-500 mb-2">Upload your company logo to display alongside your profile</p>
+              <div className="flex items-center gap-4">
+                {userProfile?.company_logo_url ? (
+                  <img src={userProfile.company_logo_url} alt="Company logo" className="w-16 h-16 rounded object-cover border border-gray-200" />
+                ) : (
+                  <div className="w-16 h-16 rounded border-2 border-dashed border-gray-300 bg-gray-50 flex items-center justify-center text-xs text-gray-400">No logo</div>
+                )}
+                <Label htmlFor="company_logo" className="cursor-pointer">
+                  <Button variant="outline" size="sm" className="gap-2" asChild><span><Upload className="w-3.5 h-3.5" /> Upload Logo</span></Button>
+                  <input 
+                    id="company_logo" 
+                    type="file" 
+                    accept="image/*" 
+                    className="hidden" 
+                    onChange={async (e) => {
+                      const file = e.target.files?.[0];
+                      if (!file) return;
+                      const { file_url } = await base44.integrations.Core.UploadFile({ file });
+                      await base44.entities.UserProfile.update(userProfile.id, { company_logo_url: file_url });
+                      await refetchUserProfile();
+                      toast.success('Company logo uploaded!');
+                    }}
+                  />
+                </Label>
+              </div>
             </div>
             <Button
               onClick={async () => {

@@ -9,6 +9,7 @@ import { toast } from 'sonner';
 import { format } from 'date-fns';
 import CounterOfferBubble from './CounterOfferBubble';
 import CounterOfferForm from './CounterOfferForm';
+import ProfilePopup from './ProfilePopup';
 
 export default function ChatWindow({
   conversationId, currentUser, currentUserRole,
@@ -20,6 +21,8 @@ export default function ChatWindow({
   const [sending, setSending] = useState(false);
   const [showOfferForm, setShowOfferForm] = useState(false);
   const [activeBooking, setActiveBooking] = useState(booking || null);
+  const [profilePopupOpen, setProfilePopupOpen] = useState(false);
+  const [selectedProfile, setSelectedProfile] = useState(null);
   const bottomRef = useRef(null);
 
   // Load active booking for this conversation if not passed in
@@ -198,6 +201,15 @@ export default function ChatWindow({
     return 'bg-gray-100 text-gray-700';
   };
 
+  const handleProfileClick = (msg) => {
+    setSelectedProfile({
+      email: msg.sender_email,
+      role: msg.sender_role,
+      name: msg.sender_name,
+    });
+    setProfilePopupOpen(true);
+  };
+
   // Can make a counter offer if there's an active booking that's not yet paid
   const canCounterOffer = activeBooking && ['pending_approval', 'counter_offered'].includes(activeBooking.status);
 
@@ -258,7 +270,14 @@ export default function ChatWindow({
               <div key={msg.id} className={`flex ${isMe ? 'justify-end' : 'justify-start'}`}>
                 <div className={`flex flex-col gap-1 ${isMe ? 'items-end' : 'items-start'}`}>
                   <div className="flex items-center gap-2">
-                    {!isMe && <span className="text-xs font-medium text-gray-600">{msg.sender_name}</span>}
+                    {!isMe && (
+                      <button
+                        onClick={() => handleProfileClick(msg)}
+                        className="text-xs font-medium text-gray-600 hover:text-blue-600 hover:underline cursor-pointer"
+                      >
+                        {msg.sender_name}
+                      </button>
+                    )}
                     <Badge className={`text-xs py-0 px-1.5 ${roleColor(msg.sender_role)}`}>{msg.sender_role}</Badge>
                   </div>
                   <CounterOfferBubble
@@ -279,7 +298,14 @@ export default function ChatWindow({
             <div key={msg.id} className={`flex ${isMe ? 'justify-end' : 'justify-start'}`}>
               <div className={`max-w-[75%] ${isMe ? 'items-end' : 'items-start'} flex flex-col gap-1`}>
                 <div className="flex items-center gap-2">
-                  {!isMe && <span className="text-xs font-medium text-gray-600">{msg.sender_name}</span>}
+                  {!isMe && (
+                    <button
+                      onClick={() => handleProfileClick(msg)}
+                      className="text-xs font-medium text-gray-600 hover:text-blue-600 hover:underline cursor-pointer"
+                    >
+                      {msg.sender_name}
+                    </button>
+                  )}
                   <Badge className={`text-xs py-0 px-1.5 ${roleColor(msg.sender_role)}`}>{msg.sender_role}</Badge>
                 </div>
                 <div className={`rounded-2xl px-4 py-2.5 text-sm ${isMe ? 'bg-blue-600 text-white rounded-br-sm' : 'bg-gray-100 text-gray-900 rounded-bl-sm'}`}>
@@ -328,6 +354,17 @@ export default function ChatWindow({
             <Send className="w-4 h-4" />
           </Button>
         </div>
+      )}
+
+      {/* Profile Popup */}
+      {selectedProfile && (
+        <ProfilePopup
+          isOpen={profilePopupOpen}
+          onClose={() => setProfilePopupOpen(false)}
+          senderEmail={selectedProfile.email}
+          senderRole={selectedProfile.role}
+          senderName={selectedProfile.name}
+        />
       )}
     </div>
   );

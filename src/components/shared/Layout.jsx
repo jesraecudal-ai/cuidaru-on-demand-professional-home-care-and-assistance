@@ -1,6 +1,7 @@
 import React from 'react';
 import { Outlet } from 'react-router-dom';
 import Navbar from './Navbar';
+import AnaChatbot from '@/components/ana/AnaChatbot';
 import { Heart, MapPin, Shield, DollarSign } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import { useI18n } from '@/lib/i18n';
@@ -14,6 +15,7 @@ export default function Layout() {
       <main className="flex-1">
         <Outlet />
       </main>
+      <AnaChatbot />
       <footer className="bg-white border-t border-gray-100 mt-16">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
           <div className="grid grid-cols-2 md:grid-cols-4 gap-8 mb-8">

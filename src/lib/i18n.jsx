@@ -229,7 +229,7 @@ const translations = {
     footer_contact: 'Contact us',
     footer_terms: 'Terms of service',
     footer_tagline: 'Trusted marketplace for healthcare & home service professionals.',
-    footer_rights: '© 2026 CareBook. All rights reserved.',
+    footer_rights: '© 2026 Cuidaro. All rights reserved.',
 
     // Messages page
     messages: 'Messages',
@@ -243,10 +243,10 @@ const translations = {
     submit_offer: 'Submit Offer',
 
     // Premium page
-    premium: 'Premium',
-    premium_benefits: 'Premium Benefits',
-    premium_client: 'Premium for Clients',
-    premium_provider: 'Premium for Providers',
+    premium: 'Cuidaro+',
+    premium_benefits: 'Cuidaro+ Benefits',
+    premium_client: 'Cuidaro+ for Clients',
+    premium_provider: 'Cuidaro+ for Providers',
     per_month_abbr: '/month',
     upgrade_now: 'Upgrade Now',
     current_plan: 'Current Plan',
@@ -559,7 +559,7 @@ const translations = {
     footer_contact: 'Fale conosco',
     footer_terms: 'Termos de serviço',
     footer_tagline: 'Marketplace confiável para profissionais de saúde e serviços domésticos.',
-    footer_rights: '© 2026 CareBook. Todos os direitos reservados.',
+    footer_rights: '© 2026 Cuidaro. Todos os direitos reservados.',
 
     // Messages page
     messages: 'Mensagens',
@@ -573,10 +573,10 @@ const translations = {
     submit_offer: 'Enviar Oferta',
 
     // Premium page
-    premium: 'Premium',
-    premium_benefits: 'Benefícios Premium',
-    premium_client: 'Premium para Clientes',
-    premium_provider: 'Premium para Prestadores',
+    premium: 'Cuidaro+',
+    premium_benefits: 'Benefícios Cuidaro+',
+    premium_client: 'Cuidaro+ para Clientes',
+    premium_provider: 'Cuidaro+ para Prestadores',
     per_month_abbr: '/mês',
     upgrade_now: 'Atualizar Agora',
     current_plan: 'Plano Atual',
@@ -889,7 +889,7 @@ const translations = {
     footer_contact: 'Contáctanos',
     footer_terms: 'Términos de servicio',
     footer_tagline: 'Marketplace confiable para profesionales de salud y servicios del hogar.',
-    footer_rights: '© 2026 CareBook. Todos los derechos reservados.',
+    footer_rights: '© 2026 Cuidaro. Todos los derechos reservados.',
 
     // Messages page
     messages: 'Mensajes',
@@ -903,10 +903,10 @@ const translations = {
     submit_offer: 'Enviar Oferta',
 
     // Premium page
-    premium: 'Premium',
-    premium_benefits: 'Beneficios Premium',
-    premium_client: 'Premium para Clientes',
-    premium_provider: 'Premium para Proveedores',
+    premium: 'Cuidaro+',
+    premium_benefits: 'Beneficios Cuidaro+',
+    premium_client: 'Cuidaro+ para Clientes',
+    premium_provider: 'Cuidaro+ para Proveedores',
     per_month_abbr: '/mes',
     upgrade_now: 'Actualizar Ahora',
     current_plan: 'Plan Actual',

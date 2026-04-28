@@ -109,7 +109,7 @@ export default function AnaChatbot() {
           <div className="flex items-center justify-between p-4 border-b border-gray-200 bg-gradient-to-r from-blue-600 to-blue-700 text-white rounded-t-lg">
             <div>
               <h3 className="font-semibold">Ana</h3>
-              <p className="text-xs text-blue-100">CareBook Assistant</p>
+              <p className="text-xs text-blue-100">Cuidaro Assistant</p>
             </div>
             <button
               onClick={handleClose}

@@ -119,9 +119,20 @@ export default function MyProfile() {
   };
 
   return (
-    <div className="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-      <div className="flex items-center justify-between mb-6">
-        <h1 className="text-3xl font-bold text-gray-900">{t('my_profile')}</h1>
+    <div className="bg-white">
+      {/* Hero with background image */}
+      <div className="relative h-48 bg-gradient-to-r from-blue-600 to-blue-700 overflow-hidden">
+        <img 
+          src="https://images.unsplash.com/photo-1576091160550-2173dba999ef?w=1200&h=300&fit=crop" 
+          alt="Professional healthcare" 
+          className="w-full h-full object-cover opacity-40"
+        />
+        <div className="absolute inset-0 bg-gradient-to-r from-blue-600/80 to-blue-700/80" />
+      </div>
+
+      <div className="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+        <div className="flex items-center justify-between mb-6">
+          <h1 className="text-3xl font-bold text-gray-900">{t('my_profile')}</h1>
         <div className="flex gap-2">
           {existingProvider?.is_premium && (
             <Badge className="bg-amber-100 text-amber-700 border-amber-300 gap-1"><Zap className="w-3 h-3" /> Premium</Badge>
@@ -227,8 +238,16 @@ export default function MyProfile() {
             </Card>
           )}
 
-          {/* Basic Info */}
-          <Card className="border border-gray-100 shadow-sm">
+          {/* Basic Info with image */}
+          <Card className="border border-gray-100 shadow-sm overflow-hidden">
+            <div className="h-32 bg-gradient-to-r from-green-400 to-blue-500 relative overflow-hidden">
+              <img 
+                src="https://images.unsplash.com/photo-1631217314830-e63c9a1c5b44?w=600&h=200&fit=crop" 
+                alt="Healthcare professional" 
+                className="w-full h-full object-cover opacity-30"
+              />
+              <div className="absolute inset-0 bg-gradient-to-r from-green-400/60 to-blue-500/60" />
+            </div>
             <CardHeader><CardTitle className="flex items-center gap-2 text-lg text-gray-800"><User className="w-5 h-5 text-blue-600" /> {t('basic_info')}</CardTitle></CardHeader>
             <CardContent className="space-y-4">
               {/* Avatar */}
@@ -325,8 +344,16 @@ export default function MyProfile() {
             </CardContent>
           </Card>
 
-          {/* Rates */}
-          <Card className="border border-gray-100 shadow-sm">
+          {/* Rates with image */}
+          <Card className="border border-gray-100 shadow-sm overflow-hidden">
+            <div className="h-24 bg-gradient-to-r from-purple-400 to-pink-500 relative overflow-hidden">
+              <img 
+                src="https://images.unsplash.com/photo-1579154204601-01d82b944c47?w=600&h=200&fit=crop" 
+                alt="Healthcare pricing" 
+                className="w-full h-full object-cover opacity-25"
+              />
+              <div className="absolute inset-0 bg-gradient-to-r from-purple-400/60 to-pink-500/60" />
+            </div>
             <CardHeader><CardTitle className="flex items-center gap-2 text-lg text-gray-800"><Briefcase className="w-5 h-5 text-blue-600" /> {t('rates_title')} ({countryInfo.symbol})</CardTitle></CardHeader>
             <CardContent>
               <div className="grid sm:grid-cols-3 gap-4">
@@ -337,8 +364,16 @@ export default function MyProfile() {
             </CardContent>
           </Card>
 
-          {/* Skills */}
-          <Card className="border border-gray-100 shadow-sm">
+          {/* Skills with image */}
+          <Card className="border border-gray-100 shadow-sm overflow-hidden">
+            <div className="h-24 bg-gradient-to-r from-orange-400 to-red-500 relative overflow-hidden">
+              <img 
+                src="https://images.unsplash.com/photo-1576091160550-2173dba999ef?w=600&h=200&fit=crop" 
+                alt="Professional skills" 
+                className="w-full h-full object-cover opacity-20"
+              />
+              <div className="absolute inset-0 bg-gradient-to-r from-orange-400/60 to-red-500/60" />
+            </div>
             <CardHeader><CardTitle className="text-lg text-gray-800">{t('skills')}</CardTitle></CardHeader>
             <CardContent>
               <div className="flex flex-wrap gap-2 mb-3">
@@ -373,8 +408,16 @@ export default function MyProfile() {
             </CardContent>
           </Card>
 
-          {/* ID Verification */}
-          <Card className="border border-gray-100 shadow-sm">
+          {/* ID Verification with image */}
+          <Card className="border border-gray-100 shadow-sm overflow-hidden">
+            <div className="h-24 bg-gradient-to-r from-green-600 to-teal-500 relative overflow-hidden">
+              <img 
+                src="https://images.unsplash.com/photo-1576091160399-86c54dcb98fe?w=600&h=200&fit=crop" 
+                alt="Security verification" 
+                className="w-full h-full object-cover opacity-20"
+              />
+              <div className="absolute inset-0 bg-gradient-to-r from-green-600/60 to-teal-500/60" />
+            </div>
             <CardHeader>
               <CardTitle className="flex items-center gap-2 text-lg text-gray-800">
                 <ShieldCheck className="w-5 h-5 text-green-600" /> Identity Verification
@@ -405,7 +448,15 @@ export default function MyProfile() {
 
           {/* Availability Calendar — only shown after profile exists */}
           {existingProvider && (
-            <Card className="border border-gray-100 shadow-sm">
+            <Card className="border border-gray-100 shadow-sm overflow-hidden">
+              <div className="h-24 bg-gradient-to-r from-indigo-400 to-purple-500 relative overflow-hidden">
+                <img 
+                  src="https://images.unsplash.com/photo-1579154204601-01d82b944c47?w=600&h=200&fit=crop" 
+                  alt="Availability scheduling" 
+                  className="w-full h-full object-cover opacity-20"
+                />
+                <div className="absolute inset-0 bg-gradient-to-r from-indigo-400/60 to-purple-500/60" />
+              </div>
               <CardHeader>
                 <CardTitle className="flex items-center gap-2 text-lg text-gray-800">
                   <CalendarDays className="w-5 h-5 text-blue-600" /> Availability & Schedule
@@ -427,6 +478,7 @@ export default function MyProfile() {
           </CardContent>
         </Card>
       )}
+      </div>
     </div>
   );
 }

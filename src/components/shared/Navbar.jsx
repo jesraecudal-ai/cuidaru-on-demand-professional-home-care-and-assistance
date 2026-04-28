@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { Link, useLocation } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
-import { Menu, X, Search, User, Calendar, LogOut, Zap, Heart } from 'lucide-react';
+import { Menu, X, Search, User, Calendar, LogOut, Zap, Heart, Wallet } from 'lucide-react';
 import { base44 } from '@/api/base44Client';
 import {
   DropdownMenu, DropdownMenuContent, DropdownMenuItem,
@@ -21,6 +21,7 @@ export default function Navbar() {
   const navLinks = [
     { label: t('nav_find'), path: '/browse', icon: Search },
     { label: t('nav_bookings'), path: '/bookings', icon: Calendar },
+    { label: 'Payments', path: '/payments', icon: Wallet },
   ];
 
   const isActive = (path) => location.pathname === path;
@@ -70,6 +71,7 @@ export default function Navbar() {
                 {user && <div className="px-3 py-2 text-xs text-gray-500 border-b">{user.email}</div>}
                 <DropdownMenuItem asChild><Link to="/my-profile" className="gap-2"><User className="w-4 h-4" /> {t('my_profile')}</Link></DropdownMenuItem>
                 <DropdownMenuItem asChild><Link to="/bookings" className="gap-2"><Calendar className="w-4 h-4" /> {t('nav_bookings')}</Link></DropdownMenuItem>
+                <DropdownMenuItem asChild><Link to="/payments" className="gap-2"><Wallet className="w-4 h-4" /> Payments</Link></DropdownMenuItem>
                 <DropdownMenuItem asChild><Link to="/premium" className="gap-2 text-amber-600"><Zap className="w-4 h-4" /> Premium</Link></DropdownMenuItem>
                 <DropdownMenuSeparator />
                 <DropdownMenuItem onClick={() => base44.auth.logout()} className="gap-2 text-red-600">
@@ -102,6 +104,9 @@ export default function Navbar() {
             <Button variant="ghost" className="w-full justify-start gap-2 text-sm text-amber-600">
               <Zap className="w-4 h-4" /> Premium
             </Button>
+          </Link>
+          <Link to="/payments" onClick={() => setMobileOpen(false)}>
+            <Button variant="ghost" className="w-full justify-start gap-2 text-sm"><Wallet className="w-4 h-4" /> Payments</Button>
           </Link>
           <Link to="/my-profile" onClick={() => setMobileOpen(false)}>
             <Button variant="ghost" className="w-full justify-start gap-2 text-sm"><User className="w-4 h-4" /> {t('my_profile')}</Button>

@@ -14,6 +14,7 @@ import Bookings from './pages/Bookings';
 import MyProfile from './pages/MyProfile';
 import Onboarding from './pages/Onboarding';
 import Premium from './pages/Premium';
+import Payments from './pages/Payments';
 import Layout from './components/shared/Layout';
 
 const AuthenticatedApp = () => {
@@ -45,6 +46,7 @@ const AuthenticatedApp = () => {
         <Route path="/bookings" element={<Bookings />} />
         <Route path="/my-profile" element={<MyProfile />} />
         <Route path="/premium" element={<Premium />} />
+        <Route path="/payments" element={<Payments />} />
       </Route>
       <Route path="*" element={<PageNotFound />} />
     </Routes>

@@ -1,0 +1,56 @@
+{
+  "name": "SavedPaymentMethod",
+  "type": "object",
+  "properties": {
+    "user_email": {
+      "type": "string"
+    },
+    "user_role": {
+      "type": "string",
+      "enum": [
+        "client",
+        "provider"
+      ],
+      "default": "client"
+    },
+    "stripe_customer_id": {
+      "type": "string"
+    },
+    "stripe_payment_method_id": {
+      "type": "string"
+    },
+    "card_brand": {
+      "type": "string"
+    },
+    "card_last4": {
+      "type": "string"
+    },
+    "card_exp_month": {
+      "type": "number"
+    },
+    "card_exp_year": {
+      "type": "number"
+    },
+    "card_type": {
+      "type": "string",
+      "enum": [
+        "credit",
+        "debit",
+        "prepaid",
+        "unknown"
+      ],
+      "default": "unknown"
+    },
+    "is_default": {
+      "type": "boolean",
+      "default": true
+    },
+    "label": {
+      "type": "string"
+    }
+  },
+  "required": [
+    "user_email",
+    "stripe_customer_id"
+  ]
+}

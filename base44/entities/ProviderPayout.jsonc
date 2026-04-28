@@ -1,0 +1,59 @@
+{
+  "name": "ProviderPayout",
+  "type": "object",
+  "properties": {
+    "provider_id": {
+      "type": "string"
+    },
+    "provider_email": {
+      "type": "string"
+    },
+    "amount": {
+      "type": "number"
+    },
+    "currency": {
+      "type": "string",
+      "default": "usd"
+    },
+    "status": {
+      "type": "string",
+      "enum": [
+        "pending",
+        "processing",
+        "paid",
+        "failed"
+      ],
+      "default": "pending"
+    },
+    "booking_id": {
+      "type": "string"
+    },
+    "stripe_transfer_id": {
+      "type": "string"
+    },
+    "card_last4": {
+      "type": "string"
+    },
+    "card_brand": {
+      "type": "string"
+    },
+    "payout_method": {
+      "type": "string",
+      "enum": [
+        "debit_card",
+        "prepaid_card",
+        "bank_account"
+      ],
+      "default": "debit_card"
+    },
+    "notes": {
+      "type": "string"
+    }
+  },
+  "required": [
+    "provider_id",
+    "provider_email",
+    "amount",
+    "booking_id"
+  ]
+}

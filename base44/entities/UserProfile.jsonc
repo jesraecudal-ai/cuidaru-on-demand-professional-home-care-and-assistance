@@ -1,0 +1,48 @@
+{
+  "name": "UserProfile",
+  "type": "object",
+  "properties": {
+    "user_email": {
+      "type": "string"
+    },
+    "role": {
+      "type": "string",
+      "enum": [
+        "client",
+        "provider"
+      ],
+      "default": "client"
+    },
+    "country": {
+      "type": "string",
+      "enum": [
+        "brazil",
+        "uruguay",
+        "usa",
+        "canada"
+      ],
+      "default": "brazil"
+    },
+    "latitude": {
+      "type": "number"
+    },
+    "longitude": {
+      "type": "number"
+    },
+    "is_premium": {
+      "type": "boolean",
+      "default": false
+    },
+    "premium_expires_at": {
+      "type": "string"
+    },
+    "onboarding_complete": {
+      "type": "boolean",
+      "default": false
+    }
+  },
+  "required": [
+    "user_email",
+    "role"
+  ]
+}

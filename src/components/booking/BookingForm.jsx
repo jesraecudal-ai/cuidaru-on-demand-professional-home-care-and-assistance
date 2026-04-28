@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -6,79 +6,72 @@ import { Label } from '@/components/ui/label';
 import { Textarea } from '@/components/ui/textarea';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Separator } from '@/components/ui/separator';
-import { Calendar, MapPin, Shield } from 'lucide-react';
+import { Calendar, MapPin, Shield, AlertTriangle } from 'lucide-react';
 import { base44 } from '@/api/base44Client';
 import { toast } from 'sonner';
 import { useNavigate } from 'react-router-dom';
 import { useI18n } from '@/lib/i18n';
+import { COUNTRY_SETTINGS, detectBypass } from '@/lib/constants';
 
-const PLATFORM_FEE_RATE = 0.10;
-
-export default function BookingForm({ provider }) {
+export default function BookingForm({ provider, clientProfile }) {
   const navigate = useNavigate();
   const { t } = useI18n();
-  const [user, setUser] = useState(null);
   const [loading, setLoading] = useState(false);
+  const [bypassWarning, setBypassWarning] = useState(false);
   const [form, setForm] = useState({
-    booking_type: 'hourly',
-    start_date: '',
-    end_date: '',
-    hours: 1,
-    address: '',
-    notes: '',
+    booking_type: 'hourly', start_date: '', start_time: '09:00',
+    end_date: '', duration: 1, address: '', instructions: '',
   });
 
-  useEffect(() => {
-    base44.auth.me().then(setUser).catch(() => {});
-  }, []);
+  const country = clientProfile?.country || provider.country || 'brazil';
+  const countryInfo = COUNTRY_SETTINGS[country] || COUNTRY_SETTINGS.brazil;
+  const isPremiumClient = clientProfile?.is_premium;
+  const feePct = isPremiumClient ? 0 : countryInfo.fee_pct;
 
   const getRate = () => {
     if (form.booking_type === 'hourly') return provider.hourly_rate || 0;
     if (form.booking_type === 'daily') return provider.daily_rate || (provider.hourly_rate * 8) || 0;
-    if (form.booking_type === 'weekly') return provider.weekly_rate || (provider.hourly_rate * 40) || 0;
-    return 0;
+    return provider.weekly_rate || (provider.hourly_rate * 40) || 0;
   };
 
-  const getMultiplier = () => {
-    if (form.booking_type === 'hourly') return form.hours || 1;
-    if (form.booking_type === 'daily') {
-      if (!form.start_date || !form.end_date) return 1;
-      return Math.max(1, Math.ceil((new Date(form.end_date) - new Date(form.start_date)) / 86400000) + 1);
-    }
-    if (form.booking_type === 'weekly') {
-      if (!form.start_date || !form.end_date) return 1;
-      return Math.max(1, Math.ceil((new Date(form.end_date) - new Date(form.start_date)) / 604800000));
-    }
-    return 1;
-  };
-
-  const subtotal = getRate() * getMultiplier();
-  const platformFee = subtotal * PLATFORM_FEE_RATE;
+  const subtotal = getRate() * (form.duration || 1);
+  const platformFee = subtotal * (feePct / 100);
   const total = subtotal + platformFee;
+  const providerPayout = subtotal;
+
+  const handleInstructionChange = (val) => {
+    setBypassWarning(detectBypass(val));
+    setForm(f => ({ ...f, instructions: val }));
+  };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    if (bypassWarning) { toast.error('Please remove contact info from instructions.'); return; }
     setLoading(true);
+    const me = await base44.auth.me();
     await base44.entities.Booking.create({
-      client_email: user?.email,
-      client_name: user?.full_name,
+      client_email: me.email,
+      client_name: me.full_name,
       provider_id: provider.id,
       provider_email: provider.user_email,
       provider_name: provider.full_name,
       category: provider.category,
       booking_type: form.booking_type,
       start_date: form.start_date,
+      start_time: form.start_time,
       end_date: form.end_date || form.start_date,
-      hours: form.booking_type === 'hourly' ? form.hours : null,
+      duration: form.duration,
       rate_applied: getRate(),
       subtotal,
+      platform_fee_pct: feePct,
       platform_fee: platformFee,
       total_amount: total,
-      provider_payout: subtotal,
-      status: 'pending',
-      payment_status: 'held',
-      notes: form.notes,
+      provider_payout: providerPayout,
       address: form.address,
+      instructions: form.instructions,
+      status: 'pending_approval',
+      payment_status: 'unpaid',
+      country,
     });
     toast.success(t('booking_success'));
     setLoading(false);
@@ -86,85 +79,97 @@ export default function BookingForm({ provider }) {
   };
 
   return (
-    <Card className="sticky top-24 shadow-lg border-border/50">
-      <CardHeader className="pb-4">
-        <CardTitle className="flex items-center gap-2 text-lg">
-          <Calendar className="w-5 h-5 text-primary" />
-          {t('book_title')} {provider.full_name}
+    <Card className="sticky top-24 shadow-lg border border-gray-100">
+      <CardHeader className="pb-4 bg-blue-600 text-white rounded-t-xl">
+        <CardTitle className="flex items-center gap-2 text-base text-white">
+          <Calendar className="w-4 h-4" /> {t('book_title')} {provider.full_name}
         </CardTitle>
+        {isPremiumClient && (
+          <p className="text-xs text-blue-100 mt-1">✨ Premium client — 0% platform fee</p>
+        )}
       </CardHeader>
-      <CardContent>
+      <CardContent className="pt-4">
         <form onSubmit={handleSubmit} className="space-y-4">
           <div>
-            <Label>{t('booking_type')}</Label>
-            <Select value={form.booking_type} onValueChange={(v) => setForm({ ...form, booking_type: v })}>
-              <SelectTrigger className="mt-1.5">
+            <Label className="text-xs font-medium text-gray-600">{t('booking_type')}</Label>
+            <Select value={form.booking_type} onValueChange={v => setForm(f => ({ ...f, booking_type: v, duration: 1 }))}>
+              <SelectTrigger className="mt-1 h-10">
                 <SelectValue />
               </SelectTrigger>
               <SelectContent>
-                <SelectItem value="hourly">{t('hourly')} (${provider.hourly_rate}/hr)</SelectItem>
-                <SelectItem value="daily">{t('daily')} (${provider.daily_rate || (provider.hourly_rate * 8)}/day)</SelectItem>
-                <SelectItem value="weekly">{t('weekly')} (${provider.weekly_rate || (provider.hourly_rate * 40)}/wk)</SelectItem>
+                <SelectItem value="hourly">{t('hourly')} ({countryInfo.symbol}{provider.hourly_rate}/hr)</SelectItem>
+                <SelectItem value="daily">{t('daily')} ({countryInfo.symbol}{provider.daily_rate || (provider.hourly_rate * 8)}/day)</SelectItem>
+                <SelectItem value="weekly">{t('weekly')} ({countryInfo.symbol}{provider.weekly_rate || (provider.hourly_rate * 40)}/wk)</SelectItem>
               </SelectContent>
             </Select>
           </div>
 
-          <div>
-            <Label>{t('start_date')}</Label>
-            <Input type="date" value={form.start_date} onChange={(e) => setForm({ ...form, start_date: e.target.value })} className="mt-1.5" required />
-          </div>
-
-          {form.booking_type !== 'hourly' && (
+          <div className="grid grid-cols-2 gap-3">
             <div>
-              <Label>{t('end_date')}</Label>
-              <Input type="date" value={form.end_date} onChange={(e) => setForm({ ...form, end_date: e.target.value })} className="mt-1.5" required />
+              <Label className="text-xs font-medium text-gray-600">{t('start_date')}</Label>
+              <Input type="date" value={form.start_date} onChange={e => setForm(f => ({ ...f, start_date: e.target.value }))} className="mt-1 h-10" required />
             </div>
-          )}
-
-          {form.booking_type === 'hourly' && (
             <div>
-              <Label>{t('num_hours')}</Label>
-              <Input type="number" min={1} max={24} value={form.hours} onChange={(e) => setForm({ ...form, hours: parseInt(e.target.value) || 1 })} className="mt-1.5" />
+              <Label className="text-xs font-medium text-gray-600">Start Time</Label>
+              <Input type="time" value={form.start_time} onChange={e => setForm(f => ({ ...f, start_time: e.target.value }))} className="mt-1 h-10" required />
             </div>
-          )}
-
-          <div>
-            <Label className="flex items-center gap-1"><MapPin className="w-3.5 h-3.5" /> {t('address')}</Label>
-            <Input placeholder={t('service_location')} value={form.address} onChange={(e) => setForm({ ...form, address: e.target.value })} className="mt-1.5" required />
           </div>
 
           <div>
-            <Label>{t('notes')}</Label>
-            <Textarea placeholder={t('notes_placeholder')} value={form.notes} onChange={(e) => setForm({ ...form, notes: e.target.value })} className="mt-1.5" rows={3} />
+            <Label className="text-xs font-medium text-gray-600">
+              Duration ({form.booking_type === 'hourly' ? 'hours' : form.booking_type === 'daily' ? 'days' : 'weeks'})
+            </Label>
+            <Input type="number" min={1} max={form.booking_type === 'hourly' ? 24 : form.booking_type === 'daily' ? 30 : 52}
+              value={form.duration} onChange={e => setForm(f => ({ ...f, duration: parseInt(e.target.value) || 1 }))} className="mt-1 h-10" />
+          </div>
+
+          <div>
+            <Label className="text-xs font-medium text-gray-600"><MapPin className="inline w-3 h-3 mr-1" />{t('address')}</Label>
+            <Input placeholder={t('service_location')} value={form.address} onChange={e => setForm(f => ({ ...f, address: e.target.value }))} className="mt-1 h-10" required />
+          </div>
+
+          <div>
+            <Label className="text-xs font-medium text-gray-600">{t('notes')}</Label>
+            <Textarea
+              placeholder={t('notes_placeholder')}
+              value={form.instructions}
+              onChange={e => handleInstructionChange(e.target.value)}
+              className="mt-1"
+              rows={3}
+            />
+            {bypassWarning && (
+              <div className="mt-2 flex items-start gap-2 bg-orange-50 border border-orange-200 rounded-lg p-2 text-xs text-orange-700">
+                <AlertTriangle className="w-3.5 h-3.5 mt-0.5 flex-shrink-0" />
+                For your safety, keep communication and payments inside CareBook.
+              </div>
+            )}
           </div>
 
           <Separator />
 
-          <div className="space-y-2 text-sm">
-            <div className="flex justify-between">
-              <span className="text-muted-foreground">
-                ${getRate()} × {getMultiplier()} {form.booking_type === 'hourly' ? 'hrs' : form.booking_type === 'daily' ? 'days' : 'wks'}
-              </span>
-              <span>${subtotal.toFixed(2)}</span>
+          <div className="space-y-1.5 text-sm">
+            <div className="flex justify-between text-gray-600">
+              <span>{countryInfo.symbol}{getRate()} × {form.duration} {form.booking_type === 'hourly' ? 'hrs' : form.booking_type === 'daily' ? 'days' : 'wks'}</span>
+              <span>{countryInfo.symbol}{subtotal.toFixed(2)}</span>
             </div>
-            <div className="flex justify-between">
-              <span className="text-muted-foreground">{t('platform_fee')}</span>
-              <span>${platformFee.toFixed(2)}</span>
+            <div className="flex justify-between text-gray-600">
+              <span>{t('platform_fee')} ({feePct}%){isPremiumClient && ' 🎉'}</span>
+              <span>{countryInfo.symbol}{platformFee.toFixed(2)}</span>
             </div>
             <Separator />
             <div className="flex justify-between font-bold text-base">
               <span>{t('total')}</span>
-              <span className="text-primary">${total.toFixed(2)}</span>
+              <span className="text-blue-700">{countryInfo.symbol}{total.toFixed(2)}</span>
             </div>
           </div>
 
-          <div className="bg-emerald-50 border border-emerald-200 rounded-lg p-3 text-sm text-emerald-700 flex items-start gap-2">
-            <Shield className="w-4 h-4 mt-0.5 flex-shrink-0" />
-            <span>{t('escrow_notice')}</span>
+          <div className="bg-green-50 border border-green-200 rounded-lg p-3 flex items-start gap-2">
+            <Shield className="w-4 h-4 text-green-600 mt-0.5 flex-shrink-0" />
+            <p className="text-xs text-green-700">{t('escrow_notice')}</p>
           </div>
 
-          <Button type="submit" className="w-full h-12 text-base" disabled={loading}>
-            {loading ? t('processing') : `${t('book_now')} — $${total.toFixed(2)}`}
+          <Button type="submit" className="w-full h-11 bg-blue-600 hover:bg-blue-700 text-sm font-semibold" disabled={loading}>
+            {loading ? t('processing') : `${t('book_now')} — ${countryInfo.symbol}${total.toFixed(2)}`}
           </Button>
         </form>
       </CardContent>

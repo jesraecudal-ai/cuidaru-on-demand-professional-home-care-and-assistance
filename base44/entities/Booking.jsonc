@@ -9,8 +9,7 @@
       "type": "string"
     },
     "provider_id": {
-      "type": "string",
-      "description": "ServiceProvider record ID"
+      "type": "string"
     },
     "provider_email": {
       "type": "string"
@@ -19,17 +18,7 @@
       "type": "string"
     },
     "category": {
-      "type": "string",
-      "enum": [
-        "assistant_nurse",
-        "nurse",
-        "doctor",
-        "cleaner",
-        "nanny",
-        "laundry_worker",
-        "caregiver",
-        "errand_person"
-      ]
+      "type": "string"
     },
     "booking_type": {
       "type": "string",
@@ -43,13 +32,15 @@
       "type": "string",
       "format": "date"
     },
+    "start_time": {
+      "type": "string"
+    },
     "end_date": {
       "type": "string",
       "format": "date"
     },
-    "hours": {
-      "type": "number",
-      "description": "Number of hours (for hourly bookings)"
+    "duration": {
+      "type": "number"
     },
     "rate_applied": {
       "type": "number"
@@ -57,9 +48,11 @@
     "subtotal": {
       "type": "number"
     },
+    "platform_fee_pct": {
+      "type": "number"
+    },
     "platform_fee": {
-      "type": "number",
-      "description": "Commission amount"
+      "type": "number"
     },
     "total_amount": {
       "type": "number"
@@ -67,31 +60,53 @@
     "provider_payout": {
       "type": "number"
     },
+    "address": {
+      "type": "string"
+    },
+    "instructions": {
+      "type": "string"
+    },
     "status": {
       "type": "string",
       "enum": [
-        "pending",
-        "confirmed",
+        "pending_approval",
+        "accepted",
+        "paid_confirmed",
         "in_progress",
         "completed",
+        "release_pending",
+        "payment_released",
         "cancelled",
-        "disputed"
+        "disputed",
+        "refunded"
       ],
-      "default": "pending"
+      "default": "pending_approval"
     },
     "payment_status": {
       "type": "string",
       "enum": [
-        "held",
+        "unpaid",
+        "paid_held",
+        "release_pending",
         "released",
-        "refunded"
+        "refunded",
+        "disputed"
       ],
-      "default": "held"
+      "default": "unpaid"
     },
-    "notes": {
+    "auto_release_at": {
       "type": "string"
     },
-    "address": {
+    "dispute_reason": {
+      "type": "string"
+    },
+    "disputed_by": {
+      "type": "string"
+    },
+    "admin_resolution": {
+      "type": "string"
+    },
+    "country": {
       "type": "string"
     }
   },

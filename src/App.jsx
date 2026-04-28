@@ -6,54 +6,52 @@ import PageNotFound from './lib/PageNotFound';
 import { AuthProvider, useAuth } from '@/lib/AuthContext';
 import UserNotRegisteredError from '@/components/UserNotRegisteredError';
 import { I18nProvider } from './lib/i18n';
+import { Toaster as SonnerToaster } from 'sonner';
 import Home from './pages/Home';
 import BrowseProviders from './pages/BrowseProviders';
 import ProviderProfile from './pages/ProviderProfile';
 import Bookings from './pages/Bookings';
 import MyProfile from './pages/MyProfile';
+import Onboarding from './pages/Onboarding';
+import Premium from './pages/Premium';
 import Layout from './components/shared/Layout';
 
 const AuthenticatedApp = () => {
   const { isLoadingAuth, isLoadingPublicSettings, authError, navigateToLogin } = useAuth();
 
-  // Show loading spinner while checking app public settings or auth
   if (isLoadingPublicSettings || isLoadingAuth) {
     return (
-      <div className="fixed inset-0 flex items-center justify-center">
-        <div className="w-8 h-8 border-4 border-slate-200 border-t-slate-800 rounded-full animate-spin"></div>
+      <div className="fixed inset-0 flex items-center justify-center bg-white">
+        <div className="text-center">
+          <div className="w-12 h-12 border-4 border-blue-100 border-t-blue-600 rounded-full animate-spin mx-auto mb-3"></div>
+          <p className="text-sm text-gray-400">Loading CareBook...</p>
+        </div>
       </div>
     );
   }
 
-  // Handle authentication errors
   if (authError) {
-    if (authError.type === 'user_not_registered') {
-      return <UserNotRegisteredError />;
-    } else if (authError.type === 'auth_required') {
-      // Redirect to login automatically
-      navigateToLogin();
-      return null;
-    }
+    if (authError.type === 'user_not_registered') return <UserNotRegisteredError />;
+    if (authError.type === 'auth_required') { navigateToLogin(); return null; }
   }
 
-  // Render the main app
   return (
     <Routes>
+      <Route path="/onboarding" element={<Onboarding />} />
       <Route element={<Layout />}>
         <Route path="/" element={<Home />} />
         <Route path="/browse" element={<BrowseProviders />} />
         <Route path="/provider/:id" element={<ProviderProfile />} />
         <Route path="/bookings" element={<Bookings />} />
         <Route path="/my-profile" element={<MyProfile />} />
+        <Route path="/premium" element={<Premium />} />
       </Route>
       <Route path="*" element={<PageNotFound />} />
     </Routes>
   );
 };
 
-
 function App() {
-
   return (
     <I18nProvider>
       <AuthProvider>
@@ -62,10 +60,11 @@ function App() {
             <AuthenticatedApp />
           </Router>
           <Toaster />
+          <SonnerToaster position="top-center" richColors />
         </QueryClientProvider>
       </AuthProvider>
     </I18nProvider>
-  )
+  );
 }
 
-export default App
+export default App;

@@ -3,61 +3,70 @@
   "type": "object",
   "properties": {
     "user_email": {
-      "type": "string",
-      "description": "Email of the user account linked to this provider"
+      "type": "string"
     },
     "full_name": {
-      "type": "string",
-      "description": "Provider's full name"
+      "type": "string"
+    },
+    "phone": {
+      "type": "string"
     },
     "avatar_url": {
-      "type": "string",
-      "description": "Profile photo URL"
+      "type": "string"
     },
     "category": {
       "type": "string",
       "enum": [
+        "caregiver",
         "assistant_nurse",
         "nurse",
         "doctor",
-        "cleaner",
-        "nanny",
-        "laundry_worker",
-        "caregiver",
-        "errand_person"
-      ],
-      "description": "Service category"
+        "social_worker",
+        "house_cleaner",
+        "cook",
+        "laundry_helper",
+        "nanny"
+      ]
     },
     "bio": {
-      "type": "string",
-      "description": "Short bio / about me"
+      "type": "string"
     },
     "experience_years": {
-      "type": "number",
-      "description": "Years of experience"
+      "type": "number"
     },
     "certifications": {
       "type": "array",
       "items": {
         "type": "string"
-      },
-      "description": "List of certifications"
+      }
     },
     "hourly_rate": {
-      "type": "number",
-      "description": "Rate per hour in USD"
+      "type": "number"
     },
     "daily_rate": {
-      "type": "number",
-      "description": "Rate per day in USD"
+      "type": "number"
     },
     "weekly_rate": {
-      "type": "number",
-      "description": "Rate per week in USD"
+      "type": "number"
     },
-    "location": {
+    "location_text": {
+      "type": "string"
+    },
+    "latitude": {
+      "type": "number"
+    },
+    "longitude": {
+      "type": "number"
+    },
+    "country": {
       "type": "string",
-      "description": "City or area"
+      "enum": [
+        "brazil",
+        "uruguay",
+        "usa",
+        "canada"
+      ],
+      "default": "brazil"
     },
     "availability": {
       "type": "string",
@@ -68,9 +77,25 @@
       ],
       "default": "available"
     },
-    "identity_verified": {
+    "is_premium": {
       "type": "boolean",
       "default": false
+    },
+    "premium_expires_at": {
+      "type": "string"
+    },
+    "id_document_url": {
+      "type": "string"
+    },
+    "verification_status": {
+      "type": "string",
+      "enum": [
+        "unverified",
+        "pending",
+        "verified",
+        "rejected"
+      ],
+      "default": "unverified"
     },
     "average_rating": {
       "type": "number",
@@ -88,13 +113,15 @@
       "type": "array",
       "items": {
         "type": "string"
-      },
-      "description": "Key skills"
+      }
+    },
+    "profile_complete": {
+      "type": "boolean",
+      "default": false
     }
   },
   "required": [
     "full_name",
-    "category",
-    "hourly_rate"
+    "category"
   ]
 }

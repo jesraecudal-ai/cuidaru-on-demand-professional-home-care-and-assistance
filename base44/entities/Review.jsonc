@@ -15,8 +15,7 @@
       "type": "string"
     },
     "rating": {
-      "type": "number",
-      "description": "1-5 stars"
+      "type": "number"
     },
     "comment": {
       "type": "string"

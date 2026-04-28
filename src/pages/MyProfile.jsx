@@ -8,11 +8,13 @@ import { Textarea } from '@/components/ui/textarea';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Badge } from '@/components/ui/badge';
 import { User, Briefcase, Plus, X, Save, ShieldCheck, Zap, Upload, MapPin, CalendarDays, Search } from 'lucide-react';
+// Upload still used for avatar
 import { toast } from 'sonner';
 import { useI18n } from '@/lib/i18n';
 import { CATEGORIES, COUNTRY_SETTINGS } from '@/lib/constants';
 import { useUserProfile } from '@/lib/useUserProfile';
 import AvailabilityCalendar from '@/components/availability/AvailabilityCalendar';
+import IdentityVerification from '@/components/verification/IdentityVerification';
 
 export default function MyProfile() {
   const { t } = useI18n();
@@ -102,18 +104,6 @@ export default function MyProfile() {
     const { file_url } = await base44.integrations.Core.UploadFile({ file });
     setForm(f => ({ ...f, avatar_url: file_url }));
     toast.success('Photo uploaded!');
-  };
-
-  const handleUploadID = async (e) => {
-    const file = e.target.files[0];
-    if (!file) return;
-    const { file_url } = await base44.integrations.Core.UploadFile({ file });
-    setForm(f => ({ ...f, id_document_url: file_url }));
-    // Update verification status to pending
-    if (existingProvider) {
-      await base44.entities.ServiceProvider.update(existingProvider.id, { id_document_url: file_url, verification_status: 'pending' });
-    }
-    toast.success('ID uploaded! Verification pending admin review.');
   };
 
   const addSkill = () => {
@@ -337,19 +327,22 @@ export default function MyProfile() {
 
           {/* ID Verification */}
           <Card className="border border-gray-100 shadow-sm">
-            <CardHeader><CardTitle className="flex items-center gap-2 text-lg text-gray-800"><ShieldCheck className="w-5 h-5 text-green-600" /> Identity Verification</CardTitle></CardHeader>
+            <CardHeader>
+              <CardTitle className="flex items-center gap-2 text-lg text-gray-800">
+                <ShieldCheck className="w-5 h-5 text-green-600" /> Identity Verification
+              </CardTitle>
+              <p className="text-sm text-gray-500">Verify your identity to earn a trusted badge. Required documents vary by country.</p>
+            </CardHeader>
             <CardContent>
-              <p className="text-sm text-gray-500 mb-4">Upload a government-issued ID. Admin will review and approve within 24h. Verified providers get a badge and build more trust.</p>
-              <div className="flex items-center gap-4">
-                {existingProvider?.verification_status === 'verified' && <Badge className="bg-green-100 text-green-700 border-green-300"><ShieldCheck className="w-3.5 h-3.5 mr-1" /> Verified</Badge>}
-                {existingProvider?.verification_status === 'pending' && <Badge variant="outline" className="text-amber-600 border-amber-300">Under Review</Badge>}
-                {(!existingProvider?.verification_status || existingProvider?.verification_status === 'unverified') && (
-                  <Label htmlFor="id_doc" className="cursor-pointer">
-                    <Button variant="outline" className="gap-2" asChild><span><Upload className="w-4 h-4" /> Upload ID Document</span></Button>
-                  </Label>
-                )}
-                <input id="id_doc" type="file" accept="image/*,.pdf" className="hidden" onChange={handleUploadID} />
-              </div>
+              {existingProvider ? (
+                <IdentityVerification
+                  provider={existingProvider}
+                  country={country}
+                  onUpdated={() => base44.entities.ServiceProvider.filter({ user_email: user.email }).then(list => list[0] && setExistingProvider(list[0]))}
+                />
+              ) : (
+                <p className="text-sm text-gray-400">Save your profile first, then you can upload your identity documents.</p>
+              )}
             </CardContent>
           </Card>
 

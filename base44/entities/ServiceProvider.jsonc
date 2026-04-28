@@ -86,7 +86,28 @@
       "type": "string"
     },
     "id_document_url": {
-      "type": "string"
+      "type": "string",
+      "description": "Primary ID document photo"
+    },
+    "id_document_type": {
+      "type": "string",
+      "enum": [
+        "cpf",
+        "rg",
+        "cnh",
+        "cedula",
+        "passport",
+        "resident_card"
+      ],
+      "description": "Type of document uploaded"
+    },
+    "id_document_number": {
+      "type": "string",
+      "description": "Document number (optional)"
+    },
+    "id_secondary_url": {
+      "type": "string",
+      "description": "Secondary document (e.g. CPF + RG both required for Brazil)"
     },
     "verification_status": {
       "type": "string",

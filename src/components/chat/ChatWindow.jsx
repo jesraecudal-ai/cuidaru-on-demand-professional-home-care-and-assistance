@@ -3,7 +3,7 @@ import { base44 } from '@/api/base44Client';
 import { Button } from '@/components/ui/button';
 import { Textarea } from '@/components/ui/textarea';
 import { Badge } from '@/components/ui/badge';
-import { Send, Shield, ArrowLeftRight, AlertTriangle } from 'lucide-react';
+import { Send, Shield, ArrowLeftRight, AlertTriangle, Image as ImageIcon, Loader } from 'lucide-react';
 import { detectBypass } from '@/lib/constants';
 import { toast } from 'sonner';
 import { format } from 'date-fns';
@@ -23,7 +23,9 @@ export default function ChatWindow({
   const [activeBooking, setActiveBooking] = useState(booking || null);
   const [profilePopupOpen, setProfilePopupOpen] = useState(false);
   const [selectedProfile, setSelectedProfile] = useState(null);
+  const [uploadingMedia, setUploadingMedia] = useState(false);
   const bottomRef = useRef(null);
+  const fileInputRef = useRef(null);
 
   // Load active booking for this conversation if not passed in
   useEffect(() => {
@@ -195,6 +197,43 @@ export default function ChatWindow({
     if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); handleSend(); }
   };
 
+  const handleMediaUpload = async (e) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+
+    const isImage = file.type.startsWith('image/');
+    const isVideo = file.type.startsWith('video/');
+    if (!isImage && !isVideo) {
+      toast.error('Only photos and videos allowed');
+      return;
+    }
+
+    setUploadingMedia(true);
+    try {
+      const { file_url } = await base44.integrations.Core.UploadFile({ file });
+      await base44.entities.ChatMessage.create({
+        conversation_id: conversationId,
+        sender_email: currentUser.email,
+        sender_name: currentUser.full_name,
+        sender_role: currentUserRole,
+        content: isImage ? '📷 Photo' : '🎥 Video',
+        message_type: 'media',
+        media_url: file_url,
+        media_type: isImage ? 'image' : 'video',
+        client_email: clientEmail,
+        provider_id: providerId,
+        provider_email: providerEmail,
+      });
+      toast.success(`${isImage ? 'Photo' : 'Video'} sent!`);
+    } catch (err) {
+      toast.error('Failed to upload media');
+      console.error(err);
+    } finally {
+      setUploadingMedia(false);
+      if (fileInputRef.current) fileInputRef.current.value = '';
+    }
+  };
+
   const roleColor = (role) => {
     if (role === 'admin') return 'bg-purple-100 text-purple-700';
     if (role === 'provider') return 'bg-blue-100 text-blue-700';
@@ -294,6 +333,32 @@ export default function ChatWindow({
             );
           }
 
+          if (msg.message_type === 'media') {
+            return (
+              <div key={msg.id} className={`flex ${isMe ? 'justify-end' : 'justify-start'}`}>
+                <div className={`max-w-[80%] ${isMe ? 'items-end' : 'items-start'} flex flex-col gap-1`}>
+                  <div className="flex items-center gap-2">
+                    {!isMe && (
+                      <button
+                        onClick={() => handleProfileClick(msg)}
+                        className="text-xs font-medium text-gray-600 hover:text-blue-600 hover:underline cursor-pointer"
+                      >
+                        {msg.sender_name}
+                      </button>
+                    )}
+                    <Badge className={`text-xs py-0 px-1.5 ${roleColor(msg.sender_role)}`}>{msg.sender_role}</Badge>
+                  </div>
+                  {msg.media_type === 'image' ? (
+                    <img src={msg.media_url} alt="shared" className="max-w-sm max-h-96 rounded-2xl" />
+                  ) : (
+                    <video src={msg.media_url} controls className="max-w-sm max-h-96 rounded-2xl" />
+                  )}
+                  <span className="text-xs text-gray-400">{format(new Date(msg.created_date), 'MMM d, HH:mm')}</span>
+                </div>
+              </div>
+            );
+          }
+
           return (
             <div key={msg.id} className={`flex ${isMe ? 'justify-end' : 'justify-start'}`}>
               <div className={`max-w-[75%] ${isMe ? 'items-end' : 'items-start'} flex flex-col gap-1`}>
@@ -342,6 +407,23 @@ export default function ChatWindow({
               <ArrowLeftRight className="w-4 h-4" />
             </Button>
           )}
+          <input
+            ref={fileInputRef}
+            type="file"
+            accept="image/*,video/*"
+            onChange={handleMediaUpload}
+            className="hidden"
+          />
+          <Button
+            size="icon"
+            variant="outline"
+            className="h-10 w-10 shrink-0"
+            onClick={() => fileInputRef.current?.click()}
+            disabled={uploadingMedia}
+            title="Send photo or video"
+          >
+            {uploadingMedia ? <Loader className="w-4 h-4 animate-spin" /> : <ImageIcon className="w-4 h-4" />}
+          </Button>
           <Textarea
             value={text}
             onChange={e => setText(e.target.value)}

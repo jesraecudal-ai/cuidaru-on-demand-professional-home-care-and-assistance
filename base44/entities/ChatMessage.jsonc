@@ -27,10 +27,23 @@
       "type": "string",
       "enum": [
         "text",
-        "counter_offer"
+        "counter_offer",
+        "media"
       ],
       "default": "text",
-      "description": "text = normal chat, counter_offer = negotiation card"
+      "description": "text = normal chat, counter_offer = negotiation card, media = photo/video evidence"
+    },
+    "media_url": {
+      "type": "string",
+      "description": "URL to uploaded photo or video"
+    },
+    "media_type": {
+      "type": "string",
+      "enum": [
+        "image",
+        "video"
+      ],
+      "description": "Type of media uploaded"
     },
     "offer_booking_id": {
       "type": "string",

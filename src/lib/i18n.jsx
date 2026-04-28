@@ -42,6 +42,10 @@ const translations = {
     cat_laundry_helper: 'Laundry Helper',
     cat_nanny: 'Nanny',
     cat_errand_runner: 'Errand Runner',
+    cat_tutor: 'Tutor',
+    cat_teacher: 'Teacher',
+    cat_sports_teacher: 'Sports Teacher',
+    cat_gym: 'Gym Trainer',
 
     // Category descriptions
     cat_desc_caregiver: 'Elderly & special needs care',
@@ -54,6 +58,10 @@ const translations = {
     cat_desc_laundry_helper: 'Laundry & garment care',
     cat_desc_nanny: 'Trusted childcare professionals',
     cat_desc_errand_runner: 'Errands, deliveries & daily tasks',
+    cat_desc_tutor: 'Academic tutoring & guidance',
+    cat_desc_teacher: 'Educational instruction & classes',
+    cat_desc_sports_teacher: 'Athletic training & coaching',
+    cat_desc_gym: 'Fitness training & gym services',
     per_month: 'month',
 
     // How it works
@@ -376,6 +384,10 @@ const translations = {
     cat_laundry_helper: 'Lavanderia',
     cat_nanny: 'Babá',
     cat_errand_runner: 'Mensageiro(a)',
+    cat_tutor: 'Tutor',
+    cat_teacher: 'Professor',
+    cat_sports_teacher: 'Professor de Esportes',
+    cat_gym: 'Instrutor de Fitness',
 
     cat_desc_caregiver: 'Cuidados para idosos e necessidades especiais',
     cat_desc_assistant_nurse: 'Suporte para necessidades diárias de saúde',
@@ -387,6 +399,10 @@ const translations = {
     cat_desc_laundry_helper: 'Lavanderia e cuidados com roupas',
     cat_desc_nanny: 'Babás de confiança',
     cat_desc_errand_runner: 'Recados, entregas e tarefas do dia a dia',
+    cat_desc_tutor: 'Tutoria acadêmica e orientação',
+    cat_desc_teacher: 'Instrução educacional e aulas',
+    cat_desc_sports_teacher: 'Treinamento atlético e coaching',
+    cat_desc_gym: 'Treinamento de fitness e serviços de academia',
     per_month: 'mês',
 
     how_it_works: 'Como Funciona',
@@ -698,6 +714,10 @@ const translations = {
     cat_laundry_helper: 'Ayudante de Lavandería',
     cat_nanny: 'Niñera',
     cat_errand_runner: 'Mensajero/a',
+    cat_tutor: 'Tutor',
+    cat_teacher: 'Profesor',
+    cat_sports_teacher: 'Profesor de Deportes',
+    cat_gym: 'Entrenador de Fitness',
 
     cat_desc_caregiver: 'Cuidados para adultos mayores y necesidades especiales',
     cat_desc_assistant_nurse: 'Apoyo para necesidades diarias de salud',
@@ -709,6 +729,10 @@ const translations = {
     cat_desc_laundry_helper: 'Lavandería y cuidado de ropa',
     cat_desc_nanny: 'Niñeras de confianza',
     cat_desc_errand_runner: 'Mandados, entregas y tareas del día a día',
+    cat_desc_tutor: 'Tutorías académicas y orientación',
+    cat_desc_teacher: 'Instrucción educativa y clases',
+    cat_desc_sports_teacher: 'Entrenamiento atlético y coaching',
+    cat_desc_gym: 'Entrenamiento de fitness y servicios de gimnasio',
     per_month: 'mes',
 
     how_it_works: 'Cómo Funciona',

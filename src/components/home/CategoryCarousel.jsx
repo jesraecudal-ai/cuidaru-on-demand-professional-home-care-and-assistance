@@ -33,34 +33,34 @@ export default function CategoryCarousel() {
   };
 
   return (
-    <section className="py-16 bg-gradient-to-b from-white to-blue-50">
-      <div className="max-w-6xl mx-auto px-4">
-        <h2 className="text-3xl font-bold mb-2 text-center">What we offer</h2>
-        <p className="text-gray-600 text-center mb-8">Find experts in any field</p>
+    <section className="py-12 sm:py-16 bg-gradient-to-b from-white to-blue-50">
+      <div className="max-w-6xl mx-auto px-3 sm:px-4">
+        <h2 className="text-2xl sm:text-3xl font-bold mb-2 text-center">What we offer</h2>
+        <p className="text-sm sm:text-base text-gray-600 text-center mb-6 sm:mb-8">Find experts in any field</p>
         
         <div className="relative">
-          <div className="grid grid-cols-5 gap-4">
+          <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-2 sm:gap-4">
             {getVisibleCategories().map((cat, idx) => (
               <button
                 key={`${cat.key}-${idx}`}
                 onClick={() => navigate(`/browse?category=${cat.key}`)}
-                className="p-6 rounded-lg border-2 border-gray-100 bg-white hover:border-blue-400 hover:shadow-lg transition-all duration-300 text-center group"
+                className="p-3 sm:p-6 rounded-lg border-2 border-gray-100 bg-white hover:border-blue-400 hover:shadow-lg transition-all duration-300 text-center group"
               >
-                <div className="text-4xl mb-3 group-hover:scale-110 transition-transform">{cat.icon}</div>
-                <p className="font-semibold text-gray-800 text-sm group-hover:text-blue-600">{t(`cat_${cat.key}`)}</p>
+                <div className="text-2xl sm:text-4xl mb-2 sm:mb-3 group-hover:scale-110 transition-transform inline-block">{cat.icon}</div>
+                <p className="font-semibold text-gray-800 text-xs sm:text-sm group-hover:text-blue-600 line-clamp-2">{t(`cat_${cat.key}`)}</p>
               </button>
             ))}
           </div>
 
           <button
             onClick={handlePrev}
-            className="absolute left-0 top-1/2 -translate-y-1/2 -translate-x-16 p-2 hover:bg-gray-100 rounded-full transition-colors"
+            className="hidden sm:flex absolute left-0 top-1/2 -translate-y-1/2 -translate-x-16 p-2 hover:bg-gray-100 rounded-full transition-colors"
           >
             <ChevronLeft className="w-6 h-6 text-gray-600" />
           </button>
           <button
             onClick={handleNext}
-            className="absolute right-0 top-1/2 -translate-y-1/2 translate-x-16 p-2 hover:bg-gray-100 rounded-full transition-colors"
+            className="hidden sm:flex absolute right-0 top-1/2 -translate-y-1/2 translate-x-16 p-2 hover:bg-gray-100 rounded-full transition-colors"
           >
             <ChevronRight className="w-6 h-6 text-gray-600" />
           </button>

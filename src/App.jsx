@@ -20,6 +20,7 @@ import AdminDisputes from './pages/AdminDisputes';
 import AdminVerifications from './pages/AdminVerifications';
 import AffiliateDashboard from './pages/AffiliateDashboard';
 import AdminPricing from './pages/AdminPricing';
+import AdminSalesAccounting from './pages/AdminSalesAccounting';
 import ProviderPayouts from './pages/ProviderPayouts';
 import Prescriptions from './pages/Prescriptions';
 import Consultations from './pages/Consultations';
@@ -66,6 +67,7 @@ const AuthenticatedApp = () => {
         <Route path="/messages" element={<Messages />} />
         <Route path="/admin/disputes" element={<AdminDisputes />} />
         <Route path="/admin/pricing" element={<AdminPricing />} />
+        <Route path="/admin/sales" element={<AdminSalesAccounting />} />
         <Route path="/admin/verifications" element={<AdminVerifications />} />
         <Route path="/affiliate" element={<AffiliateDashboard />} />
         <Route path="/payouts" element={<ProviderPayouts />} />

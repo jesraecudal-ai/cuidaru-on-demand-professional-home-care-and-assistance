@@ -1,0 +1,42 @@
+{
+  "name": "ProviderDocument",
+  "type": "object",
+  "properties": {
+    "provider_id": {
+      "type": "string",
+      "description": "Reference to ServiceProvider"
+    },
+    "provider_email": {
+      "type": "string"
+    },
+    "document_type": {
+      "type": "string",
+      "enum": [
+        "photo",
+        "diploma",
+        "resume",
+        "cv",
+        "certificate",
+        "other"
+      ],
+      "description": "Type of document"
+    },
+    "file_url": {
+      "type": "string",
+      "description": "URL to the uploaded file"
+    },
+    "file_name": {
+      "type": "string"
+    },
+    "description": {
+      "type": "string",
+      "description": "User's description of the document"
+    }
+  },
+  "required": [
+    "provider_id",
+    "provider_email",
+    "document_type",
+    "file_url"
+  ]
+}

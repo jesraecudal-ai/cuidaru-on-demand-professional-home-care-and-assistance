@@ -16,6 +16,7 @@ import { useUserProfile } from '@/lib/useUserProfile';
 import AvailabilityCalendar from '@/components/availability/AvailabilityCalendar';
 import LocationPicker from '@/components/location/LocationPicker';
 import IdentityVerification from '@/components/verification/IdentityVerification';
+import DocumentUploadSection from '@/components/providers/DocumentUploadSection';
 
 export default function MyProfile() {
   const { t } = useI18n();
@@ -337,6 +338,11 @@ export default function MyProfile() {
               )}
             </CardContent>
           </Card>
+
+          {/* Documents & Portfolio */}
+          {existingProvider && (
+            <DocumentUploadSection providerId={existingProvider.id} userEmail={user?.email} />
+          )}
 
           <Button onClick={handleSave} size="lg" className="w-full gap-2 bg-blue-600 hover:bg-blue-700 h-12">
             <Save className="w-5 h-5" /> {existingProvider ? t('save') : t('create_profile')}

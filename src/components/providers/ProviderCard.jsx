@@ -36,7 +36,7 @@ export default function ProviderCard({ provider, index = 0, userLocation }) {
               )}
               <div className="absolute top-2 left-2">
                 <Badge variant="outline" className={`${badgeColor} border text-xs font-medium`}>
-                  {t(`cat_${provider.category}`) || provider.category}
+                  {t(`cat_${provider.category}`) || provider.category.replace(/_/g, ' ')}
                 </Badge>
               </div>
             </div>

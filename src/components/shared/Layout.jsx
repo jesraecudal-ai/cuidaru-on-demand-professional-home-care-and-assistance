@@ -1,7 +1,7 @@
 import React from 'react';
 import { Outlet } from 'react-router-dom';
 import Navbar from './Navbar';
-import { Heart } from 'lucide-react';
+import { Heart, MapPin, Shield, DollarSign } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import { useI18n } from '@/lib/i18n';
 
@@ -30,8 +30,8 @@ export default function Layout() {
               <h4 className="font-semibold text-gray-900 mb-3 text-sm">{t('footer_clients')}</h4>
               <div className="space-y-2 text-sm text-gray-500">
                 <Link to="/browse" className="block hover:text-blue-600">{t('footer_find')}</Link>
-                <p>{t('footer_how')}</p>
-                <p>{t('footer_safety')}</p>
+                <Link to="/help" className="block hover:text-blue-600">How It Works</Link>
+                <Link to="/help" className="block hover:text-blue-600">Safety & Reviews</Link>
               </div>
             </div>
             <div>
@@ -45,9 +45,10 @@ export default function Layout() {
             <div>
               <h4 className="font-semibold text-gray-900 mb-3 text-sm">{t('footer_support')}</h4>
               <div className="space-y-2 text-sm text-gray-500">
-                <p>{t('footer_help')}</p>
-                <p>{t('footer_contact')}</p>
-                <p>{t('footer_terms')}</p>
+                <Link to="/help" className="block hover:text-blue-600">{t('footer_help')}</Link>
+                <Link to="/help" className="block hover:text-blue-600">Contact Support</Link>
+                <Link to="/terms" className="block hover:text-blue-600">Terms & Conditions</Link>
+                <Link to="/privacy" className="block hover:text-blue-600">Privacy Policy</Link>
               </div>
             </div>
           </div>

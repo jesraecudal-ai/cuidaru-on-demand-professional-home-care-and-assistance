@@ -22,6 +22,8 @@ import AffiliateDashboard from './pages/AffiliateDashboard';
 import AdminPricing from './pages/AdminPricing';
 import ProviderPayouts from './pages/ProviderPayouts';
 import TermsAndConditions from './pages/TermsAndConditions';
+import PrivacyPolicy from './pages/PrivacyPolicy';
+import Help from './pages/Help';
 import Layout from './components/shared/Layout';
 
 const AuthenticatedApp = () => {
@@ -47,6 +49,8 @@ const AuthenticatedApp = () => {
     <Routes>
       <Route path="/onboarding" element={<Onboarding />} />
       <Route path="/terms" element={<TermsAndConditions />} />
+      <Route path="/privacy" element={<PrivacyPolicy />} />
+      <Route path="/help" element={<Help />} />
       <Route element={<Layout />}>
         <Route path="/" element={<Home />} />
         <Route path="/browse" element={<BrowseProviders />} />

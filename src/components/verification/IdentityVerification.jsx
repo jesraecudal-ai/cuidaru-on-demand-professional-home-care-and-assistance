@@ -12,30 +12,32 @@ import { toast } from 'sonner';
 const DOC_CONFIG = {
   brazil: {
     label: '🇧🇷 Brazil',
-    description: 'Brazilian law requires both CPF and a photo ID (RG or CNH).',
+    description: 'Brazilian law requires both CPF and a photo ID (RG or CNH). Passport is also accepted.',
     primaryDocs: [
       { value: 'cpf', label: 'CPF (Cadastro de Pessoa Física)' },
+      { value: 'passport', label: 'Passport' },
     ],
     secondaryDocs: [
       { value: 'rg', label: 'RG (Registro Geral)' },
       { value: 'cnh', label: 'CNH (Carteira Nacional de Habilitação)' },
     ],
     requiresSecondary: true,
-    primaryLabel: 'CPF Document',
+    primaryLabel: 'Primary Document',
     secondaryLabel: 'Photo ID (RG or CNH)',
-    numberPlaceholder: 'CPF number (000.000.000-00)',
+    numberPlaceholder: 'Document number',
   },
   uruguay: {
     label: '🇺🇾 Uruguay',
-    description: 'Uruguayan residents use the Cédula de Identidad (CI) issued by DNIC.',
+    description: 'Uruguayan residents use the Cédula de Identidad (CI) or a Passport.',
     primaryDocs: [
       { value: 'cedula', label: 'Cédula de Identidad (CI)' },
+      { value: 'passport', label: 'Passport' },
     ],
     secondaryDocs: [],
     requiresSecondary: false,
-    primaryLabel: 'Cédula de Identidad',
+    primaryLabel: 'Identity Document',
     secondaryLabel: null,
-    numberPlaceholder: 'CI number (0.000.000-0)',
+    numberPlaceholder: 'Document number',
   },
   usa: {
     label: '🇺🇸 United States',

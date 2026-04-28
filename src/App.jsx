@@ -17,6 +17,7 @@ import Premium from './pages/Premium';
 import Payments from './pages/Payments';
 import Messages from './pages/Messages';
 import AdminDisputes from './pages/AdminDisputes';
+import AdminVerifications from './pages/AdminVerifications';
 import AdminPricing from './pages/AdminPricing';
 import ProviderPayouts from './pages/ProviderPayouts';
 import Layout from './components/shared/Layout';
@@ -54,6 +55,7 @@ const AuthenticatedApp = () => {
         <Route path="/messages" element={<Messages />} />
         <Route path="/admin/disputes" element={<AdminDisputes />} />
         <Route path="/admin/pricing" element={<AdminPricing />} />
+        <Route path="/admin/verifications" element={<AdminVerifications />} />
         <Route path="/payouts" element={<ProviderPayouts />} />
       </Route>
       <Route path="*" element={<PageNotFound />} />

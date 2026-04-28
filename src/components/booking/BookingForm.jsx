@@ -427,7 +427,17 @@ function RegularBookingForm({ provider, clientProfile }) {
                 min="1"
                 max="12"
                 value={form.duration}
-                onChange={e => setForm(f => ({ ...f, duration: parseInt(e.target.value) || 1 }))}
+                onChange={e => {
+                  const val = e.target.value;
+                  if (val === '') {
+                    setForm(f => ({ ...f, duration: '' }));
+                  } else {
+                    const num = parseInt(val);
+                    if (!isNaN(num)) {
+                      setForm(f => ({ ...f, duration: num }));
+                    }
+                  }
+                }}
               />
             </div>
           </>

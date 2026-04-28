@@ -310,7 +310,7 @@ export default function MyProfile() {
 
               <div>
                 <Label>{t('years_exp')}</Label>
-                <Input type="number" value={form.experience_years} onChange={e => setForm(f => ({ ...f, experience_years: parseInt(e.target.value) || 0 }))} className="mt-1.5" />
+                <Input type="number" value={form.experience_years} onChange={e => {const val = e.target.value; setForm(f => ({ ...f, experience_years: val === '' ? '' : parseInt(val) || 0 }));}} className="mt-1.5" />
               </div>
 
               <div>
@@ -360,9 +360,9 @@ export default function MyProfile() {
               <CardHeader><CardTitle className="flex items-center gap-2 text-lg text-gray-800"><Briefcase className="w-5 h-5 text-blue-600" /> {t('rates_title')} ({countryInfo.symbol})</CardTitle></CardHeader>
               <CardContent>
                 <div className="grid sm:grid-cols-3 gap-4">
-                  <div><Label>{t('hourly_rate')}</Label><Input type="number" value={form.hourly_rate} onChange={e => setForm(f => ({ ...f, hourly_rate: parseFloat(e.target.value) || 0 }))} className="mt-1.5" /></div>
-                  <div><Label>{t('daily_rate')}</Label><Input type="number" value={form.daily_rate} onChange={e => setForm(f => ({ ...f, daily_rate: parseFloat(e.target.value) || 0 }))} className="mt-1.5" /></div>
-                  <div><Label>{t('weekly_rate')}</Label><Input type="number" value={form.weekly_rate} onChange={e => setForm(f => ({ ...f, weekly_rate: parseFloat(e.target.value) || 0 }))} className="mt-1.5" /></div>
+                  <div><Label>{t('hourly_rate')}</Label><Input type="number" value={form.hourly_rate} onChange={e => {const val = e.target.value; setForm(f => ({ ...f, hourly_rate: val === '' ? '' : parseFloat(val) || 0 }));}} className="mt-1.5" /></div>
+                  <div><Label>{t('daily_rate')}</Label><Input type="number" value={form.daily_rate} onChange={e => {const val = e.target.value; setForm(f => ({ ...f, daily_rate: val === '' ? '' : parseFloat(val) || 0 }));}} className="mt-1.5" /></div>
+                  <div><Label>{t('weekly_rate')}</Label><Input type="number" value={form.weekly_rate} onChange={e => {const val = e.target.value; setForm(f => ({ ...f, weekly_rate: val === '' ? '' : parseFloat(val) || 0 }));}} className="mt-1.5" /></div>
                 </div>
               </CardContent>
             </Card>
@@ -384,7 +384,7 @@ export default function MyProfile() {
                 <div>
                   <Label>Fee per Consultation</Label>
                   <p className="text-xs text-gray-500 mb-2">One-time fee clients pay to book a consultation with you</p>
-                  <Input type="number" value={form.consultation_fee} onChange={e => setForm(f => ({ ...f, consultation_fee: parseFloat(e.target.value) || 0 }))} placeholder="e.g., 50" className="mt-1.5" />
+                  <Input type="number" value={form.consultation_fee} onChange={e => {const val = e.target.value; setForm(f => ({ ...f, consultation_fee: val === '' ? '' : parseFloat(val) || 0 }));}} placeholder="e.g., 50" className="mt-1.5" />
                 </div>
               </CardContent>
             </Card>

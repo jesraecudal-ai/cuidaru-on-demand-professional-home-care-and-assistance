@@ -40,7 +40,7 @@ export default function Payments() {
 
   const country = profile?.country || 'brazil';
   const symbol = COUNTRY_SETTINGS[country]?.symbol || '$';
-  const isProvider = profile?.role === 'provider';
+  const isProvider = profile?.role === 'provider' || profile?.role === 'both' || !!providerProfile;
 
   useEffect(() => {
     if (!user) return;

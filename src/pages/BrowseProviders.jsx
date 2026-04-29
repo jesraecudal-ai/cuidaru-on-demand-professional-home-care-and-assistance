@@ -41,7 +41,7 @@ export default function BrowseProviders() {
   });
 
   const sortedProviders = useMemo(() => {
-    let result = providers.filter(p => p.profile_complete !== false);
+    let result = providers.filter(p => p.profile_complete !== false && p.is_active !== false);
 
     // Filter
     if (filters.category !== 'all') result = result.filter(p => p.category === filters.category);

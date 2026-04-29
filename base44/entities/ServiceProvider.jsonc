@@ -159,6 +159,11 @@
     "profile_complete": {
       "type": "boolean",
       "default": false
+    },
+    "is_active": {
+      "type": "boolean",
+      "default": true,
+      "description": "Admin can disable/enable this provider listing"
     }
   },
   "required": [

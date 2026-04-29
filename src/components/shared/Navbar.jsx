@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { Link, useLocation } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
-import { Menu, X, Search, User, Calendar, LogOut, Zap, Heart, Wallet, MessageCircle, AlertTriangle, Settings, ArrowDownCircle, ShieldCheck, GitBranch } from 'lucide-react';
+import { Menu, X, Search, User, Calendar, LogOut, Zap, Heart, Wallet, MessageCircle, AlertTriangle, Settings, ArrowDownCircle, ShieldCheck, GitBranch, Users } from 'lucide-react';
 import { base44 } from '@/api/base44Client';
 import {
   DropdownMenu, DropdownMenuContent, DropdownMenuItem,
@@ -84,6 +84,7 @@ export default function Navbar() {
                 {user?.role === 'admin' && <DropdownMenuItem asChild><Link to="/admin/verifications" className="gap-2 text-blue-600"><ShieldCheck className="w-4 h-4" /> Verifications</Link></DropdownMenuItem>}
                 {user?.role === 'admin' && <DropdownMenuItem asChild><Link to="/admin/disputes" className="gap-2 text-orange-600"><AlertTriangle className="w-4 h-4" /> Disputes</Link></DropdownMenuItem>}
                 {user?.role === 'admin' && <DropdownMenuItem asChild><Link to="/admin/pricing" className="gap-2 text-blue-600"><Settings className="w-4 h-4" /> Pricing</Link></DropdownMenuItem>}
+                {user?.role === 'admin' && <DropdownMenuItem asChild><Link to="/admin/users" className="gap-2 text-indigo-600"><Users className="w-4 h-4" /> Manage Users</Link></DropdownMenuItem>}
                 <DropdownMenuSeparator />
                 <DropdownMenuItem onClick={() => base44.auth.logout()} className="gap-2 text-red-600">
                   <LogOut className="w-4 h-4" /> {t('nav_logout')}
@@ -144,6 +145,11 @@ export default function Navbar() {
           {user?.role === 'admin' && (
             <Link to="/admin/pricing" onClick={() => setMobileOpen(false)}>
               <Button variant="ghost" className="w-full justify-start gap-2 text-sm text-blue-600"><Settings className="w-4 h-4" /> Pricing</Button>
+            </Link>
+          )}
+          {user?.role === 'admin' && (
+            <Link to="/admin/users" onClick={() => setMobileOpen(false)}>
+              <Button variant="ghost" className="w-full justify-start gap-2 text-sm text-indigo-600"><Users className="w-4 h-4" /> Manage Users</Button>
             </Link>
           )}
           <Link to="/my-profile" onClick={() => setMobileOpen(false)}>

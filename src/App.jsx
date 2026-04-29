@@ -31,6 +31,7 @@ import ShareProfile from './pages/ShareProfile';
 import About from './pages/About';
 import Careers from './pages/Careers';
 import AdminCareers from './pages/AdminCareers';
+import AdminUsers from './pages/AdminUsers';
 import Layout from './components/shared/Layout';
 
 const AuthenticatedApp = () => {
@@ -75,6 +76,7 @@ const AuthenticatedApp = () => {
         <Route path="/admin/sales" element={<AdminSalesAccounting />} />
         <Route path="/admin/verifications" element={<AdminVerifications />} />
         <Route path="/admin/careers" element={<AdminCareers />} />
+        <Route path="/admin/users" element={<AdminUsers />} />
         <Route path="/affiliate" element={<AffiliateDashboard />} />
         <Route path="/payouts" element={<ProviderPayouts />} />
         <Route path="/prescriptions" element={<Prescriptions />} />

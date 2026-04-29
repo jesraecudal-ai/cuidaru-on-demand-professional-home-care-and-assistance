@@ -41,7 +41,8 @@ export default function Layout() {
               <div className="space-y-2 text-sm text-gray-500">
                 <Link to="/my-profile" className="block hover:text-blue-600">{t('footer_become')}</Link>
                 <Link to="/premium" className="block hover:text-blue-600">Cuidaru+</Link>
-                <p>{t('footer_resources')}</p>
+                <Link to="/affiliate" className="block hover:text-blue-600">Affiliate Program</Link>
+                <Link to="/payouts" className="block hover:text-blue-600">Provider Payouts</Link>
               </div>
             </div>
             <div>

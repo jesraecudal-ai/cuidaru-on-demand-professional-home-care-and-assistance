@@ -1,0 +1,56 @@
+{
+  "name": "JobApplication",
+  "type": "object",
+  "properties": {
+    "job_id": {
+      "type": "string"
+    },
+    "job_title": {
+      "type": "string"
+    },
+    "department": {
+      "type": "string"
+    },
+    "full_name": {
+      "type": "string"
+    },
+    "email": {
+      "type": "string"
+    },
+    "phone": {
+      "type": "string"
+    },
+    "linkedin_url": {
+      "type": "string"
+    },
+    "portfolio_url": {
+      "type": "string"
+    },
+    "cover_letter": {
+      "type": "string"
+    },
+    "resume_url": {
+      "type": "string"
+    },
+    "status": {
+      "type": "string",
+      "enum": [
+        "new",
+        "reviewing",
+        "shortlisted",
+        "interviewed",
+        "hired",
+        "rejected"
+      ],
+      "default": "new"
+    },
+    "admin_notes": {
+      "type": "string"
+    }
+  },
+  "required": [
+    "job_id",
+    "full_name",
+    "email"
+  ]
+}

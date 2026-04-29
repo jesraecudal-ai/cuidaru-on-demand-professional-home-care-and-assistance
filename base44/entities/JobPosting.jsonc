@@ -1,0 +1,47 @@
+{
+  "name": "JobPosting",
+  "type": "object",
+  "properties": {
+    "title": {
+      "type": "string"
+    },
+    "department": {
+      "type": "string",
+      "enum": [
+        "it",
+        "accounting_finance",
+        "marketing"
+      ]
+    },
+    "type": {
+      "type": "string",
+      "enum": [
+        "full_time",
+        "part_time",
+        "contract",
+        "remote"
+      ],
+      "default": "full_time"
+    },
+    "location": {
+      "type": "string"
+    },
+    "description": {
+      "type": "string"
+    },
+    "requirements": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+    "is_active": {
+      "type": "boolean",
+      "default": true
+    }
+  },
+  "required": [
+    "title",
+    "department"
+  ]
+}

@@ -29,6 +29,8 @@ import PrivacyPolicy from './pages/PrivacyPolicy';
 import Help from './pages/Help';
 import ShareProfile from './pages/ShareProfile';
 import About from './pages/About';
+import Careers from './pages/Careers';
+import AdminCareers from './pages/AdminCareers';
 import Layout from './components/shared/Layout';
 
 const AuthenticatedApp = () => {
@@ -58,6 +60,7 @@ const AuthenticatedApp = () => {
       <Route path="/help" element={<Help />} />
       <Route path="/share/:id" element={<ShareProfile />} />
       <Route path="/about" element={<About />} />
+      <Route path="/careers" element={<Careers />} />
       <Route element={<Layout />}>
         <Route path="/" element={<Home />} />
         <Route path="/browse" element={<BrowseProviders />} />
@@ -71,6 +74,7 @@ const AuthenticatedApp = () => {
         <Route path="/admin/pricing" element={<AdminPricing />} />
         <Route path="/admin/sales" element={<AdminSalesAccounting />} />
         <Route path="/admin/verifications" element={<AdminVerifications />} />
+        <Route path="/admin/careers" element={<AdminCareers />} />
         <Route path="/affiliate" element={<AffiliateDashboard />} />
         <Route path="/payouts" element={<ProviderPayouts />} />
         <Route path="/prescriptions" element={<Prescriptions />} />

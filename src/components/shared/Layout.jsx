@@ -51,6 +51,7 @@ export default function Layout() {
                 <Link to="/help" className="block hover:text-blue-600">{t('footer_help')}</Link>
                 <Link to="/help" className="block hover:text-blue-600">Contact Support</Link>
                 <Link to="/about" className="block hover:text-blue-600">About Cuidaru</Link>
+                <Link to="/careers" className="block hover:text-blue-600">Careers</Link>
                 <Link to="/terms" className="block hover:text-blue-600">Terms & Conditions</Link>
                 <Link to="/privacy" className="block hover:text-blue-600">Privacy Policy</Link>
               </div>

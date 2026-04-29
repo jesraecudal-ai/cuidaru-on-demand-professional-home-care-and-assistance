@@ -28,6 +28,7 @@ import TermsAndConditions from './pages/TermsAndConditions';
 import PrivacyPolicy from './pages/PrivacyPolicy';
 import Help from './pages/Help';
 import ShareProfile from './pages/ShareProfile';
+import About from './pages/About';
 import Layout from './components/shared/Layout';
 
 const AuthenticatedApp = () => {
@@ -56,6 +57,7 @@ const AuthenticatedApp = () => {
       <Route path="/privacy" element={<PrivacyPolicy />} />
       <Route path="/help" element={<Help />} />
       <Route path="/share/:id" element={<ShareProfile />} />
+      <Route path="/about" element={<About />} />
       <Route element={<Layout />}>
         <Route path="/" element={<Home />} />
         <Route path="/browse" element={<BrowseProviders />} />

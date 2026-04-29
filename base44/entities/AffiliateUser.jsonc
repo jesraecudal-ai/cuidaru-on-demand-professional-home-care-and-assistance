@@ -51,6 +51,11 @@
     "payout_details": {
       "type": "string",
       "description": "Card last4 or Stripe email"
+    },
+    "description": {
+      "type": "string",
+      "maxLength": 1000,
+      "description": "Optional notes about this affiliate"
     }
   },
   "required": [

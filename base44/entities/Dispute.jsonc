@@ -36,6 +36,11 @@
     "reason": {
       "type": "string"
     },
+    "description": {
+      "type": "string",
+      "maxLength": 1000,
+      "description": "Optional detailed description of the dispute"
+    },
     "status": {
       "type": "string",
       "enum": [

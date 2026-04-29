@@ -94,6 +94,11 @@
     "booking_id": {
       "type": "string",
       "description": "Associated booking if created during a consultation"
+    },
+    "description": {
+      "type": "string",
+      "maxLength": 1000,
+      "description": "Optional notes about this prescription"
     }
   },
   "required": [

@@ -49,6 +49,11 @@
     "booking_id": {
       "type": "string",
       "description": "The first booking that triggered the commission"
+    },
+    "description": {
+      "type": "string",
+      "maxLength": 1000,
+      "description": "Optional notes about this referral"
     }
   },
   "required": [

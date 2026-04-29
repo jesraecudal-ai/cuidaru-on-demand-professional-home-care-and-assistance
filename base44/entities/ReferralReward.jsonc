@@ -52,6 +52,11 @@
     "earned_date": {
       "type": "string",
       "description": "When the threshold was met"
+    },
+    "description": {
+      "type": "string",
+      "maxLength": 1000,
+      "description": "Optional notes about this reward"
     }
   },
   "required": [

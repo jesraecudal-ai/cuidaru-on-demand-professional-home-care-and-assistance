@@ -30,6 +30,11 @@
     "sub_provider": {
       "type": "number",
       "description": "Provider premium subscription price per month"
+    },
+    "description": {
+      "type": "string",
+      "maxLength": 1000,
+      "description": "Optional notes about this pricing configuration"
     }
   },
   "required": [

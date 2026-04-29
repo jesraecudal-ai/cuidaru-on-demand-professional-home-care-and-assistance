@@ -29,6 +29,11 @@
         "type": "string"
       },
       "description": "ISO date strings: YYYY-MM-DD"
+    },
+    "description": {
+      "type": "string",
+      "maxLength": 1000,
+      "description": "Optional notes about availability"
     }
   },
   "required": [

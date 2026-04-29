@@ -76,6 +76,25 @@ export default function Careers() {
       resume_url,
       status: 'new',
     });
+
+    // Send confirmation email to applicant + notify admins
+    await Promise.all([
+      base44.functions.invoke('sendEmailNotification', {
+        template: 'job_application_confirmation',
+        to: form.email,
+        data: { applicantName: form.full_name, jobTitle: selectedJob.title },
+      }).catch(() => {}),
+      base44.functions.invoke('sendEmailNotification', {
+        template: 'job_application_received',
+        to: 'careers@cuidaru.com',
+        data: {
+          applicantName: form.full_name,
+          jobTitle: selectedJob.title,
+          department: selectedJob.department,
+        },
+      }).catch(() => {}),
+    ]);
+
     setSubmitting(false);
     setSubmitted(true);
   };

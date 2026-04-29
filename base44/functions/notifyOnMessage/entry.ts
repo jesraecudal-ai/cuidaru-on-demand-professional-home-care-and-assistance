@@ -8,8 +8,8 @@ Deno.serve(async (req) => {
 
     if (!data || event?.type !== 'create') return Response.json({ ok: true, skipped: 'not a new message' });
 
-    // Determine recipient: if sender is client, notify provider, and vice versa
     let recipientEmail = null;
+    let recipientName = null;
     if (data.sender_role === 'client') {
       recipientEmail = data.provider_email;
     } else if (data.sender_role === 'provider') {
@@ -27,6 +27,16 @@ Deno.serve(async (req) => {
       is_read: false,
       reference_id: data.conversation_id,
     });
+
+    // Send email notification (non-blocking)
+    base44.asServiceRole.functions.invoke('sendEmailNotification', {
+      template: 'message_received',
+      to: recipientEmail,
+      data: {
+        recipientName: recipientEmail,
+        senderName: data.sender_name || 'Someone',
+      },
+    }).catch(err => console.error('Message email failed:', err.message));
 
     return Response.json({ ok: true });
   } catch (error) {

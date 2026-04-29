@@ -1019,11 +1019,11 @@ const I18nContext = createContext(null);
 export function I18nProvider({ children }) {
   const [lang, setLang] = useState(() => {
     // Check if user has manually set a language (stored preference)
-    const storedLang = localStorage.getItem('carebook_lang');
+    const storedLang = localStorage.getItem('cuidaru_lang');
     if (storedLang) return storedLang;
     
     // Try to detect from user's country (will be set after auth)
-    const userCountry = localStorage.getItem('carebook_country');
+    const userCountry = localStorage.getItem('cuidaru_country');
     if (userCountry === 'brazil') return 'pt';
     if (userCountry === 'uruguay' || userCountry === 'usa' || userCountry === 'canada') return 'es'; // Uruguay uses Spanish
     
@@ -1033,13 +1033,13 @@ export function I18nProvider({ children }) {
 
   const changeLang = (code) => {
     setLang(code);
-    localStorage.setItem('carebook_lang', code);
+    localStorage.setItem('cuidaru_lang', code);
   };
 
   const setCountry = (country) => {
-    localStorage.setItem('carebook_country', country);
+    localStorage.setItem('cuidaru_country', country);
     // Auto-set language based on country if user hasn't manually chosen one
-    if (!localStorage.getItem('carebook_lang')) {
+    if (!localStorage.getItem('cuidaru_lang')) {
       if (country === 'brazil') {
         setLang('pt');
       } else if (country === 'uruguay') {

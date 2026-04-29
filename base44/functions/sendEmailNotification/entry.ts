@@ -270,7 +270,7 @@ Deno.serve(async (req) => {
       to,
       subject,
       body: html,
-      from_name: 'Cuidaru',
+      from_name: 'Cuidaru (notifications@cuidaru.com)',
     });
 
     console.log(`Email sent: template=${template} to=${to}`);

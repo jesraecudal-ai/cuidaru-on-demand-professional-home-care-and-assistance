@@ -2,7 +2,8 @@ import React, { useState } from 'react';
 import { useQuery, useQueryClient } from '@tanstack/react-query';
 import { base44 } from '@/api/base44Client';
 import { useUserProfile } from '@/lib/useUserProfile';
-import { ShieldCheck, AlertTriangle, Clock, CheckCircle2, XCircle, Eye, Filter, User, FileText } from 'lucide-react';
+import { ShieldCheck, AlertTriangle, Clock, CheckCircle2, XCircle, Eye, Filter, User, FileText, Zap, Search } from 'lucide-react';
+import { Input } from '@/components/ui/input';
 import { Skeleton } from '@/components/ui/skeleton';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
@@ -86,10 +87,27 @@ function ReviewModal({ provider, onClose, onUpdated }) {
 
   const handleDecision = async (decision) => {
     setLoading(true);
-    await base44.entities.ServiceProvider.update(provider.id, {
-      verification_status: decision,
-    });
+    await base44.entities.ServiceProvider.update(provider.id, { verification_status: decision });
     toast.success(decision === 'verified' ? 'Provider verified!' : 'Provider rejected.');
+    setLoading(false);
+    onUpdated();
+    onClose();
+  };
+
+  const handleGrantPremium = async () => {
+    setLoading(true);
+    // Set premium on provider + UserProfile
+    const expiry = new Date(Date.now() + 365 * 24 * 60 * 60 * 1000).toISOString();
+    await base44.entities.ServiceProvider.update(provider.id, {
+      is_premium: true,
+      premium_expires_at: expiry,
+      verification_status: 'verified',
+    });
+    const profiles = await base44.entities.UserProfile.filter({ user_email: provider.user_email });
+    if (profiles[0]) {
+      await base44.entities.UserProfile.update(profiles[0].id, { is_premium: true, premium_expires_at: expiry });
+    }
+    toast.success('Premium + Verified granted for 1 year (no payment required)!');
     setLoading(false);
     onUpdated();
     onClose();
@@ -173,22 +191,31 @@ function ReviewModal({ provider, onClose, onUpdated }) {
           </div>
 
           {/* Action buttons */}
-          <div className="flex gap-3 pt-2 border-t border-gray-100">
+          <div className="flex flex-col gap-3 pt-2 border-t border-gray-100">
             <Button
-              className="flex-1 bg-green-600 hover:bg-green-700 gap-2"
-              disabled={loading || provider.verification_status === 'verified'}
-              onClick={() => handleDecision('verified')}
+              className="w-full bg-amber-500 hover:bg-amber-600 gap-2 text-white"
+              disabled={loading}
+              onClick={handleGrantPremium}
             >
-              <CheckCircle2 className="w-4 h-4" /> Approve & Verify
+              <Zap className="w-4 h-4" /> Grant Premium + Verified (Free Override)
             </Button>
-            <Button
-              variant="destructive"
-              className="flex-1 gap-2"
-              disabled={loading || provider.verification_status === 'rejected'}
-              onClick={() => handleDecision('rejected')}
-            >
-              <XCircle className="w-4 h-4" /> Reject
-            </Button>
+            <div className="flex gap-3">
+              <Button
+                className="flex-1 bg-green-600 hover:bg-green-700 gap-2"
+                disabled={loading || provider.verification_status === 'verified'}
+                onClick={() => handleDecision('verified')}
+              >
+                <CheckCircle2 className="w-4 h-4" /> Verify Only
+              </Button>
+              <Button
+                variant="destructive"
+                className="flex-1 gap-2"
+                disabled={loading || provider.verification_status === 'rejected'}
+                onClick={() => handleDecision('rejected')}
+              >
+                <XCircle className="w-4 h-4" /> Reject
+              </Button>
+            </div>
           </div>
         </div>
       </DialogContent>
@@ -200,6 +227,7 @@ export default function AdminVerifications() {
   const { user } = useUserProfile();
   const [statusFilter, setStatusFilter] = useState('pending');
   const [reviewing, setReviewing] = useState(null);
+  const [searchQuery, setSearchQuery] = useState('');
   const queryClient = useQueryClient();
 
   const isAdmin = user?.role === 'admin';
@@ -225,6 +253,13 @@ export default function AdminVerifications() {
   }
 
   const pendingCount = providers.filter(p => p.verification_status === 'pending').length;
+
+  const displayed = searchQuery.trim()
+    ? providers.filter(p =>
+        p.full_name?.toLowerCase().includes(searchQuery.toLowerCase()) ||
+        p.user_email?.toLowerCase().includes(searchQuery.toLowerCase())
+      )
+    : providers;
 
   return (
     <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
@@ -254,6 +289,17 @@ export default function AdminVerifications() {
         </div>
       </div>
 
+      {/* Search override bar */}
+      <div className="relative mb-6">
+        <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400" />
+        <Input
+          placeholder="Search by name or email to find any provider…"
+          value={searchQuery}
+          onChange={e => setSearchQuery(e.target.value)}
+          className="pl-9"
+        />
+      </div>
+
       {/* Summary stats */}
       <div className="grid grid-cols-2 sm:grid-cols-4 gap-4 mb-6">
         {Object.entries(STATUS_CONFIG).map(([key, cfg]) => (
@@ -280,7 +326,7 @@ export default function AdminVerifications() {
         </div>
       ) : (
         <div className="space-y-4">
-          {providers.map(p => (
+          {displayed.map(p => (
             <VerificationCard key={p.id} provider={p} onReview={setReviewing} />
           ))}
         </div>

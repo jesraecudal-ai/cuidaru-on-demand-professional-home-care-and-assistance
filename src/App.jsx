@@ -28,7 +28,6 @@ import TermsAndConditions from './pages/TermsAndConditions';
 import PrivacyPolicy from './pages/PrivacyPolicy';
 import Help from './pages/Help';
 import ShareProfile from './pages/ShareProfile';
-import SocialMediaManager from './pages/SocialMediaManager';
 import Layout from './components/shared/Layout';
 
 const AuthenticatedApp = () => {
@@ -74,7 +73,6 @@ const AuthenticatedApp = () => {
         <Route path="/payouts" element={<ProviderPayouts />} />
         <Route path="/prescriptions" element={<Prescriptions />} />
         <Route path="/consultations" element={<Consultations />} />
-        <Route path="/admin/social" element={<SocialMediaManager />} />
       </Route>
       <Route path="*" element={<PageNotFound />} />
     </Routes>

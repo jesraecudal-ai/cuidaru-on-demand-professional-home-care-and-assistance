@@ -24,6 +24,10 @@ export default function Home() {
   const { t } = useI18n();
   const { profile, loading } = useUserProfile();
   const navigate = useNavigate();
+
+  useEffect(() => {
+    document.title = 'Cuidaru | Care & Service Professionals';
+  }, []);
   const [currentImageIndex, setCurrentImageIndex] = useState(0);
 
   // Route to onboarding if needed

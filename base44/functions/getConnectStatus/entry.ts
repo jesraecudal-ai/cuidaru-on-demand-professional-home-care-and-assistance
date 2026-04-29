@@ -5,8 +5,8 @@ const stripe = new Stripe(Deno.env.get('STRIPE_SECRET_KEY'));
 
 /**
  * getConnectStatus
- * Checks if the provider's Stripe Connect account is fully onboarded.
- * Also syncs the status to the ServiceProvider record.
+ * Retrieves and syncs the Stripe Connect onboarding status for the current provider.
+ * Uses charges_enabled + payouts_enabled as the definitive "ready" signal.
  */
 Deno.serve(async (req) => {
   try {
@@ -23,16 +23,18 @@ Deno.serve(async (req) => {
     }
 
     const account = await stripe.accounts.retrieve(provider.stripe_account_id);
-    const onboardingComplete = account.details_submitted && !account.requirements?.currently_due?.length;
 
-    // Sync status if it changed
+    // An account is "ready" when Stripe says charges and payouts are enabled
+    const onboardingComplete = account.charges_enabled && account.payouts_enabled;
+
+    // Sync back to DB if changed
     if (provider.stripe_onboarding_complete !== onboardingComplete) {
       await base44.asServiceRole.entities.ServiceProvider.update(provider.id, {
         stripe_onboarding_complete: onboardingComplete,
       });
     }
 
-    console.log(`[getConnectStatus] Account ${provider.stripe_account_id}: details_submitted=${account.details_submitted}, complete=${onboardingComplete}`);
+    console.log(`[getConnectStatus] ${provider.stripe_account_id}: charges_enabled=${account.charges_enabled}, payouts_enabled=${account.payouts_enabled}`);
 
     return Response.json({
       account_id: provider.stripe_account_id,
@@ -40,6 +42,7 @@ Deno.serve(async (req) => {
       details_submitted: account.details_submitted,
       charges_enabled: account.charges_enabled,
       payouts_enabled: account.payouts_enabled,
+      requirements: account.requirements?.currently_due || [],
     });
   } catch (error) {
     console.error('[getConnectStatus] Error:', error);

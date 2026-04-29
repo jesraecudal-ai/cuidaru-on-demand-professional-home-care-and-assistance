@@ -5,8 +5,9 @@ const stripe = new Stripe(Deno.env.get('STRIPE_SECRET_KEY'));
 
 /**
  * createConnectAccount
- * Creates or retrieves a Stripe Connect Express account for a provider,
- * and returns an onboarding URL so they can complete KYC/banking setup.
+ * Creates a Stripe Connect account for a provider using the modern
+ * controller-based approach (no deprecated "type: express").
+ * Returns an Account Link URL for onboarding.
  */
 Deno.serve(async (req) => {
   try {
@@ -26,13 +27,17 @@ Deno.serve(async (req) => {
     // Create a new Connect account if they don't have one yet
     if (!accountId) {
       const account = await stripe.accounts.create({
-        type: 'express',
-        email: user.email,
+        controller: {
+          stripe_dashboard: { type: 'express' },
+          fees: { payer: 'application' },
+          losses: { payments: 'application' },
+          requirement_collection: 'stripe',
+        },
         capabilities: {
-          card_payments: { requested: true },
           transfers: { requested: true },
         },
-        business_type: 'individual',
+        country: 'US',
+        email: user.email,
         metadata: {
           provider_id: provider.id,
           user_email: user.email,
@@ -41,7 +46,6 @@ Deno.serve(async (req) => {
       });
       accountId = account.id;
 
-      // Save to provider record
       await base44.asServiceRole.entities.ServiceProvider.update(provider.id, {
         stripe_account_id: accountId,
         stripe_onboarding_complete: false,
@@ -50,7 +54,7 @@ Deno.serve(async (req) => {
       console.log(`[createConnectAccount] Created Stripe Connect account ${accountId} for ${user.email}`);
     }
 
-    // Generate an onboarding link
+    // Generate an Account Link for onboarding
     const accountLink = await stripe.accountLinks.create({
       account: accountId,
       refresh_url: `${origin}/payouts?connect=refresh`,

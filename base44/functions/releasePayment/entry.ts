@@ -104,7 +104,13 @@ Deno.serve(async (req) => {
     if (connectAccountId && paymentIntentId) {
       const payoutAmountCents = Math.round((booking.provider_payout || 0) * 100);
       if (payoutAmountCents > 0) {
-        const transfer = await stripe.transfers.create({
+        // Retrieve the PaymentIntent to get the underlying charge ID
+        // Using source_transaction ties the transfer to the original charge
+        // which is the correct approach per Stripe Connect docs
+        const pi = await stripe.paymentIntents.retrieve(paymentIntentId);
+        const chargeId = pi.latest_charge;
+
+        const transferParams = {
           amount: payoutAmountCents,
           currency: 'usd',
           destination: connectAccountId,
@@ -114,10 +120,17 @@ Deno.serve(async (req) => {
             provider_email: booking.provider_email,
             base44_app_id: Deno.env.get('BASE44_APP_ID'),
           },
-        });
+        };
+
+        // Link to source charge if available (recommended by Stripe)
+        if (chargeId) {
+          transferParams.source_transaction = chargeId;
+        }
+
+        const transfer = await stripe.transfers.create(transferParams);
         stripeTransferId = transfer.id;
         payoutStatus = 'paid';
-        console.log(`[releasePayment] Stripe Transfer created: ${stripeTransferId} → ${connectAccountId}`);
+        console.log(`[releasePayment] Transfer ${stripeTransferId} → ${connectAccountId} (charge: ${chargeId || 'n/a'})`);
       }
     } else {
       console.log(`[releasePayment] No Connect account for provider ${booking.provider_email} — payout marked as processing`);

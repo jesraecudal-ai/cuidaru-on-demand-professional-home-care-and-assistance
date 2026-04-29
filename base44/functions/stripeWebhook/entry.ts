@@ -36,16 +36,17 @@ Deno.serve(async (req) => {
         });
       }
 
-      // Update booking to paid
+      // Update booking to paid, store payment_intent_id for later release
       const bookings = await base44.asServiceRole.entities.Booking.filter({ id: booking_id });
       if (bookings.length > 0) {
         await base44.asServiceRole.entities.Booking.update(bookings[0].id, {
           status: 'paid_confirmed',
           payment_status: 'paid_held',
+          stripe_payment_intent_id: session.payment_intent,
         });
       }
 
-      console.log(`Payment completed for booking ${booking_id}`);
+      console.log(`Payment completed for booking ${booking_id}, PI: ${session.payment_intent}`);
     }
 
     if (event.type === 'payment_intent.payment_failed') {

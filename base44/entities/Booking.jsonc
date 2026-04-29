@@ -100,6 +100,10 @@
       ],
       "default": "unpaid"
     },
+    "stripe_payment_intent_id": {
+      "type": "string",
+      "description": "Stripe PaymentIntent ID \u2014 used to verify payment and trigger payout on release"
+    },
     "counter_offer_amount": {
       "type": "number",
       "description": "Latest counter offer total amount"

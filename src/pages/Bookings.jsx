@@ -84,13 +84,20 @@ export default function Bookings() {
         toast.success('Marked as complete. Payment auto-releases in 24h if no dispute.');
         break;
       }
-      case 'release':
-        await updateMutation.mutateAsync({ id: bookingId, data: { status: 'payment_released', payment_status: 'released' } });
-        toast.success('Payment released to provider!');
-        if (!existingReviews.some(r => r.booking_id === bookingId)) {
-          setReviewBooking(booking);
+      case 'release': {
+        const releaseRes = await base44.functions.invoke('releasePayment', { booking_id: bookingId });
+        if (releaseRes.data?.success) {
+          toast.success('Payment released to provider!');
+          queryClient.invalidateQueries({ queryKey: ['clientBookings'] });
+          queryClient.invalidateQueries({ queryKey: ['providerBookings'] });
+          if (!existingReviews.some(r => r.booking_id === bookingId)) {
+            setReviewBooking(booking);
+          }
+        } else {
+          toast.error(releaseRes.data?.error || 'Failed to release payment');
         }
         break;
+      }
       case 'dispute':
         setDisputeState({ bookingId, booking });
         break;

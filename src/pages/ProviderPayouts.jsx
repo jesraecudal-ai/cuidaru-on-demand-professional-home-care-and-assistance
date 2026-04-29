@@ -72,8 +72,22 @@ export default function ProviderPayouts() {
   const handleWithdrawAll = async () => {
     if (withdrawableBookings.length === 0) return;
     setWithdrawingAll(true);
-    // Open the modal for the first one — or handle bulk by using the first as representative
-    // For simplicity, we withdraw each one sequentially
+
+    // Fetch provider's saved default card
+    let defaultCard = null;
+    if (user) {
+      const cards = await base44.entities.SavedPaymentMethod.filter({ user_email: user.email, user_role: 'provider' });
+      defaultCard = cards.find(c => c.is_default) || cards[0] || null;
+    }
+
+    if (!defaultCard) {
+      setWithdrawingAll(false);
+      // Fall back to modal for the first booking so provider can enter card details
+      setPayoutBooking(withdrawableBookings[0]);
+      toast.info('No saved card found. Please enter your card details to withdraw.');
+      return;
+    }
+
     let successCount = 0;
     for (const booking of withdrawableBookings) {
       const res = await base44.functions.invoke('requestPayout', {
@@ -81,15 +95,15 @@ export default function ProviderPayouts() {
         provider_id: booking.provider_id,
         amount: booking.provider_payout,
         currency: COUNTRY_SETTINGS[country]?.currency?.toLowerCase() || 'usd',
-        card_last4: '0000',
-        card_brand: 'card',
-        payout_method: 'debit_card',
+        card_last4: defaultCard.card_last4,
+        card_brand: defaultCard.card_brand,
+        payout_method: defaultCard.card_type === 'prepaid' ? 'prepaid_card' : 'debit_card',
       });
       if (res.data?.success) successCount++;
     }
     setWithdrawingAll(false);
     if (successCount > 0) {
-      toast.success(`${successCount} payout(s) of ${symbol}${totalWithdrawable.toFixed(2)} requested!`);
+      toast.success(`${successCount} payout(s) of ${symbol}${totalWithdrawable.toFixed(2)} sent to ${defaultCard.card_brand} •••• ${defaultCard.card_last4}!`);
       loadFinance();
       refetchBookings();
     } else {

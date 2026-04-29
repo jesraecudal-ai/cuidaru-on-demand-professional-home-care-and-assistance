@@ -23,7 +23,7 @@ export default function PrivacyPolicy() {
           <div className="space-y-8 text-foreground">
             <section>
               <p className="text-base leading-relaxed mb-4">
-                At CareBook, we respect your privacy and are committed to protecting your personal data. This Privacy Policy explains how we collect, use, and protect your information.
+                At Cuidaru, we respect your privacy and are committed to protecting your personal data. This Privacy Policy explains how we collect, use, and protect your information.
               </p>
             </section>
 
@@ -118,7 +118,7 @@ export default function PrivacyPolicy() {
               <h2 className="text-2xl font-bold mb-4">7. Children's Privacy</h2>
               <div className="space-y-3 text-sm leading-relaxed">
                 <p>
-                  CareBook is not intended for children under 18. We do not knowingly collect information from minors.
+                  Cuidaru is not intended for children under 18. We do not knowingly collect information from minors.
                 </p>
               </div>
             </section>
@@ -127,7 +127,7 @@ export default function PrivacyPolicy() {
               <h2 className="text-2xl font-bold mb-4">8. Changes to This Policy</h2>
               <div className="space-y-3 text-sm leading-relaxed">
                 <p>
-                  We may update this Privacy Policy periodically. Continued use of CareBook constitutes acceptance of any changes.
+                  We may update this Privacy Policy periodically. Continued use of Cuidaru constitutes acceptance of any changes.
                 </p>
               </div>
             </section>

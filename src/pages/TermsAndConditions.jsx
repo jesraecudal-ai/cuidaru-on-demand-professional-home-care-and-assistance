@@ -25,23 +25,23 @@ export default function TermsAndConditions() {
             {/* Introduction */}
             <section>
               <p className="text-base leading-relaxed mb-4">
-                Welcome to <span className="font-semibold">CareBook</span>, a marketplace platform that connects clients with independent service providers. By using CareBook, you agree to these Terms and Conditions. Please read them carefully.
+                Welcome to <span className="font-semibold">Cuidaru</span>, a marketplace platform that connects clients with independent service providers. By using Cuidaru, you agree to these Terms and Conditions. Please read them carefully.
               </p>
             </section>
 
-            {/* 1. Role of CareBook */}
+            {/* 1. Role of Cuidaru */}
             <section>
               <h2 className="text-2xl font-bold mb-4">1. Our Role</h2>
               <div className="space-y-3 text-sm leading-relaxed">
                 <p>
-                  <span className="font-semibold">CareBook is ONLY a technology platform</span> that helps connect clients with independent service providers. We are not a service provider ourselves.
+                  <span className="font-semibold">Cuidaru is ONLY a technology platform</span> that helps connect clients with independent service providers. We are not a service provider ourselves.
                 </p>
                 <div className="bg-muted p-4 rounded-lg space-y-2">
                   <p className="font-semibold">Important:</p>
                   <ul className="list-disc list-inside space-y-1">
-                    <li>CareBook does NOT employ, manage, or supervise service providers</li>
+                    <li>Cuidaru does NOT employ, manage, or supervise service providers</li>
                     <li>All service providers are independent contractors</li>
-                    <li>CareBook does NOT guarantee the quality, safety, legality, or outcome of any service</li>
+                    <li>Cuidaru does NOT guarantee the quality, safety, legality, or outcome of any service</li>
                     <li>Any service agreement is strictly between you (client) and the provider</li>
                   </ul>
                 </div>
@@ -82,11 +82,11 @@ export default function TermsAndConditions() {
               <h2 className="text-2xl font-bold mb-4">3. Payments and Escrow System</h2>
               <div className="space-y-3 text-sm leading-relaxed">
                 <p>
-                  <span className="font-semibold">All bookings must be paid through CareBook.</span> We use an escrow system to protect both clients and providers:
+                  <span className="font-semibold">All bookings must be paid through Cuidaru.</span> We use an escrow system to protect both clients and providers:
                 </p>
                 <ul className="list-disc list-inside space-y-1 ml-2">
                   <li>Client pays upfront when booking is confirmed</li>
-                  <li>Payment is held safely by CareBook (not released immediately)</li>
+                  <li>Payment is held safely by Cuidaru (not released immediately)</li>
                   <li>After service completion, provider marks the job as done</li>
                   <li>Client has 24 hours to review and release payment manually</li>
                   <li>If client takes no action, payment automatically releases after 24 hours</li>
@@ -100,7 +100,7 @@ export default function TermsAndConditions() {
               <h2 className="text-2xl font-bold mb-4">4. Platform Fees</h2>
               <div className="space-y-3 text-sm leading-relaxed">
                 <p>
-                  CareBook charges a <span className="font-semibold">service fee of 10%</span> per transaction. This fee:
+                  Cuidaru charges a <span className="font-semibold">service fee of 10%</span> per transaction. This fee:
                 </p>
                 <ul className="list-disc list-inside space-y-1 ml-2">
                   <li>Is deducted from the total amount</li>
@@ -138,10 +138,10 @@ export default function TermsAndConditions() {
                 <p>If either the client or provider is unhappy with a service:</p>
                 <ul className="list-disc list-inside space-y-1 ml-2">
                   <li>The dissatisfied party can file a dispute within a reasonable timeframe</li>
-                  <li>When a dispute is filed, the payment is paused and held by CareBook</li>
-                  <li>CareBook's team reviews the case and evidence from both parties</li>
-                  <li>CareBook may decide to: award full payment to provider, partial payment, or issue a refund</li>
-                  <li><span className="font-semibold">CareBook's decision is final</span> and binding</li>
+                  <li>When a dispute is filed, the payment is paused and held by Cuidaru</li>
+                  <li>Cuidaru's team reviews the case and evidence from both parties</li>
+                  <li>Cuidaru may decide to: award full payment to provider, partial payment, or issue a refund</li>
+                  <li><span className="font-semibold">Cuidaru's decision is final</span> and binding</li>
                 </ul>
               </div>
             </section>
@@ -152,7 +152,7 @@ export default function TermsAndConditions() {
               <div className="space-y-3 text-sm leading-relaxed bg-amber-50 p-4 rounded-lg">
                 <p className="font-semibold text-amber-900">Users must NOT:</p>
                 <ul className="list-disc list-inside space-y-1 ml-2">
-                  <li>Arrange payments outside of CareBook</li>
+                  <li>Arrange payments outside of Cuidaru</li>
                   <li>Bypass the platform to avoid fees</li>
                   <li>Share contact information to conduct transactions privately</li>
                 </ul>
@@ -167,12 +167,12 @@ export default function TermsAndConditions() {
               <div className="space-y-3 text-sm leading-relaxed bg-blue-50 p-4 rounded-lg">
                 <p className="font-semibold text-blue-900">This is VERY important:</p>
                 <p>
-                  <span className="font-semibold">CareBook is NOT responsible</span> for calculating, collecting, reporting, or paying taxes on behalf of users.
+                  <span className="font-semibold">Cuidaru is NOT responsible</span> for calculating, collecting, reporting, or paying taxes on behalf of users.
                 </p>
 
                 <p className="font-semibold mt-4 text-blue-900">Service Providers must:</p>
                 <ul className="list-disc list-inside space-y-1 ml-2">
-                  <li>Declare all income earned through CareBook to tax authorities</li>
+                  <li>Declare all income earned through Cuidaru to tax authorities</li>
                   <li>Pay all applicable income taxes, contributions, and fees required by law in your country</li>
                   <li>Keep records of all transactions for tax purposes</li>
                   <li>Consult with a tax professional if unsure about obligations</li>
@@ -184,8 +184,8 @@ export default function TermsAndConditions() {
                   <li>Report any relevant expenses as required by law</li>
                 </ul>
 
-                <p className="font-semibold mt-4 text-blue-900">What CareBook does:</p>
-                <p>CareBook only reports and pays taxes on its own earnings (service fees and subscriptions), not on behalf of users.</p>
+                <p className="font-semibold mt-4 text-blue-900">What Cuidaru does:</p>
+                <p>Cuidaru only reports and pays taxes on its own earnings (service fees and subscriptions), not on behalf of users.</p>
               </div>
             </section>
 
@@ -193,7 +193,7 @@ export default function TermsAndConditions() {
             <section>
               <h2 className="text-2xl font-bold mb-4">9. Limitation of Liability</h2>
               <div className="space-y-3 text-sm leading-relaxed">
-                <p className="font-semibold">CareBook is NOT liable for:</p>
+                <p className="font-semibold">Cuidaru is NOT liable for:</p>
                 <ul className="list-disc list-inside space-y-1 ml-2">
                   <li>Service quality or outcome</li>
                   <li>Injuries, damages, or losses resulting from services</li>
@@ -203,7 +203,7 @@ export default function TermsAndConditions() {
                   <li>Platform downtime or technical issues (beyond reasonable control)</li>
                 </ul>
                 <p className="mt-4">
-                  CareBook's sole responsibility is providing the platform and payment processing. Users use the platform at their own risk.
+                  Cuidaru's sole responsibility is providing the platform and payment processing. Users use the platform at their own risk.
                 </p>
               </div>
             </section>
@@ -228,7 +228,7 @@ export default function TermsAndConditions() {
             <section>
               <h2 className="text-2xl font-bold mb-4">11. Account Suspension and Termination</h2>
               <div className="space-y-3 text-sm leading-relaxed">
-                <p>CareBook reserves the right to suspend or permanently terminate accounts for:</p>
+                <p>Cuidaru reserves the right to suspend or permanently terminate accounts for:</p>
                 <ul className="list-disc list-inside space-y-1 ml-2">
                   <li>Fraud or deception</li>
                   <li>Abuse or harassment</li>
@@ -245,7 +245,7 @@ export default function TermsAndConditions() {
               <h2 className="text-2xl font-bold mb-4">12. Country-Specific Information</h2>
               <div className="space-y-3 text-sm leading-relaxed">
                 <p>
-                  CareBook operates in multiple countries. Fees, subscription costs, and currencies may vary by location. By using the app, you agree to the rules and pricing applicable to your country.
+                  Cuidaru operates in multiple countries. Fees, subscription costs, and currencies may vary by location. By using the app, you agree to the rules and pricing applicable to your country.
                 </p>
               </div>
             </section>
@@ -255,11 +255,11 @@ export default function TermsAndConditions() {
               <h2 className="text-2xl font-bold mb-4">13. Your Agreement</h2>
               <div className="space-y-3 text-sm leading-relaxed bg-green-50 p-4 rounded-lg">
                 <p>
-                  By signing up and using CareBook, you confirm that you:
+                  By signing up and using Cuidaru, you confirm that you:
                 </p>
                 <ul className="list-disc list-inside space-y-1 ml-2">
                   <li>Have read and understand these Terms and Conditions</li>
-                  <li>Understand that CareBook is ONLY a marketplace platform</li>
+                  <li>Understand that Cuidaru is ONLY a marketplace platform</li>
                   <li>Accept full responsibility for your actions and transactions</li>
                   <li>Agree to all terms outlined above</li>
                 </ul>

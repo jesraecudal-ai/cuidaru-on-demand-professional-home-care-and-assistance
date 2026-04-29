@@ -106,10 +106,10 @@ export default function Home() {
             <div className="flex-1">
               <div className="flex items-center gap-2 mb-4">
                 <Zap className="w-5 h-5 text-amber-600" />
-                <span className="font-semibold text-amber-700 text-sm uppercase tracking-wider">Cuidaro+ Advantage</span>
+                <span className="font-semibold text-amber-700 text-sm uppercase tracking-wider">Cuidaru+ Advantage</span>
               </div>
-              <h3 className="text-3xl sm:text-4xl font-bold text-gray-900 mb-4">Get ahead with Cuidaro+</h3>
-              <p className="text-gray-700 text-lg mb-6">Stand out in searches and reach more clients. Cuidaro+ members enjoy priority visibility and zero fees.</p>
+              <h3 className="text-3xl sm:text-4xl font-bold text-gray-900 mb-4">Get ahead with Cuidaru+</h3>
+              <p className="text-gray-700 text-lg mb-6">Stand out in searches and reach more clients. Cuidaru+ members enjoy priority visibility and zero fees.</p>
               <ul className="space-y-3 mb-8">
                 {[
                   'Providers: Featured in top searches',
@@ -125,7 +125,7 @@ export default function Home() {
             </div>
             <Link to="/premium" className="flex-shrink-0">
                <Button size="lg" className="bg-gradient-to-r from-amber-500 to-orange-500 hover:from-amber-600 hover:to-orange-600 text-white h-14 px-10 gap-2 shadow-lg text-base">
-                 <Zap className="w-5 h-5" /> Explore Cuidaro+
+                 <Zap className="w-5 h-5" /> Explore Cuidaru+
                </Button>
              </Link>
           </div>
@@ -166,7 +166,7 @@ export default function Home() {
         <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-24">
           <div className="text-center mb-16">
             <h2 className="text-4xl sm:text-5xl font-bold text-gray-900">Earn & Grow Your Network</h2>
-             <p className="mt-4 text-lg text-gray-600">Get rewarded for sharing Cuidaro</p>
+             <p className="mt-4 text-lg text-gray-600">Get rewarded for sharing Cuidaru</p>
           </div>
           <div className="grid md:grid-cols-2 gap-8">
             {/* Referral Rewards Block */}
@@ -177,7 +177,7 @@ export default function Home() {
                     <Gift className="w-7 h-7 text-purple-600" />
                   </div>
                   <h3 className="text-2xl font-bold text-gray-900 mb-2">Referral Rewards</h3>
-                  <p className="text-gray-600 mb-6 text-sm">Invite friends and family to Cuidaro and get rewarded.</p>
+                  <p className="text-gray-600 mb-6 text-sm">Invite friends and family to Cuidaru and get rewarded.</p>
                   <ul className="space-y-3 mb-8">
                     <li className="flex items-start gap-3 text-sm text-gray-700">
                       <CheckCircle2 className="w-4 h-4 text-purple-600 flex-shrink-0 mt-0.5" />

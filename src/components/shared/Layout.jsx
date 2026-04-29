@@ -24,7 +24,7 @@ export default function Layout() {
                  <div className="w-7 h-7 rounded-lg bg-blue-600 flex items-center justify-center">
                    <Heart className="w-4 h-4 text-white" />
                  </div>
-                 <span className="font-bold text-gray-900">Cuidaro</span>
+                 <span className="font-bold text-gray-900">Cuidaru</span>
                </div>
               <p className="text-sm text-gray-500 leading-relaxed">{t('footer_tagline')}</p>
             </div>
@@ -40,7 +40,7 @@ export default function Layout() {
               <h4 className="font-semibold text-gray-900 mb-3 text-sm">{t('footer_providers')}</h4>
               <div className="space-y-2 text-sm text-gray-500">
                 <Link to="/my-profile" className="block hover:text-blue-600">{t('footer_become')}</Link>
-                <Link to="/premium" className="block hover:text-blue-600">Cuidaro+</Link>
+                <Link to="/premium" className="block hover:text-blue-600">Cuidaru+</Link>
                 <p>{t('footer_resources')}</p>
               </div>
             </div>

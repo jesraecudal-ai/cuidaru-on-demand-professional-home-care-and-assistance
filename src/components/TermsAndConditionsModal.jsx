@@ -34,12 +34,12 @@ export default function TermsAndConditionsModal({ open, onAccept, onDecline }) {
             <section>
               <h3 className="font-semibold text-base mb-2">Our Role</h3>
               <p className="text-muted-foreground mb-2">
-                CareBook is ONLY a technology platform that connects clients with independent service providers. We are not a service provider ourselves.
+                Cuidaru is ONLY a technology platform that connects clients with independent service providers. We are not a service provider ourselves.
               </p>
               <ul className="list-disc list-inside space-y-1 text-muted-foreground ml-2">
-                <li>CareBook does NOT employ or supervise service providers</li>
+                <li>Cuidaru does NOT employ or supervise service providers</li>
                 <li>All providers are independent contractors</li>
-                <li>CareBook does NOT guarantee service quality or outcome</li>
+                <li>Cuidaru does NOT guarantee service quality or outcome</li>
               </ul>
             </section>
 
@@ -53,7 +53,7 @@ export default function TermsAndConditionsModal({ open, onAccept, onDecline }) {
             <section>
               <h3 className="font-semibold text-base mb-2">Payments and Escrow</h3>
               <p className="text-muted-foreground mb-2">
-                All payments are processed through CareBook using our escrow system:
+                All payments are processed through Cuidaru using our escrow system:
               </p>
               <ul className="list-disc list-inside space-y-1 text-muted-foreground ml-2">
                 <li>Payment held safely after booking</li>
@@ -66,7 +66,7 @@ export default function TermsAndConditionsModal({ open, onAccept, onDecline }) {
             <section>
               <h3 className="font-semibold text-base mb-2">Platform Fees</h3>
               <p className="text-muted-foreground">
-                CareBook charges a 10% service fee per transaction. Fees may be waived with an active premium subscription and may vary by country.
+                Cuidaru charges a 10% service fee per transaction. Fees may be waived with an active premium subscription and may vary by country.
               </p>
             </section>
 
@@ -76,14 +76,14 @@ export default function TermsAndConditionsModal({ open, onAccept, onDecline }) {
                 ⚠️ Important: You are responsible for all taxes on your income or expenses
               </p>
               <p className="text-muted-foreground">
-                CareBook does NOT calculate, collect, or report taxes on behalf of users. Service providers must declare all income and pay applicable taxes as required by law.
+                Cuidaru does NOT calculate, collect, or report taxes on behalf of users. Service providers must declare all income and pay applicable taxes as required by law.
               </p>
             </section>
 
             <section>
               <h3 className="font-semibold text-base mb-2">Limitation of Liability</h3>
               <p className="text-muted-foreground">
-                CareBook is NOT liable for service quality, injuries, damages, or disputes between users. You use the platform at your own risk.
+                Cuidaru is NOT liable for service quality, injuries, damages, or disputes between users. You use the platform at your own risk.
               </p>
             </section>
 
@@ -97,7 +97,7 @@ export default function TermsAndConditionsModal({ open, onAccept, onDecline }) {
             <section>
               <h3 className="font-semibold text-base mb-2">Account Suspension</h3>
               <p className="text-muted-foreground">
-                CareBook may suspend or terminate accounts for fraud, abuse, illegal activity, or violation of these terms.
+                Cuidaru may suspend or terminate accounts for fraud, abuse, illegal activity, or violation of these terms.
               </p>
             </section>
           </div>
@@ -111,7 +111,7 @@ export default function TermsAndConditionsModal({ open, onAccept, onDecline }) {
               className="mt-1"
             />
             <span className="text-sm leading-relaxed">
-              I have read and agree to the Terms and Conditions. I understand that CareBook is a marketplace platform only, and I accept full responsibility for my actions and transactions.
+              I have read and agree to the Terms and Conditions. I understand that Cuidaru is a marketplace platform only, and I accept full responsibility for my actions and transactions.
             </span>
           </label>
 

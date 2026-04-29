@@ -60,7 +60,7 @@ export default function Onboarding() {
             <div className="w-10 h-10 rounded-xl bg-blue-600 flex items-center justify-center">
               <Heart className="w-6 h-6 text-white" />
             </div>
-            <span className="text-2xl font-bold text-gray-900">CareBook</span>
+            <span className="text-2xl font-bold text-gray-900">Cuidaru</span>
           </div>
           <p className="text-gray-500">Welcome! Let's get you set up.</p>
         </div>
@@ -157,7 +157,7 @@ export default function Onboarding() {
                 <GitBranch className="w-7 h-7 text-purple-600" />
               </div>
               <h2 className="text-2xl font-bold text-gray-800">Got a referral code?</h2>
-              <p className="text-gray-500 text-sm mt-1">If someone referred you to CareBook, enter their code to reward them.</p>
+              <p className="text-gray-500 text-sm mt-1">If someone referred you to Cuidaru, enter their code to reward them.</p>
             </div>
 
             <AffiliateApplyCode userEmail={userEmail} />

@@ -21,7 +21,7 @@ export default function Help() {
     {
       id: 3,
       question: "What is the escrow system?",
-      answer: "Your payment is held by CareBook until you confirm the service is complete. After 24 hours without a dispute, payment automatically releases to the provider."
+      answer: "Your payment is held by Cuidaru until you confirm the service is complete. After 24 hours without a dispute, payment automatically releases to the provider."
     },
     {
       id: 4,
@@ -36,12 +36,12 @@ export default function Help() {
     {
       id: 6,
       question: "What happens if there's a dispute?",
-      answer: "Either party can file a dispute within a reasonable timeframe. CareBook's team reviews the case and decides how to handle the payment. Our decision is final."
+      answer: "Either party can file a dispute within a reasonable timeframe. Cuidaru's team reviews the case and decides how to handle the payment. Our decision is final."
     },
     {
       id: 7,
       question: "What are the platform fees?",
-      answer: "CareBook charges a 10% service fee per transaction. This fee is waived for clients with an active premium subscription."
+      answer: "Cuidaru charges a 10% service fee per transaction. This fee is waived for clients with an active premium subscription."
     },
     {
       id: 8,
@@ -51,7 +51,7 @@ export default function Help() {
     {
       id: 9,
       question: "Can I use the app internationally?",
-      answer: "CareBook is available in Brazil, Uruguay, USA, and Canada. Pricing and fees vary by country."
+      answer: "Cuidaru is available in Brazil, Uruguay, USA, and Canada. Pricing and fees vary by country."
     },
     {
       id: 10,
@@ -74,7 +74,7 @@ export default function Help() {
         <div className="bg-card rounded-xl border shadow-sm p-8 sm:p-10 mb-8">
           <h1 className="text-4xl font-bold text-foreground mb-4">Help & Support</h1>
           <p className="text-muted-foreground text-lg">
-            Find answers to common questions about using CareBook.
+            Find answers to common questions about using Cuidaru.
           </p>
         </div>
 

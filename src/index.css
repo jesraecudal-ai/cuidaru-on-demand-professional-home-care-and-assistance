@@ -87,5 +87,22 @@
   body {
     @apply bg-background text-foreground font-sans;
     font-family: var(--font-sans);
+    /* Disable rubber-band overscroll on iOS */
+    overscroll-behavior: none;
+  }
+  html {
+    overscroll-behavior: none;
+  }
+  /* Prevent text selection on UI chrome (buttons, nav, etc.) */
+  button, nav, [role="navigation"], [role="tablist"] {
+    -webkit-user-select: none;
+    user-select: none;
+  }
+  /* Minimum tap target for all interactive elements on mobile */
+  @media (max-width: 768px) {
+    button, a, [role="button"] {
+      min-height: 44px;
+      min-width: 44px;
+    }
   }
 }

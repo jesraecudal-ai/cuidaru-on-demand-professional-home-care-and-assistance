@@ -7,7 +7,11 @@ import { Label } from '@/components/ui/label';
 import { Textarea } from '@/components/ui/textarea';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Badge } from '@/components/ui/badge';
-import { User, Briefcase, Plus, X, Save, ShieldCheck, Zap, Upload, MapPin, CalendarDays, Search, Clock } from 'lucide-react';
+import { User, Briefcase, Plus, X, Save, ShieldCheck, Zap, Upload, MapPin, CalendarDays, Search, Clock, Trash2 } from 'lucide-react';
+import {
+  AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent,
+  AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle, AlertDialogTrigger,
+} from '@/components/ui/alert-dialog';
 // Upload still used for avatar
 import { toast } from 'sonner';
 import { useI18n } from '@/lib/i18n';
@@ -38,6 +42,7 @@ export default function MyProfile() {
   const country = userProfile?.country || 'brazil';
   const countryInfo = COUNTRY_SETTINGS[country] || COUNTRY_SETTINGS.brazil;
   const [companyName, setCompanyName] = useState('');
+  const [deletingAccount, setDeletingAccount] = useState(false);
 
   useEffect(() => {
     if (userProfile?.company_name) {
@@ -111,6 +116,20 @@ export default function MyProfile() {
       setForm(f => ({ ...f, skills: [...f.skills, newSkill.trim()] }));
       setNewSkill('');
     }
+  };
+
+  const handleDeleteAccount = async () => {
+    setDeletingAccount(true);
+    // Delete associated provider profile if exists
+    if (existingProvider) {
+      await base44.entities.ServiceProvider.delete(existingProvider.id);
+    }
+    // Delete user profile
+    if (userProfile) {
+      await base44.entities.UserProfile.delete(userProfile.id);
+    }
+    toast.success('Account deleted. Logging you out...');
+    setTimeout(() => base44.auth.logout(), 1500);
   };
 
   const addCert = () => {
@@ -500,6 +519,43 @@ export default function MyProfile() {
              <Save className="w-4 sm:w-5 h-4 sm:h-5" /> {existingProvider ? t('save') : t('create_profile')}
            </Button>
 
+          {/* Account Deletion */}
+          <Card className="border border-red-100 shadow-sm">
+            <CardHeader>
+              <CardTitle className="flex items-center gap-2 text-base text-red-700">
+                <Trash2 className="w-4 h-4" /> Danger Zone
+              </CardTitle>
+            </CardHeader>
+            <CardContent>
+              <p className="text-sm text-gray-500 mb-4">Permanently delete your account and all associated data. This action cannot be undone.</p>
+              <AlertDialog>
+                <AlertDialogTrigger asChild>
+                  <Button variant="outline" className="border-red-300 text-red-600 hover:bg-red-50 hover:border-red-400 gap-2">
+                    <Trash2 className="w-4 h-4" /> Delete My Account
+                  </Button>
+                </AlertDialogTrigger>
+                <AlertDialogContent>
+                  <AlertDialogHeader>
+                    <AlertDialogTitle>Delete Account</AlertDialogTitle>
+                    <AlertDialogDescription>
+                      This will permanently delete your profile, provider data, and all associated records. You will be logged out immediately. This cannot be undone.
+                    </AlertDialogDescription>
+                  </AlertDialogHeader>
+                  <AlertDialogFooter>
+                    <AlertDialogCancel>Cancel</AlertDialogCancel>
+                    <AlertDialogAction
+                      onClick={handleDeleteAccount}
+                      disabled={deletingAccount}
+                      className="bg-red-600 hover:bg-red-700 text-white"
+                    >
+                      {deletingAccount ? 'Deleting...' : 'Yes, Delete My Account'}
+                    </AlertDialogAction>
+                  </AlertDialogFooter>
+                </AlertDialogContent>
+              </AlertDialog>
+            </CardContent>
+          </Card>
+
           {/* Availability Calendar — for doctors only after profile exists */}
           {existingProvider && form.categories.includes('doctor') && (
             <Card className="border border-gray-100 shadow-sm overflow-hidden">
@@ -528,13 +584,50 @@ export default function MyProfile() {
           )}
         </div>
       ) : (
-        <Card className="border border-gray-100 shadow-sm">
-          <CardContent className="p-8 text-center text-gray-500">
-            <Search className="w-10 h-10 mx-auto mb-3 text-gray-300" />
-            <p className="font-medium text-gray-700 mb-1">You're set up as a client</p>
-            <p className="text-sm">Toggle "Provider" above to also offer your services on CareBook.</p>
-          </CardContent>
-        </Card>
+        <div className="space-y-6">
+          <Card className="border border-gray-100 shadow-sm">
+            <CardContent className="p-8 text-center text-gray-500">
+              <Search className="w-10 h-10 mx-auto mb-3 text-gray-300" />
+              <p className="font-medium text-gray-700 mb-1">You're set up as a client</p>
+              <p className="text-sm">Toggle "Provider" above to also offer your services on CareBook.</p>
+            </CardContent>
+          </Card>
+          <Card className="border border-red-100 shadow-sm">
+            <CardHeader>
+              <CardTitle className="flex items-center gap-2 text-base text-red-700">
+                <Trash2 className="w-4 h-4" /> Danger Zone
+              </CardTitle>
+            </CardHeader>
+            <CardContent>
+              <p className="text-sm text-gray-500 mb-4">Permanently delete your account and all associated data. This action cannot be undone.</p>
+              <AlertDialog>
+                <AlertDialogTrigger asChild>
+                  <Button variant="outline" className="border-red-300 text-red-600 hover:bg-red-50 hover:border-red-400 gap-2">
+                    <Trash2 className="w-4 h-4" /> Delete My Account
+                  </Button>
+                </AlertDialogTrigger>
+                <AlertDialogContent>
+                  <AlertDialogHeader>
+                    <AlertDialogTitle>Delete Account</AlertDialogTitle>
+                    <AlertDialogDescription>
+                      This will permanently delete your profile and all associated records. You will be logged out immediately. This cannot be undone.
+                    </AlertDialogDescription>
+                  </AlertDialogHeader>
+                  <AlertDialogFooter>
+                    <AlertDialogCancel>Cancel</AlertDialogCancel>
+                    <AlertDialogAction
+                      onClick={handleDeleteAccount}
+                      disabled={deletingAccount}
+                      className="bg-red-600 hover:bg-red-700 text-white"
+                    >
+                      {deletingAccount ? 'Deleting...' : 'Yes, Delete My Account'}
+                    </AlertDialogAction>
+                  </AlertDialogFooter>
+                </AlertDialogContent>
+              </AlertDialog>
+            </CardContent>
+          </Card>
+        </div>
       )}
       </div>
     </div>

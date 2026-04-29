@@ -11,6 +11,7 @@ import { useI18n } from '@/lib/i18n';
 import { CATEGORY_BADGE_COLORS, formatDistance, calcDistance } from '@/lib/constants';
 import { useUserProfile } from '@/lib/useUserProfile';
 import DoctorAvailabilityCalendar from '../components/doctors/DoctorAvailabilityCalendar';
+import MobileHeader from '@/components/shared/MobileHeader';
 
 export default function ProviderProfile() {
   const { t } = useI18n();
@@ -58,6 +59,8 @@ export default function ProviderProfile() {
   );
 
   return (
+    <div>
+    <MobileHeader title={provider.full_name} />
     <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
       {provider.is_premium && (
         <div className="mb-4 bg-amber-50 border border-amber-200 rounded-xl px-4 py-2 flex items-center gap-2 text-amber-700 text-sm font-medium">
@@ -196,6 +199,7 @@ export default function ProviderProfile() {
           <BookingForm provider={provider} clientProfile={clientProfile} />
         </div>
       </div>
+    </div>
     </div>
   );
 }

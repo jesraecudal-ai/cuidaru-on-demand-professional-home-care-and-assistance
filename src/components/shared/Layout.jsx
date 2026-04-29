@@ -1,6 +1,7 @@
 import React from 'react';
 import { Outlet } from 'react-router-dom';
 import Navbar from './Navbar';
+import BottomNav from './BottomNav';
 import AnaChatbot from '@/components/ana/AnaChatbot';
 import { Heart, MapPin, Shield, DollarSign } from 'lucide-react';
 import { Link } from 'react-router-dom';
@@ -12,10 +13,11 @@ export default function Layout() {
   return (
     <div className="min-h-screen bg-gray-50 flex flex-col">
       <Navbar />
-      <main className="flex-1">
+      <main className="flex-1 pb-[env(safe-area-inset-bottom)] md:pb-0 mb-16 md:mb-0">
         <Outlet />
       </main>
       <AnaChatbot />
+      <BottomNav />
       <footer className="bg-white border-t border-gray-100 mt-16">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
           <div className="grid grid-cols-2 md:grid-cols-4 gap-8 mb-8">

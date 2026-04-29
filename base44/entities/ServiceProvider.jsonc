@@ -164,6 +164,15 @@
       "type": "boolean",
       "default": true,
       "description": "Admin can disable/enable this provider listing"
+    },
+    "stripe_account_id": {
+      "type": "string",
+      "description": "Stripe Connect Express account ID for receiving payouts"
+    },
+    "stripe_onboarding_complete": {
+      "type": "boolean",
+      "default": false,
+      "description": "Whether the provider has completed Stripe Connect onboarding"
     }
   },
   "required": [

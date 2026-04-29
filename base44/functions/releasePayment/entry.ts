@@ -85,12 +85,43 @@ Deno.serve(async (req) => {
       }
     }
 
-    // Look up provider's saved payout card
+    // Look up provider's Stripe Connect account
+    const providerProfiles = await base44.asServiceRole.entities.ServiceProvider.filter({ user_email: booking.provider_email });
+    const providerProfile = providerProfiles[0] || null;
+    const connectAccountId = providerProfile?.stripe_account_id || null;
+
+    // Look up provider's saved payout card (fallback if no Connect)
     const providerCards = await base44.asServiceRole.entities.SavedPaymentMethod.filter({
       user_email: booking.provider_email,
       user_role: 'provider',
     });
     const payoutCard = providerCards.find(c => c.is_default) || providerCards[0] || null;
+
+    // --- Attempt Stripe Transfer via Connect ---
+    let stripeTransferId = null;
+    let payoutStatus = 'processing';
+
+    if (connectAccountId && paymentIntentId) {
+      const payoutAmountCents = Math.round((booking.provider_payout || 0) * 100);
+      if (payoutAmountCents > 0) {
+        const transfer = await stripe.transfers.create({
+          amount: payoutAmountCents,
+          currency: 'usd',
+          destination: connectAccountId,
+          transfer_group: booking_id,
+          metadata: {
+            booking_id,
+            provider_email: booking.provider_email,
+            base44_app_id: Deno.env.get('BASE44_APP_ID'),
+          },
+        });
+        stripeTransferId = transfer.id;
+        payoutStatus = 'paid';
+        console.log(`[releasePayment] Stripe Transfer created: ${stripeTransferId} → ${connectAccountId}`);
+      }
+    } else {
+      console.log(`[releasePayment] No Connect account for provider ${booking.provider_email} — payout marked as processing`);
+    }
 
     // Update booking to released
     await base44.asServiceRole.entities.Booking.update(booking_id, {
@@ -103,6 +134,7 @@ Deno.serve(async (req) => {
       await base44.asServiceRole.entities.PaymentTransaction.update(tx.id, {
         status: 'completed',
         stripe_payment_intent_id: paymentIntentId || tx.stripe_payment_intent_id,
+        stripe_transfer_id: stripeTransferId,
       });
     }
 
@@ -112,14 +144,15 @@ Deno.serve(async (req) => {
       provider_email: booking.provider_email,
       amount: booking.provider_payout,
       currency: 'usd',
-      status: 'processing',
+      status: payoutStatus,
       booking_id,
+      stripe_transfer_id: stripeTransferId,
       card_last4: payoutCard?.card_last4 || '????',
       card_brand: payoutCard?.card_brand || 'card',
-      payout_method: payoutCard ? (payoutCard.card_type === 'prepaid' ? 'prepaid_card' : 'debit_card') : 'debit_card',
-      notes: stripeVerified
-        ? `Auto-created on payment release. Stripe PI: ${paymentIntentId || 'n/a'}`
-        : 'Manual payment path — no Stripe PI',
+      payout_method: connectAccountId ? 'bank_account' : (payoutCard?.card_type === 'prepaid' ? 'prepaid_card' : 'debit_card'),
+      notes: stripeTransferId
+        ? `Stripe Transfer: ${stripeTransferId}`
+        : (stripeVerified ? `Stripe PI: ${paymentIntentId || 'n/a'} — Connect not configured` : 'Manual path'),
     });
 
     // Record payout transaction
@@ -134,9 +167,10 @@ Deno.serve(async (req) => {
       currency: 'usd',
       type: 'payout_released',
       status: 'completed',
-      description: payoutCard
-        ? `Payout to ${payoutCard.card_brand} •••• ${payoutCard.card_last4}`
-        : `Payout to provider (no card on file)`,
+      stripe_transfer_id: stripeTransferId,
+      description: stripeTransferId
+        ? `Stripe Transfer to connected account ${connectAccountId}`
+        : (payoutCard ? `Payout to ${payoutCard.card_brand} •••• ${payoutCard.card_last4}` : `Payout to provider (no card on file)`),
     });
 
     // Notify provider

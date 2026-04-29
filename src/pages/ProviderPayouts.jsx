@@ -8,7 +8,7 @@ import { Skeleton } from '@/components/ui/skeleton';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import {
   TrendingUp, Clock, ArrowDownCircle, Wallet,
-  CreditCard, CheckCircle2, Loader2, RefreshCw, ShieldCheck, Lock
+  CreditCard, CheckCircle2, Loader2, RefreshCw, ShieldCheck, Lock, ExternalLink, AlertCircle
 } from 'lucide-react';
 import { toast } from 'sonner';
 import { format, formatDistanceToNow } from 'date-fns';
@@ -23,6 +23,8 @@ export default function ProviderPayouts() {
   const [financeLoading, setFinanceLoading] = useState(true);
   const [payoutBooking, setPayoutBooking] = useState(null);
   const [withdrawingAll, setWithdrawingAll] = useState(false);
+  const [connectStatus, setConnectStatus] = useState(null);
+  const [connectLoading, setConnectLoading] = useState(false);
   const queryClient = useQueryClient();
 
   const country = profile?.country || 'brazil';
@@ -44,6 +46,32 @@ export default function ProviderPayouts() {
   }, [user]);
 
   useEffect(() => { loadFinance(); }, [loadFinance]);
+
+  const loadConnectStatus = useCallback(async () => {
+    if (!user) return;
+    const res = await base44.functions.invoke('getConnectStatus', {});
+    setConnectStatus(res.data);
+  }, [user]);
+
+  useEffect(() => {
+    loadConnectStatus();
+    // Check for connect return from Stripe
+    const params = new URLSearchParams(window.location.search);
+    if (params.get('connect') === 'success') {
+      loadConnectStatus();
+    }
+  }, [loadConnectStatus]);
+
+  const handleConnectStripe = async () => {
+    setConnectLoading(true);
+    const res = await base44.functions.invoke('createConnectAccount', {});
+    setConnectLoading(false);
+    if (res.data?.url) {
+      window.location.href = res.data.url;
+    } else {
+      toast.error(res.data?.error || 'Failed to start Stripe onboarding');
+    }
+  };
 
   const { data: providerBookings = [], isLoading: loadingBookings, refetch: refetchBookings } = useQuery({
     queryKey: ['providerPayoutBookings', providerProfile?.id],
@@ -176,6 +204,46 @@ export default function ProviderPayouts() {
             </CardContent>
           </Card>
         </div>
+      )}
+
+      {/* Stripe Connect Banner */}
+      {connectStatus !== null && !connectStatus.onboarding_complete && (
+        <Card className="mb-6 border-2 border-blue-300 bg-blue-50">
+          <CardContent className="p-5 flex items-center justify-between flex-wrap gap-4">
+            <div className="flex items-start gap-3">
+              <AlertCircle className="w-5 h-5 text-blue-600 mt-0.5 flex-shrink-0" />
+              <div>
+                <p className="font-semibold text-blue-800 text-base">
+                  {connectStatus.account_id ? 'Complete your Stripe setup' : 'Connect your Stripe account'}
+                </p>
+                <p className="text-sm text-blue-700 mt-0.5">
+                  {connectStatus.account_id
+                    ? 'Finish your Stripe onboarding to receive direct payouts when clients release payment.'
+                    : 'Set up Stripe Connect to receive automatic direct payouts. Required to get paid.'}
+                </p>
+              </div>
+            </div>
+            <Button
+              className="bg-blue-600 hover:bg-blue-700 gap-2 h-11 px-5 flex-shrink-0"
+              onClick={handleConnectStripe}
+              disabled={connectLoading}
+            >
+              {connectLoading ? <Loader2 className="w-4 h-4 animate-spin" /> : <ExternalLink className="w-4 h-4" />}
+              {connectStatus.account_id ? 'Complete Setup' : 'Connect with Stripe'}
+            </Button>
+          </CardContent>
+        </Card>
+      )}
+      {connectStatus?.onboarding_complete && (
+        <Card className="mb-6 border border-green-200 bg-green-50">
+          <CardContent className="p-4 flex items-center gap-3">
+            <CheckCircle2 className="w-5 h-5 text-green-600 flex-shrink-0" />
+            <div>
+              <p className="font-semibold text-green-800 text-sm">Stripe Connect active</p>
+              <p className="text-xs text-green-700">Payouts are automatically sent to your bank when clients release payment.</p>
+            </div>
+          </CardContent>
+        </Card>
       )}
 
       {/* Withdraw All banner */}

@@ -70,3 +70,19 @@ export const CANADA_PROVINCES = [
   'Northwest Territories', 'Nova Scotia', 'Nunavut', 'Ontario', 'Prince Edward Island',
   'Quebec', 'Saskatchewan', 'Yukon',
 ];
+
+// Philippines: regions and cities
+export const PHILIPPINES_REGIONS = {
+  'Metro Manila (NCR)': ['Manila', 'Quezon City', 'Makati', 'Pasig', 'Taguig', 'Mandaluyong', 'Marikina', 'Parañaque', 'Caloocan', 'Las Piñas', 'Muntinlupa', 'Pasay', 'Valenzuela', 'Malabon', 'Navotas', 'San Juan', 'Pateros'],
+  'Region III – Central Luzon': ['Angeles City', 'San Fernando', 'Malolos', 'Olongapo', 'Tarlac City', 'Cabanatuan', 'Meycauayan', 'Mabalacat'],
+  'Region IV-A – CALABARZON': ['Antipolo', 'Batangas City', 'Calamba', 'Lucena', 'San Pablo', 'Lipa', 'Dasmariñas', 'Bacoor', 'Imus', 'General Trias', 'Cavite City'],
+  'Region VII – Central Visayas': ['Cebu City', 'Mandaue', 'Lapu-Lapu', 'Talisay', 'Danao', 'Toledo', 'Tagbilaran'],
+  'Region XI – Davao Region': ['Davao City', 'Tagum', 'Digos', 'Mati', 'Samal'],
+  'Region VI – Western Visayas': ['Iloilo City', 'Bacolod', 'Kalibo', 'Roxas City'],
+  'Region X – Northern Mindanao': ['Cagayan de Oro', 'Iligan', 'Ozamiz', 'Gingoog'],
+  'Region I – Ilocos Region': ['San Fernando (La Union)', 'Laoag', 'Vigan', 'Dagupan'],
+  'Region II – Cagayan Valley': ['Tuguegarao', 'Cauayan', 'Ilagan'],
+  'Region V – Bicol Region': ['Legazpi', 'Naga', 'Sorsogon City', 'Masbate City'],
+  'CAR – Cordillera': ['Baguio', 'Tabuk', 'La Trinidad'],
+  'BARMM': ['Cotabato City', 'Marawi', 'Lamitan'],
+};

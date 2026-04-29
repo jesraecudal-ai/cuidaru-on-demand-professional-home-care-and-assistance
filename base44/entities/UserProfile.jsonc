@@ -16,7 +16,7 @@
     },
     "company_name": {
       "type": "string",
-      "description": "Optional company name for clients to display on their profile"
+      "description": "Optional company name for clients"
     },
     "company_logo_url": {
       "type": "string",
@@ -28,7 +28,8 @@
         "brazil",
         "uruguay",
         "usa",
-        "canada"
+        "canada",
+        "philippines"
       ],
       "default": "brazil"
     },

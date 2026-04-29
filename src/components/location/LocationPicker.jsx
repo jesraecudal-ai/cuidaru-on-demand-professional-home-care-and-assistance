@@ -10,6 +10,7 @@ import {
   BRAZIL_LOCATIONS,
   USA_STATES,
   CANADA_PROVINCES,
+  PHILIPPINES_REGIONS,
 } from '@/lib/locationData';
 
 /**
@@ -49,6 +50,19 @@ export default function LocationPicker({ country, locationText, latitude, longit
     return parts[0] || '';
   });
 
+  // ---- Philippines ----
+  const philippineRegions = Object.keys(PHILIPPINES_REGIONS);
+  const [phRegion, setPhRegion] = useState(() => {
+    if (country !== 'philippines' || !locationText) return '';
+    const parts = locationText.split(',').map(s => s.trim());
+    return philippineRegions.find(r => parts.includes(r)) || '';
+  });
+  const [phCity, setPhCity] = useState(() => {
+    if (country !== 'philippines' || !locationText) return '';
+    const parts = locationText.split(',').map(s => s.trim());
+    return parts[0] || '';
+  });
+
   // ---- USA / Canada ----
   const [regionValue, setRegionValue] = useState(() => {
     if (!['usa', 'canada'].includes(country) || !locationText) return '';
@@ -79,6 +93,10 @@ export default function LocationPicker({ country, locationText, latitude, longit
       const s = state ?? brState;
       const c = city ?? brCity;
       base = [c, s].filter(Boolean).join(', ');
+    } else if (country === 'philippines') {
+      const r = region ?? phRegion;
+      const c = ctCity ?? phCity;
+      base = [c, r].filter(Boolean).join(', ');
     } else {
       const r = region ?? regionValue;
       const c = ctCity ?? cityText;
@@ -106,6 +124,16 @@ export default function LocationPicker({ country, locationText, latitude, longit
     setBrCity(val);
     onChange({ location_text: buildText({ city: val }), latitude, longitude });
   };
+  const handlePhRegion = (val) => {
+    setPhRegion(val);
+    setPhCity('');
+    onChange({ location_text: buildText({ region: val, ctCity: '' }), latitude, longitude });
+  };
+  const handlePhCity = (val) => {
+    setPhCity(val);
+    onChange({ location_text: buildText({ ctCity: val }), latitude, longitude });
+  };
+
   const handleRegion = (val) => {
     setRegionValue(val);
     onChange({ location_text: buildText({ region: val }), latitude, longitude });
@@ -216,6 +244,30 @@ export default function LocationPicker({ country, locationText, latitude, longit
           <div>
             <Label className="text-sm">City *</Label>
             <Input value={cityText} onChange={handleCtCity} placeholder="e.g. Toronto" className="mt-1.5" />
+          </div>
+        </div>
+      )}
+
+      {/* ---- Philippines ---- */}
+      {country === 'philippines' && (
+        <div className="grid sm:grid-cols-2 gap-3">
+          <div>
+            <Label className="text-sm">Region *</Label>
+            <Select value={phRegion} onValueChange={handlePhRegion}>
+              <SelectTrigger className="mt-1.5"><SelectValue placeholder="Select region" /></SelectTrigger>
+              <SelectContent>
+                {philippineRegions.map(r => <SelectItem key={r} value={r}>{r}</SelectItem>)}
+              </SelectContent>
+            </Select>
+          </div>
+          <div>
+            <Label className="text-sm">City *</Label>
+            <Select value={phCity} onValueChange={handlePhCity} disabled={!phRegion}>
+              <SelectTrigger className="mt-1.5"><SelectValue placeholder={phRegion ? 'Select city' : 'Pick region first'} /></SelectTrigger>
+              <SelectContent>
+                {(PHILIPPINES_REGIONS[phRegion] || []).map(c => <SelectItem key={c} value={c}>{c}</SelectItem>)}
+              </SelectContent>
+            </Select>
           </div>
         </div>
       )}

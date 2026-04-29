@@ -83,7 +83,8 @@
         "brazil",
         "uruguay",
         "usa",
-        "canada"
+        "canada",
+        "philippines"
       ],
       "default": "brazil"
     },
@@ -125,7 +126,7 @@
     },
     "id_secondary_url": {
       "type": "string",
-      "description": "Secondary document (e.g. CPF + RG both required for Brazil)"
+      "description": "Secondary document"
     },
     "verification_status": {
       "type": "string",

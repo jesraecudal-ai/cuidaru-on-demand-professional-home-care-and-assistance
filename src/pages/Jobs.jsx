@@ -24,17 +24,6 @@ export default function Jobs() {
   const [selectedProfile, setSelectedProfile] = useState(null);
   const queryClient = useQueryClient();
 
-  // Restrict access to providers only
-  const isProvider = profile?.role === 'provider' || profile?.role === 'both';
-  if (!isProvider) {
-    return (
-      <div className="max-w-7xl mx-auto px-4 py-20 text-center">
-        <h2 className="text-2xl font-bold text-gray-700 mb-2">Access Restricted</h2>
-        <p className="text-gray-500">Clients cannot access the jobs board. Please visit Browse to find service providers.</p>
-      </div>
-    );
-  }
-
   const { data: jobs = [], isLoading } = useQuery({
     queryKey: ['job-orders'],
     queryFn: () => base44.entities.JobOrder.list('-created_date', 100),
@@ -49,6 +38,28 @@ export default function Jobs() {
     queryKey: ['all-user-profiles'],
     queryFn: () => base44.entities.UserProfile.list('-created_date', 200),
   });
+
+  const filteredJobs = useMemo(() => {
+    if (!search.trim()) return jobs;
+    const q = search.toLowerCase();
+    return jobs.filter(job =>
+      job.title?.toLowerCase().includes(q) ||
+      job.description?.toLowerCase().includes(q) ||
+      job.category?.toLowerCase().includes(q) ||
+      job.location_text?.toLowerCase().includes(q)
+    );
+  }, [jobs, search]);
+
+  // Restrict access to providers only
+  const isProvider = profile?.role === 'provider' || profile?.role === 'both';
+  if (!isProvider) {
+    return (
+      <div className="max-w-7xl mx-auto px-4 py-20 text-center">
+        <h2 className="text-2xl font-bold text-gray-700 mb-2">Access Restricted</h2>
+        <p className="text-gray-500">Clients cannot access the jobs board. Please visit Browse to find service providers.</p>
+      </div>
+    );
+  }
 
   const currencyMap = {
     uruguay: { symbol: '$', code: 'UYU' },
@@ -95,17 +106,6 @@ export default function Jobs() {
   const getUserProfileByEmail = (email) => {
     return userProfiles.find(p => p.user_email === email);
   };
-
-  const filteredJobs = useMemo(() => {
-    if (!search.trim()) return jobs;
-    const q = search.toLowerCase();
-    return jobs.filter(job =>
-      job.title?.toLowerCase().includes(q) ||
-      job.description?.toLowerCase().includes(q) ||
-      job.category?.toLowerCase().includes(q) ||
-      job.location_text?.toLowerCase().includes(q)
-    );
-  }, [jobs, search]);
 
   const categoryColors = {
     caregiver: 'bg-blue-100 text-blue-700',

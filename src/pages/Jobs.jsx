@@ -234,32 +234,28 @@ export default function Jobs() {
                   className="bg-blue-50 border border-blue-200 rounded-lg p-4 cursor-pointer hover:bg-blue-100 transition-colors"
                   onClick={() => setSelectedProfile(getProfileByEmail(selectedJob.client_email))}
                 >
-                  <h3 className="text-sm font-semibold text-gray-700 mb-3">Posted by</h3>
-                  <div className="flex items-center gap-4">
-                    <div className="flex gap-3 flex-1">
-                      <div className="w-12 h-12 rounded-full bg-gray-200 flex items-center justify-center flex-shrink-0 overflow-hidden">
+                  <h3 className="text-sm font-semibold text-gray-700 mb-4">Posted by</h3>
+                  <div className="flex items-center gap-6 justify-center">
+                    <div className="flex flex-col items-center text-center">
+                      <div className="w-20 h-20 rounded-full bg-gray-200 flex items-center justify-center mb-2 overflow-hidden">
                         {getProfileByEmail(selectedJob.client_email)?.avatar_url ? (
                           <img src={getProfileByEmail(selectedJob.client_email).avatar_url} alt="" className="w-full h-full object-cover" />
                         ) : (
-                          <span className="text-sm font-semibold text-gray-600">{(selectedJob.client_name || 'A')[0].toUpperCase()}</span>
+                          <span className="text-lg font-semibold text-gray-600">{(selectedJob.client_name || 'A')[0].toUpperCase()}</span>
                         )}
                       </div>
-                      <div className="flex-1">
-                        <p className="text-gray-900 font-semibold">{selectedJob.client_name || 'Anonymous'}</p>
-                        <p className="text-sm text-gray-500">{selectedJob.client_email}</p>
-                        {getUserProfileByEmail(selectedJob.client_email)?.company_name && (
-                          <div className="mt-1">
-                            <p className="text-sm font-semibold text-gray-700">{getUserProfileByEmail(selectedJob.client_email).company_name}</p>
-                            {getUserProfileByEmail(selectedJob.client_email)?.position && (
-                              <p className="text-xs text-gray-600">{getUserProfileByEmail(selectedJob.client_email).position}</p>
-                            )}
-                          </div>
-                        )}
-                      </div>
+                      <p className="text-gray-900 font-semibold text-sm">{selectedJob.client_name || 'Anonymous'}</p>
+                      <p className="text-xs text-gray-500">{selectedJob.client_email}</p>
                     </div>
                     {getUserProfileByEmail(selectedJob.client_email)?.company_logo_url && (
-                      <div className="w-12 h-12 flex items-center justify-center flex-shrink-0 bg-white rounded-lg p-1 border border-gray-300">
-                        <img src={getUserProfileByEmail(selectedJob.client_email).company_logo_url} alt="" className="w-full h-full object-contain" />
+                      <div className="flex flex-col items-center text-center">
+                        <div className="w-20 h-20 flex items-center justify-center mb-2 bg-white rounded-lg p-2 border border-gray-300">
+                          <img src={getUserProfileByEmail(selectedJob.client_email).company_logo_url} alt="" className="w-full h-full object-contain" />
+                        </div>
+                        <p className="text-gray-700 font-semibold text-sm">{getUserProfileByEmail(selectedJob.client_email).company_name}</p>
+                        {getUserProfileByEmail(selectedJob.client_email)?.position && (
+                          <p className="text-xs text-gray-600">{getUserProfileByEmail(selectedJob.client_email).position}</p>
+                        )}
                       </div>
                     )}
                   </div>

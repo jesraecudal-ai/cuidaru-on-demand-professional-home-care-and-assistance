@@ -38,6 +38,7 @@ export default function MyProfile() {
   const country = userProfile?.country || 'brazil';
   const countryInfo = COUNTRY_SETTINGS[country] || COUNTRY_SETTINGS.brazil;
   const [companyName, setCompanyName] = useState('');
+  const [position, setPosition] = useState('');
   const [deletingAccount, setDeletingAccount] = useState(false);
   const [showDeleteConfirm, setShowDeleteConfirm] = useState(false);
   const [deleteConfirmText, setDeleteConfirmText] = useState('');
@@ -46,7 +47,10 @@ export default function MyProfile() {
     if (userProfile?.company_name) {
       setCompanyName(userProfile.company_name);
     }
-  }, [userProfile?.company_name]);
+    if (userProfile?.position) {
+      setPosition(userProfile.position);
+    }
+  }, [userProfile?.company_name, userProfile?.position]);
 
   useEffect(() => {
     if (!user) return;
@@ -226,6 +230,17 @@ export default function MyProfile() {
               <p className="text-xs text-gray-400 mt-2">{t('company_identity_note')}</p>
             </div>
             <div>
+              <Label htmlFor="position">Position</Label>
+              <p className="text-xs text-gray-500 mb-2">Your job title or position at the company</p>
+              <Input
+                id="position"
+                value={position}
+                onChange={e => setPosition(e.target.value)}
+                placeholder="e.g., Manager, Director, Founder"
+                className="mt-1.5"
+              />
+            </div>
+            <div>
               <Label htmlFor="company_logo">{t('company_logo_label')}</Label>
               <p className="text-xs text-gray-500 mb-2">{t('company_logo_desc')}</p>
               <div className="flex items-center gap-4">
@@ -255,7 +270,7 @@ export default function MyProfile() {
             </div>
             <Button
               onClick={async () => {
-                await base44.entities.UserProfile.update(userProfile.id, { company_name: companyName });
+                await base44.entities.UserProfile.update(userProfile.id, { company_name: companyName, position });
                 await refetchUserProfile();
                 toast.success(t('business_updated'));
               }}

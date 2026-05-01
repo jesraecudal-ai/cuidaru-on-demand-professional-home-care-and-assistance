@@ -141,15 +141,8 @@ export default function MyProfile() {
 
   return (
     <div className="bg-white">
-      {/* Hero with background image */}
-      <div className="relative h-32 sm:h-48 bg-gradient-to-r from-blue-600 to-blue-700 overflow-hidden">
-        <img 
-          src="https://images.unsplash.com/photo-1576091160550-2173dba999ef?w=1200&h=300&fit=crop" 
-          alt="Professional healthcare" 
-          className="w-full h-full object-cover opacity-40"
-        />
-        <div className="absolute inset-0 bg-gradient-to-r from-blue-600/80 to-blue-700/80" />
-      </div>
+      {/* Hero */}
+      <div className="h-20 sm:h-32 bg-gradient-to-r from-blue-50 to-cyan-50 border-b border-blue-100" />
 
       <div className="max-w-3xl mx-auto px-3 sm:px-6 lg:px-8 py-4 sm:py-8">
         <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 sm:gap-6 mb-4 sm:mb-6">
@@ -289,14 +282,7 @@ export default function MyProfile() {
 
           {/* Basic Info with image */}
           <Card className="border border-gray-100 shadow-sm overflow-hidden">
-            <div className="h-20 sm:h-32 bg-gradient-to-r from-green-400 to-blue-500 relative overflow-hidden">
-              <img 
-                src="https://images.unsplash.com/photo-1631217314830-e63c9a1c5b44?w=600&h=200&fit=crop" 
-                alt="Healthcare professional" 
-                className="w-full h-full object-cover opacity-30"
-              />
-              <div className="absolute inset-0 bg-gradient-to-r from-green-400/60 to-blue-500/60" />
-            </div>
+            <div className="h-2 bg-gradient-to-r from-green-400 to-blue-500" />
             <CardHeader><CardTitle className="flex items-center gap-2 text-base sm:text-lg text-gray-800"><User className="w-4 h-4 sm:w-5 sm:h-5 text-blue-600" /> {t('basic_info')}</CardTitle></CardHeader>
             <CardContent className="space-y-3 sm:space-y-4">
               {/* Avatar */}
@@ -396,14 +382,7 @@ export default function MyProfile() {
           {/* Rates — only for non-doctors */}
           {!form.categories.includes('doctor') && (
             <Card className="border border-gray-100 shadow-sm overflow-hidden">
-              <div className="h-16 sm:h-24 bg-gradient-to-r from-purple-400 to-pink-500 relative overflow-hidden">
-                <img 
-                  src="https://images.unsplash.com/photo-1579154204601-01d82b944c47?w=600&h=200&fit=crop" 
-                  alt="Healthcare pricing" 
-                  className="w-full h-full object-cover opacity-25"
-                />
-                <div className="absolute inset-0 bg-gradient-to-r from-purple-400/60 to-pink-500/60" />
-              </div>
+              <div className="h-2 bg-gradient-to-r from-purple-400 to-pink-500" />
               <CardHeader><CardTitle className="flex items-center gap-2 text-lg text-gray-800"><Briefcase className="w-5 h-5 text-blue-600" /> {t('rates_title')} ({countryInfo?.symbol || '$'})</CardTitle></CardHeader>
               <CardContent>
                 <div className="grid sm:grid-cols-3 gap-4">
@@ -418,14 +397,7 @@ export default function MyProfile() {
           {/* Consultation Fee — only for doctors */}
           {form.categories.includes('doctor') && (
             <Card className="border border-blue-100 shadow-sm overflow-hidden">
-              <div className="h-16 sm:h-24 bg-gradient-to-r from-blue-400 to-cyan-500 relative overflow-hidden">
-                <img 
-                  src="https://images.unsplash.com/photo-1576091160399-86c54dcb98fe?w=600&h=200&fit=crop" 
-                  alt="Consultation pricing" 
-                  className="w-full h-full object-cover opacity-25"
-                />
-                <div className="absolute inset-0 bg-gradient-to-r from-blue-400/60 to-cyan-500/60" />
-              </div>
+              <div className="h-2 bg-gradient-to-r from-blue-400 to-cyan-500" />
               <CardHeader><CardTitle className="flex items-center gap-2 text-lg text-gray-800"><Briefcase className="w-5 h-5 text-blue-600" /> Consultation Fee ({countryInfo?.symbol || '$'})</CardTitle></CardHeader>
               <CardContent>
                 <div>
@@ -439,14 +411,7 @@ export default function MyProfile() {
 
           {/* Skills with image */}
           <Card className="border border-gray-100 shadow-sm overflow-hidden">
-            <div className="h-16 sm:h-24 bg-gradient-to-r from-orange-400 to-red-500 relative overflow-hidden">
-              <img 
-                src="https://images.unsplash.com/photo-1576091160550-2173dba999ef?w=600&h=200&fit=crop" 
-                alt="Professional skills" 
-                className="w-full h-full object-cover opacity-20"
-              />
-              <div className="absolute inset-0 bg-gradient-to-r from-orange-400/60 to-red-500/60" />
-            </div>
+            <div className="h-2 bg-gradient-to-r from-orange-400 to-red-500" />
             <CardHeader><CardTitle className="text-lg text-gray-800">{t('skills')}</CardTitle></CardHeader>
             <CardContent>
               <div className="flex flex-wrap gap-2 mb-3">
@@ -483,14 +448,7 @@ export default function MyProfile() {
 
           {/* ID Verification with image */}
           <Card className="border border-gray-100 shadow-sm overflow-hidden">
-            <div className="h-16 sm:h-24 bg-gradient-to-r from-green-600 to-teal-500 relative overflow-hidden">
-              <img 
-                src="https://images.unsplash.com/photo-1576091160399-86c54dcb98fe?w=600&h=200&fit=crop" 
-                alt="Security verification" 
-                className="w-full h-full object-cover opacity-20"
-              />
-              <div className="absolute inset-0 bg-gradient-to-r from-green-600/60 to-teal-500/60" />
-            </div>
+            <div className="h-2 bg-gradient-to-r from-green-600 to-teal-500" />
             <CardHeader>
               <CardTitle className="flex items-center gap-2 text-lg text-gray-800">
                 <ShieldCheck className="w-5 h-5 text-green-600" /> Identity Verification
@@ -559,14 +517,7 @@ export default function MyProfile() {
           {/* Availability Calendar — for doctors only after profile exists */}
           {existingProvider && form.categories.includes('doctor') && (
             <Card className="border border-gray-100 shadow-sm overflow-hidden">
-              <div className="h-16 sm:h-24 bg-gradient-to-r from-indigo-400 to-purple-500 relative overflow-hidden">
-                <img 
-                  src="https://images.unsplash.com/photo-1579154204601-01d82b944c47?w=600&h=200&fit=crop" 
-                  alt="Availability scheduling" 
-                  className="w-full h-full object-cover opacity-20"
-                />
-                <div className="absolute inset-0 bg-gradient-to-r from-indigo-400/60 to-purple-500/60" />
-              </div>
+              <div className="h-2 bg-gradient-to-r from-indigo-400 to-purple-500" />
               <CardHeader>
                 <CardTitle className="flex items-center gap-2 text-lg text-gray-800">
                   <CalendarDays className="w-5 h-5 text-blue-600" /> Consultation Availability

@@ -3,10 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import { base44 } from '@/api/base44Client';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
-import { Label } from '@/components/ui/label';
-import { COUNTRY_SETTINGS } from '@/lib/constants';
-import { Heart, Briefcase, ChevronRight, GitBranch } from 'lucide-react';
+import { Heart, ChevronRight, GitBranch } from 'lucide-react';
 import AffiliateApplyCode from '@/components/affiliate/AffiliateApplyCode';
 import TermsAndConditionsModal from '@/components/TermsAndConditionsModal';
 import { motion } from 'framer-motion';
@@ -15,13 +12,11 @@ export default function Onboarding() {
   const navigate = useNavigate();
   const [step, setStep] = useState(1);
   const [role, setRole] = useState(null);
-  const [country, setCountry] = useState('brazil');
   const [loading, setLoading] = useState(false);
   const [userEmail, setUserEmail] = useState(null);
+  const [isAuthed, setIsAuthed] = useState(false);
   const [showTerms, setShowTerms] = useState(true);
   const [termsAccepted, setTermsAccepted] = useState(false);
-
-  const [isAuthed, setIsAuthed] = useState(false);
 
   useEffect(() => {
     base44.auth.me()
@@ -37,15 +32,11 @@ export default function Onboarding() {
     setLoading(true);
     try {
       const me = await base44.auth.me();
-      if (!me) {
-        base44.auth.redirectToLogin('/onboarding');
-        return;
-      }
       const existing = await base44.entities.UserProfile.filter({ user_email: me.email });
       if (existing.length > 0) {
-        await base44.entities.UserProfile.update(existing[0].id, { role, country, onboarding_complete: true });
+        await base44.entities.UserProfile.update(existing[0].id, { role, onboarding_complete: true });
       } else {
-        await base44.entities.UserProfile.create({ user_email: me.email, role, country, onboarding_complete: true });
+        await base44.entities.UserProfile.create({ user_email: me.email, role, onboarding_complete: true });
       }
       if (role === 'provider' || role === 'both') {
         navigate('/my-profile');
@@ -64,10 +55,7 @@ export default function Onboarding() {
     <div className="min-h-screen bg-gradient-to-br from-blue-50 via-white to-green-50 flex items-center justify-center p-4">
       <TermsAndConditionsModal
         open={showTerms && !termsAccepted}
-        onAccept={() => {
-          setTermsAccepted(true);
-          setShowTerms(false);
-        }}
+        onAccept={() => { setTermsAccepted(true); setShowTerms(false); }}
         onDecline={() => navigate('/')}
       />
 
@@ -83,6 +71,7 @@ export default function Onboarding() {
           <p className="text-gray-500">Welcome! Let's get you set up.</p>
         </div>
 
+        {/* Step 1 — Role selection */}
         {termsAccepted && step === 1 && (
           <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }}>
             <h2 className="text-2xl font-bold text-center mb-6 text-gray-800">I am here because...</h2>
@@ -129,46 +118,24 @@ export default function Onboarding() {
                 </CardContent>
               </Card>
             </div>
-            <Button className="w-full mt-6 h-12" disabled={!role} onClick={() => setStep(2)}>
-              Continue <ChevronRight className="w-4 h-4 ml-1" />
+            <Button
+              className="w-full mt-6 h-12"
+              disabled={!role}
+              onClick={() => {
+                if (!isAuthed) {
+                  base44.auth.redirectToLogin('/onboarding');
+                } else {
+                  setStep(2);
+                }
+              }}
+            >
+              {isAuthed ? 'Continue' : 'Sign up / Sign in to continue'} <ChevronRight className="w-4 h-4 ml-1" />
             </Button>
           </motion.div>
         )}
 
+        {/* Step 2 — Referral code */}
         {step === 2 && (
-          <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }}>
-            <h2 className="text-2xl font-bold text-center mb-2 text-gray-800">Where are you located?</h2>
-            <p className="text-center text-gray-500 mb-6 text-sm">This sets your currency and pricing</p>
-
-            <div className="space-y-3">
-              {Object.entries(COUNTRY_SETTINGS).map(([key, c]) => (
-                <Card
-                  key={key}
-                  className={`cursor-pointer border-2 transition-all hover:shadow-md ${country === key ? 'border-blue-500 bg-blue-50' : 'border-gray-200 hover:border-blue-300'}`}
-                  onClick={() => setCountry(key)}
-                >
-                  <CardContent className="p-4 flex items-center gap-3">
-                    <span className="text-2xl">{c.flag}</span>
-                    <div>
-                      <span className="font-semibold text-gray-900">{c.label}</span>
-                      <span className="text-sm text-gray-500 ml-2">({c.currency})</span>
-                    </div>
-                    {country === key && <div className="ml-auto w-4 h-4 rounded-full bg-blue-500" />}
-                  </CardContent>
-                </Card>
-              ))}
-            </div>
-
-            <div className="flex gap-3 mt-6">
-              <Button variant="outline" className="flex-1 h-12" onClick={() => setStep(1)}>Back</Button>
-              <Button className="flex-1 h-12" onClick={handleComplete} disabled={loading}>
-                {loading ? 'Setting up...' : isAuthed ? 'Continue' : 'Sign in to continue'} <ChevronRight className="w-4 h-4 ml-1" />
-              </Button>
-            </div>
-          </motion.div>
-        )}
-
-        {step === 3 && (
           <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }}>
             <div className="text-center mb-6">
               <div className="w-14 h-14 rounded-2xl bg-purple-100 flex items-center justify-center mx-auto mb-3">
@@ -181,9 +148,9 @@ export default function Onboarding() {
             <AffiliateApplyCode userEmail={userEmail} />
 
             <div className="flex gap-3 mt-6">
-              <Button variant="outline" className="flex-1 h-12" onClick={() => setStep(2)}>Back</Button>
+              <Button variant="outline" className="flex-1 h-12" onClick={() => setStep(1)}>Back</Button>
               <Button className="flex-1 h-12" onClick={handleComplete} disabled={loading}>
-                {loading ? 'Setting up...' : isAuthed ? "Let's Go!" : 'Sign in to continue'}
+                {loading ? 'Setting up...' : "Let's Go!"}
               </Button>
             </div>
             <p className="text-center text-xs text-gray-400 mt-3">You can skip this — entering a code is optional.</p>

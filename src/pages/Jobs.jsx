@@ -252,7 +252,9 @@ export default function Jobs() {
                           <img src={getUserProfileByEmail(selectedJob.client_email).company_logo_url} alt="" className="w-full h-full object-contain" />
                         </div>
                         <p className="text-gray-700 font-semibold text-sm">{getUserProfileByEmail(selectedJob.client_email).company_name}</p>
-                        <p className="text-xs text-gray-600">Founder of {getUserProfileByEmail(selectedJob.client_email).company_name}</p>
+                        {getUserProfileByEmail(selectedJob.client_email)?.position && (
+                          <p className="text-xs text-gray-600">{getUserProfileByEmail(selectedJob.client_email).position}</p>
+                        )}
                       </div>
                     )}
                   </div>

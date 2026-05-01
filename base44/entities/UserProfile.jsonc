@@ -22,6 +22,10 @@
       "type": "string",
       "description": "Optional company logo URL for clients"
     },
+    "position": {
+      "type": "string",
+      "description": "Job title or position at the company"
+    },
     "country": {
       "type": "string",
       "enum": [

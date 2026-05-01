@@ -6,7 +6,7 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { toast } from 'sonner';
-import { Settings, Save, RefreshCw, DollarSign, Percent, Users, Briefcase } from 'lucide-react';
+import { Settings, Save, RefreshCw, DollarSign, Percent, Briefcase } from 'lucide-react';
 import { COUNTRY_SETTINGS } from '@/lib/constants';
 import { useUserProfile } from '@/lib/useUserProfile';
 
@@ -74,19 +74,6 @@ function CountryPricingCard({ country, existing, onSave, saving }) {
             className="h-9"
           />
           <p className="text-xs text-gray-400 mt-1">Deducted from provider payout on each completed booking</p>
-        </div>
-
-        <div>
-          <Label className="flex items-center gap-1.5 text-sm mb-1.5"><Users className="w-3.5 h-3.5 text-purple-500" /> Client Premium ({country.symbol}/month)</Label>
-          <Input
-            type="number"
-            step="0.01"
-            min="0"
-            value={values.sub_client}
-            onChange={e => setValues(v => ({ ...v, sub_client: e.target.value }))}
-            className="h-9"
-          />
-          <p className="text-xs text-gray-400 mt-1">Subscription for clients (priority provider access)</p>
         </div>
 
         <div>
@@ -193,7 +180,7 @@ export default function AdminPricing() {
                 <DollarSign className="w-3.5 h-3.5 text-blue-500" />
                 <span className="font-bold text-gray-900 text-sm">{data.fee_pct}% fee</span>
               </div>
-              <p className="text-xs text-gray-500">Provider sub: {c.symbol}{data.sub_provider}/mo</p>
+              <p className="text-xs text-gray-500">Provider sub: {c.symbol}{data.sub_provider ?? COUNTRY_SETTINGS[c.key]?.sub_provider}/mo</p>
               {saved && <span className="text-[10px] text-green-600 font-medium">● Custom</span>}
               {!saved && <span className="text-[10px] text-gray-400">● Default</span>}
             </div>

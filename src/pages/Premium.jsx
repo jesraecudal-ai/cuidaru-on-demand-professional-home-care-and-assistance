@@ -63,6 +63,7 @@ export default function Premium() {
           </CardHeader>
           <CardContent className="space-y-3">
             {[
+              { icon: CheckCircle2, text: '0% service charge on all payouts' },
               { icon: TrendingUp, text: 'Appear first in all searches' },
               { icon: MapPin, text: 'Boosted to nearby clients (5-10km radius)' },
               { icon: Star, text: 'Premium badge on your profile' },
@@ -114,7 +115,7 @@ export default function Premium() {
       {/* Country info */}
       <div className="mt-8 text-center text-sm text-gray-500">
         <span>{c.flag} Prices shown in {c.currency} for {c.label}. </span>
-        <span>Provider platform fee: {c.fee_pct}%.</span>
+        <span>Provider service charge: {c.fee_pct}% (waived with Provider Cuidaru+).</span>
       </div>
     </div>
   );

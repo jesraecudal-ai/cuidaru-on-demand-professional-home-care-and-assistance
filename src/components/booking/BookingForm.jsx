@@ -11,6 +11,7 @@ import { toast } from 'sonner';
 import { useNavigate } from 'react-router-dom';
 import { useI18n } from '@/lib/i18n';
 import DoctorAvailabilityCalendar from '../doctors/DoctorAvailabilityCalendar';
+import { usePricing } from '@/lib/usePricing';
 
 export default function BookingForm({ provider, clientProfile }) {
   const navigate = useNavigate();
@@ -252,6 +253,10 @@ function RegularBookingForm({ provider, clientProfile }) {
   const [bypassWarning, setBypassWarning] = useState(false);
   const [step, setStep] = useState(1);
   const [availability, setAvailability] = useState(null);
+  const pricing = usePricing(provider?.country || 'brazil');
+
+  // Provider premium = 0% fee; otherwise use admin-configured fee_pct
+  const effectiveFeePct = provider?.is_premium ? 0 : (pricing.fee_pct || 10);
 
   const [form, setForm] = useState({
     booking_type: 'hourly',
@@ -313,7 +318,7 @@ function RegularBookingForm({ provider, clientProfile }) {
       subtotal = weeks * rate;
     }
 
-    const platformFeePercent = 10;
+    const platformFeePercent = effectiveFeePct;
     const platformFee = subtotal * (platformFeePercent / 100);
     // Client pays only the subtotal; platform fee is deducted from provider payout
     const total = subtotal;
@@ -346,7 +351,7 @@ function RegularBookingForm({ provider, clientProfile }) {
                       form.booking_type === 'daily' ? provider.daily_rate :
                       provider.weekly_rate,
         subtotal,
-        platform_fee_pct: 10,
+        platform_fee_pct: effectiveFeePct,
         platform_fee: platformFee,
         total_amount: total,
         provider_payout: providerPayout,

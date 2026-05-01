@@ -85,10 +85,27 @@ Deno.serve(async (req) => {
       }
     }
 
-    // Look up provider's Stripe Connect account
+    // Look up provider's Stripe Connect account + premium status
     const providerProfiles = await base44.asServiceRole.entities.ServiceProvider.filter({ user_email: booking.provider_email });
     const providerProfile = providerProfiles[0] || null;
     const connectAccountId = providerProfile?.stripe_account_id || null;
+
+    // If provider is premium (active subscription), waive the platform fee
+    const providerIsPremium = providerProfile?.is_premium === true &&
+      (!providerProfile?.premium_expires_at || new Date(providerProfile.premium_expires_at) > new Date());
+
+    if (providerIsPremium && booking.platform_fee > 0) {
+      // Recalculate: provider gets the full subtotal
+      const newProviderPayout = booking.subtotal || (booking.total_amount + booking.platform_fee);
+      await base44.asServiceRole.entities.Booking.update(booking_id, {
+        provider_payout: newProviderPayout,
+        platform_fee: 0,
+        platform_fee_pct: 0,
+      });
+      booking.provider_payout = newProviderPayout;
+      booking.platform_fee = 0;
+      console.log(`[releasePayment] Provider is premium — fee waived. Payout updated to ${newProviderPayout}`);
+    }
 
     // Look up provider's saved payout card (fallback if no Connect)
     const providerCards = await base44.asServiceRole.entities.SavedPaymentMethod.filter({

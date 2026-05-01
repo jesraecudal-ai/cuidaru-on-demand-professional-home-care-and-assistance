@@ -1,20 +1,26 @@
 import React, { useState, useMemo } from 'react';
-import { useQuery } from '@tanstack/react-query';
+import { useQuery, useQueryClient } from '@tanstack/react-query';
 import { base44 } from '@/api/base44Client';
 import { useI18n } from '@/lib/i18n';
 import { useUserProfile } from '@/lib/useUserProfile';
-import { Briefcase, MapPin, DollarSign, Clock, AlertTriangle } from 'lucide-react';
+import { Briefcase, MapPin, DollarSign, Clock, AlertTriangle, Edit } from 'lucide-react';
 import { Input } from '@/components/ui/input';
 import { Badge } from '@/components/ui/badge';
 import { Skeleton } from '@/components/ui/skeleton';
 import { Button } from '@/components/ui/button';
 import { Search } from 'lucide-react';
+import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog';
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
+import { toast } from 'sonner';
 
 export default function Jobs() {
   const { t } = useI18n();
   const { user, profile } = useUserProfile();
   const [search, setSearch] = useState('');
   const [selectedJob, setSelectedJob] = useState(null);
+  const [editingJob, setEditingJob] = useState(null);
+  const [editFormData, setEditFormData] = useState({});
+  const queryClient = useQueryClient();
 
   const { data: jobs = [], isLoading } = useQuery({
     queryKey: ['job-orders'],
@@ -31,6 +37,26 @@ export default function Jobs() {
 
   const getCurrency = () => {
     return currencyMap[profile?.country] || currencyMap.usa;
+  };
+
+  const canEditJob = (job) => {
+    return user?.email === job.client_email || user?.role === 'admin';
+  };
+
+  const handleEditClick = (job) => {
+    setEditingJob(job);
+    setEditFormData({ ...job });
+  };
+
+  const handleSaveJob = async () => {
+    try {
+      await base44.entities.JobOrder.update(editingJob.id, editFormData);
+      toast.success(t('changes_saved'));
+      setEditingJob(null);
+      queryClient.invalidateQueries({ queryKey: ['job-orders'] });
+    } catch (error) {
+      toast.error('Failed to update job');
+    }
   };
 
   const filteredJobs = useMemo(() => {
@@ -196,10 +222,15 @@ export default function Jobs() {
               </div>
             </div>
 
-            <div className="p-4 border-t bg-gray-50">
-              <Button className="w-full bg-blue-600 hover:bg-blue-700">
+            <div className="p-4 border-t bg-gray-50 flex gap-2">
+              <Button className="flex-1 bg-blue-600 hover:bg-blue-700">
                 Submit Proposal
               </Button>
+              {canEditJob(selectedJob) && (
+                <Button variant="outline" onClick={() => handleEditClick(selectedJob)} className="gap-2">
+                  <Edit className="w-4 h-4" /> Edit
+                </Button>
+              )}
             </div>
           </>
         ) : (
@@ -211,6 +242,105 @@ export default function Jobs() {
           </div>
         )}
       </div>
+
+      {/* Edit Job Dialog */}
+      <Dialog open={!!editingJob} onOpenChange={(open) => { if (!open) setEditingJob(null); }}>
+        <DialogContent className="max-w-2xl max-h-[80vh] overflow-y-auto">
+          <DialogHeader>
+            <DialogTitle>Edit Job Post</DialogTitle>
+          </DialogHeader>
+
+          <div className="space-y-4">
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-1">Title</label>
+              <Input
+                value={editFormData.title || ''}
+                onChange={(e) => setEditFormData({ ...editFormData, title: e.target.value })}
+              />
+            </div>
+
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-1">Description</label>
+              <textarea
+                className="w-full border rounded-md p-2 text-sm"
+                rows="4"
+                value={editFormData.description || ''}
+                onChange={(e) => setEditFormData({ ...editFormData, description: e.target.value })}
+              />
+            </div>
+
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-1">Category</label>
+              <Select value={editFormData.category || ''} onValueChange={(value) => setEditFormData({ ...editFormData, category: value })}>
+                <SelectTrigger>
+                  <SelectValue />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="caregiver">Caregiver</SelectItem>
+                  <SelectItem value="assistant_nurse">Assistant Nurse</SelectItem>
+                  <SelectItem value="nurse">Nurse</SelectItem>
+                  <SelectItem value="doctor">Doctor</SelectItem>
+                  <SelectItem value="social_worker">Social Worker</SelectItem>
+                  <SelectItem value="house_cleaner">House Cleaner</SelectItem>
+                  <SelectItem value="cook">Cook</SelectItem>
+                </SelectContent>
+              </Select>
+            </div>
+
+            <div className="grid grid-cols-2 gap-4">
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-1">Budget</label>
+                <Input
+                  type="number"
+                  value={editFormData.budget || ''}
+                  onChange={(e) => setEditFormData({ ...editFormData, budget: e.target.value ? parseFloat(e.target.value) : null })}
+                />
+              </div>
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-1">Budget Type</label>
+                <Select value={editFormData.budget_type || 'hourly'} onValueChange={(value) => setEditFormData({ ...editFormData, budget_type: value })}>
+                  <SelectTrigger>
+                    <SelectValue />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="hourly">Hourly</SelectItem>
+                    <SelectItem value="daily">Daily</SelectItem>
+                    <SelectItem value="weekly">Weekly</SelectItem>
+                    <SelectItem value="fixed">Fixed</SelectItem>
+                  </SelectContent>
+                </Select>
+              </div>
+            </div>
+
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-1">Location</label>
+              <Input
+                value={editFormData.location_text || ''}
+                onChange={(e) => setEditFormData({ ...editFormData, location_text: e.target.value })}
+              />
+            </div>
+
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-1">Status</label>
+              <Select value={editFormData.status || 'open'} onValueChange={(value) => setEditFormData({ ...editFormData, status: value })}>
+                <SelectTrigger>
+                  <SelectValue />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="open">Open</SelectItem>
+                  <SelectItem value="in_progress">In Progress</SelectItem>
+                  <SelectItem value="closed">Closed</SelectItem>
+                </SelectContent>
+              </Select>
+            </div>
+          </div>
+
+          <div className="flex gap-2 justify-end pt-4 border-t">
+            <Button variant="outline" onClick={() => setEditingJob(null)}>Cancel</Button>
+            <Button onClick={handleSaveJob}>Save Changes</Button>
+          </div>
+        </DialogContent>
+      </Dialog>
     </div>
   );
 }

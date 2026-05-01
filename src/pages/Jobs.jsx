@@ -12,6 +12,7 @@ import { Search } from 'lucide-react';
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { toast } from 'sonner';
+import LocationPicker from '@/components/location/LocationPicker';
 
 export default function Jobs() {
   const { t } = useI18n();
@@ -68,6 +69,12 @@ export default function Jobs() {
     } catch (error) {
       toast.error('Failed to update job');
     }
+  };
+
+  const getCurrencyForCountry = (country) => {
+    if (country === 'uruguay') return { symbol: '$', code: 'UYU' };
+    if (country === 'brazil') return { symbol: 'R$', code: 'BRL' };
+    return { symbol: '$', code: 'USD' };
   };
 
   const getProfileByEmail = (email) => {
@@ -401,11 +408,12 @@ export default function Jobs() {
 
             <div className="grid grid-cols-2 gap-4">
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">Budget</label>
+                <label className="block text-sm font-medium text-gray-700 mb-1">Budget ({getCurrencyForCountry(profile?.country).code})</label>
                 <Input
                   type="number"
                   value={editFormData.budget || ''}
                   onChange={(e) => setEditFormData({ ...editFormData, budget: e.target.value ? parseFloat(e.target.value) : null })}
+                  placeholder="0.00"
                 />
               </div>
               <div>
@@ -426,10 +434,11 @@ export default function Jobs() {
 
             <div>
               <label className="block text-sm font-medium text-gray-700 mb-1">Location</label>
-              <Input
-                value={editFormData.location_text || ''}
-                onChange={(e) => setEditFormData({ ...editFormData, location_text: e.target.value })}
+              <LocationPicker
+                onLocationSelect={(location) => setEditFormData({ ...editFormData, location_text: location.address })}
+                className="w-full"
               />
+              <p className="text-xs text-gray-500 mt-1">{editFormData.location_text || 'Select location on map'}</p>
             </div>
 
             <div>

@@ -6,8 +6,10 @@ import { Card, CardContent } from '@/components/ui/card';
 import { Heart, ChevronRight } from 'lucide-react';
 import TermsAndConditionsModal from '@/components/TermsAndConditionsModal';
 import { motion } from 'framer-motion';
+import { useI18n } from '@/lib/i18n';
 
 export default function Onboarding() {
+  const { t } = useI18n();
   const navigate = useNavigate();
   const [step, setStep] = useState(1);
   const [role, setRole] = useState(null);
@@ -67,13 +69,13 @@ export default function Onboarding() {
             </div>
             <span className="text-2xl font-bold text-gray-900">Cuidaru</span>
           </div>
-          <p className="text-gray-500">Welcome! Let's get you set up.</p>
+          <p className="text-gray-500">{t('onboarding_welcome')}</p>
         </div>
 
         {/* Step 1 — Role selection */}
         {termsAccepted && step === 1 && (
           <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }}>
-            <h2 className="text-2xl font-bold text-center mb-6 text-gray-800">I am here because...</h2>
+            <h2 className="text-2xl font-bold text-center mb-6 text-gray-800">{t('onboarding_iam_here')}</h2>
             <div className="grid gap-4">
               <Card
                 className={`cursor-pointer border-2 transition-all hover:shadow-lg ${role === 'client' ? 'border-blue-500 bg-blue-50' : 'border-gray-200 hover:border-blue-300'}`}
@@ -82,8 +84,8 @@ export default function Onboarding() {
                 <CardContent className="p-6 flex items-center gap-4">
                   <div className="w-14 h-14 rounded-2xl bg-blue-100 flex items-center justify-center text-2xl">🔍</div>
                   <div>
-                    <h3 className="text-lg font-semibold text-gray-900">I am looking for help</h3>
-                    <p className="text-sm text-gray-500">Find trusted caregivers, nurses, cleaners & more</p>
+                    <h3 className="text-lg font-semibold text-gray-900">{t('onboarding_looking_help')}</h3>
+                    <p className="text-sm text-gray-500">{t('onboarding_looking_help_desc')}</p>
                   </div>
                   {role === 'client' && <ChevronRight className="ml-auto text-blue-500 w-5 h-5" />}
                 </CardContent>
@@ -96,8 +98,8 @@ export default function Onboarding() {
                 <CardContent className="p-6 flex items-center gap-4">
                   <div className="w-14 h-14 rounded-2xl bg-green-100 flex items-center justify-center text-2xl">💼</div>
                   <div>
-                    <h3 className="text-lg font-semibold text-gray-900">I am looking for work</h3>
-                    <p className="text-sm text-gray-500">Offer your skills and get paid securely</p>
+                    <h3 className="text-lg font-semibold text-gray-900">{t('onboarding_looking_work')}</h3>
+                    <p className="text-sm text-gray-500">{t('onboarding_looking_work_desc')}</p>
                   </div>
                   {role === 'provider' && <ChevronRight className="ml-auto text-green-500 w-5 h-5" />}
                 </CardContent>
@@ -110,8 +112,8 @@ export default function Onboarding() {
                 <CardContent className="p-6 flex items-center gap-4">
                   <div className="w-14 h-14 rounded-2xl bg-purple-100 flex items-center justify-center text-2xl">🤝</div>
                   <div>
-                    <h3 className="text-lg font-semibold text-gray-900">Both — hire & work</h3>
-                    <p className="text-sm text-gray-500">Find help and offer your own services</p>
+                    <h3 className="text-lg font-semibold text-gray-900">{t('onboarding_both')}</h3>
+                    <p className="text-sm text-gray-500">{t('onboarding_both_desc')}</p>
                   </div>
                   {role === 'both' && <ChevronRight className="ml-auto text-purple-500 w-5 h-5" />}
                 </CardContent>
@@ -128,7 +130,7 @@ export default function Onboarding() {
                 }
               }}
             >
-              {isAuthed ? "Let's Go!" : 'Sign up / Sign in to continue'} <ChevronRight className="w-4 h-4 ml-1" />
+              {isAuthed ? t('onboarding_lets_go') : t('onboarding_signup_to_continue')} <ChevronRight className="w-4 h-4 ml-1" />
             </Button>
           </motion.div>
         )}

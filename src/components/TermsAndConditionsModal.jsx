@@ -3,8 +3,10 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/u
 import { Button } from '@/components/ui/button';
 import { Checkbox } from '@/components/ui/checkbox';
 import { ScrollArea } from '@/components/ui/scroll-area';
+import { useI18n } from '@/lib/i18n';
 
 export default function TermsAndConditionsModal({ open, onAccept, onDecline }) {
+  const { t } = useI18n();
   const [agreed, setAgreed] = useState(false);
 
   const handleAccept = () => {
@@ -23,82 +25,62 @@ export default function TermsAndConditionsModal({ open, onAccept, onDecline }) {
     <Dialog open={open}>
       <DialogContent className="max-w-2xl max-h-[90vh] flex flex-col p-0">
         <DialogHeader className="p-6 pb-4 border-b">
-          <DialogTitle>Terms and Conditions</DialogTitle>
-          <p className="text-sm text-muted-foreground mt-2">
-            Please review and accept our Terms and Conditions to continue
-          </p>
+          <DialogTitle>{t('terms_title')}</DialogTitle>
+          <p className="text-sm text-muted-foreground mt-2">{t('terms_subtitle')}</p>
         </DialogHeader>
 
         <ScrollArea className="flex-1 px-6 py-4">
           <div className="space-y-4 text-sm leading-relaxed pr-4">
             <section>
-              <h3 className="font-semibold text-base mb-2">Our Role</h3>
-              <p className="text-muted-foreground mb-2">
-                Cuidaru is ONLY a technology platform that connects clients with independent service providers. We are not a service provider ourselves.
-              </p>
+              <h3 className="font-semibold text-base mb-2">{t('terms_our_role')}</h3>
+              <p className="text-muted-foreground mb-2">{t('terms_our_role_desc')}</p>
               <ul className="list-disc list-inside space-y-1 text-muted-foreground ml-2">
-                <li>Cuidaru does NOT employ or supervise service providers</li>
-                <li>All providers are independent contractors</li>
-                <li>Cuidaru does NOT guarantee service quality or outcome</li>
+                <li>{t('terms_our_role_li1')}</li>
+                <li>{t('terms_our_role_li2')}</li>
+                <li>{t('terms_our_role_li3')}</li>
               </ul>
             </section>
 
             <section>
-              <h3 className="font-semibold text-base mb-2">Your Responsibility</h3>
-              <p className="text-muted-foreground">
-                You are responsible for verifying information, selecting providers carefully, and assuming all risks when engaging with other users.
-              </p>
+              <h3 className="font-semibold text-base mb-2">{t('terms_your_responsibility')}</h3>
+              <p className="text-muted-foreground">{t('terms_your_responsibility_desc')}</p>
             </section>
 
             <section>
-              <h3 className="font-semibold text-base mb-2">Payments and Escrow</h3>
-              <p className="text-muted-foreground mb-2">
-                All payments are processed through Cuidaru using our escrow system:
-              </p>
+              <h3 className="font-semibold text-base mb-2">{t('terms_payments')}</h3>
+              <p className="text-muted-foreground mb-2">{t('terms_payments_desc')}</p>
               <ul className="list-disc list-inside space-y-1 text-muted-foreground ml-2">
-                <li>Payment held safely after booking</li>
-                <li>Released after service completion</li>
-                <li>Client has 24 hours to release or dispute</li>
-                <li>Auto-releases if no dispute is filed</li>
+                <li>{t('terms_payments_li1')}</li>
+                <li>{t('terms_payments_li2')}</li>
+                <li>{t('terms_payments_li3')}</li>
+                <li>{t('terms_payments_li4')}</li>
               </ul>
             </section>
 
             <section>
-              <h3 className="font-semibold text-base mb-2">Platform Fees</h3>
-              <p className="text-muted-foreground">
-                Cuidaru charges a 10% service fee per transaction. Fees may be waived with an active premium subscription and may vary by country.
-              </p>
+              <h3 className="font-semibold text-base mb-2">{t('terms_fees')}</h3>
+              <p className="text-muted-foreground">{t('terms_fees_desc')}</p>
             </section>
 
             <section>
-              <h3 className="font-semibold text-base mb-2">Tax Responsibility</h3>
-              <p className="text-muted-foreground mb-2 font-semibold">
-                ⚠️ Important: You are responsible for all taxes on your income or expenses
-              </p>
-              <p className="text-muted-foreground">
-                Cuidaru does NOT calculate, collect, or report taxes on behalf of users. Service providers must declare all income and pay applicable taxes as required by law.
-              </p>
+              <h3 className="font-semibold text-base mb-2">{t('terms_tax')}</h3>
+              <p className="text-muted-foreground mb-2 font-semibold">{t('terms_tax_warning')}</p>
+              <p className="text-muted-foreground">{t('terms_tax_desc')}</p>
             </section>
 
             <section>
-              <h3 className="font-semibold text-base mb-2">Limitation of Liability</h3>
-              <p className="text-muted-foreground">
-                Cuidaru is NOT liable for service quality, injuries, damages, or disputes between users. You use the platform at your own risk.
-              </p>
+              <h3 className="font-semibold text-base mb-2">{t('terms_liability')}</h3>
+              <p className="text-muted-foreground">{t('terms_liability_desc')}</p>
             </section>
 
             <section>
-              <h3 className="font-semibold text-base mb-2">No Off-Platform Transactions</h3>
-              <p className="text-muted-foreground">
-                You must not arrange payments or services outside the platform. Violations may result in account suspension or termination.
-              </p>
+              <h3 className="font-semibold text-base mb-2">{t('terms_off_platform')}</h3>
+              <p className="text-muted-foreground">{t('terms_off_platform_desc')}</p>
             </section>
 
             <section>
-              <h3 className="font-semibold text-base mb-2">Account Suspension</h3>
-              <p className="text-muted-foreground">
-                Cuidaru may suspend or terminate accounts for fraud, abuse, illegal activity, or violation of these terms.
-              </p>
+              <h3 className="font-semibold text-base mb-2">{t('terms_suspension')}</h3>
+              <p className="text-muted-foreground">{t('terms_suspension_desc')}</p>
             </section>
           </div>
         </ScrollArea>
@@ -110,9 +92,7 @@ export default function TermsAndConditionsModal({ open, onAccept, onDecline }) {
               onCheckedChange={setAgreed}
               className="mt-1"
             />
-            <span className="text-sm leading-relaxed">
-              I have read and agree to the Terms and Conditions. I understand that Cuidaru is a marketplace platform only, and I accept full responsibility for my actions and transactions.
-            </span>
+            <span className="text-sm leading-relaxed">{t('terms_agree_checkbox')}</span>
           </label>
 
           <div className="flex gap-3">
@@ -121,14 +101,14 @@ export default function TermsAndConditionsModal({ open, onAccept, onDecline }) {
               className="flex-1"
               onClick={handleDecline}
             >
-              Decline
+              {t('terms_decline')}
             </Button>
             <Button
               className="flex-1"
               onClick={handleAccept}
               disabled={!agreed}
             >
-              Accept & Continue
+              {t('terms_accept')}
             </Button>
           </div>
         </div>

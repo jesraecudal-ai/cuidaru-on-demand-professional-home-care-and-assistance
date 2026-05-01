@@ -3,15 +3,16 @@ import { useI18n } from '@/lib/i18n';
 import { useQuery, useQueryClient } from '@tanstack/react-query';
 import { base44 } from '@/api/base44Client';
 import { useUserProfile } from '@/lib/useUserProfile';
-import { Users, Search, AlertTriangle, CheckCircle2, Ban, Star, ShieldCheck, Eye, EyeOff, Trash2 } from 'lucide-react';
+import { Users, Search, AlertTriangle, CheckCircle2, Ban, Star, ShieldCheck, Eye, EyeOff, Trash2, Edit } from 'lucide-react';
 import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { Skeleton } from '@/components/ui/skeleton';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
+import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog';
 import { toast } from 'sonner';
 
-function UserRow({ profile, provider, onToggle, onDelete }) {
+function UserRow({ profile, provider, onToggle, onDelete, onEdit }) {
   const { t } = useI18n();
   const isDisabled = profile?.is_active === false || provider?.is_active === false;
   const isPremium = profile?.is_premium || provider?.is_premium;
@@ -44,6 +45,14 @@ function UserRow({ profile, provider, onToggle, onDelete }) {
       <div className="flex gap-2">
         <Button
           size="sm"
+          variant="outline"
+          className="gap-1.5"
+          onClick={() => onEdit(profile, provider)}
+        >
+          <Edit className="w-3.5 h-3.5" /> {t('edit')}
+        </Button>
+        <Button
+          size="sm"
           variant={isDisabled ? 'outline' : 'destructive'}
           className={isDisabled ? 'border-green-400 text-green-700 hover:bg-green-50 gap-1.5' : 'gap-1.5'}
           onClick={() => onToggle(profile, provider, !isDisabled)}
@@ -73,6 +82,9 @@ export default function AdminUsers() {
   const [search, setSearch] = useState('');
   const [roleFilter, setRoleFilter] = useState('all');
   const [statusFilter, setStatusFilter] = useState('all');
+  const [editingProfile, setEditingProfile] = useState(null);
+  const [editingProvider, setEditingProvider] = useState(null);
+  const [editFormData, setEditFormData] = useState({});
   const queryClient = useQueryClient();
 
   const isAdmin = user?.role === 'admin';
@@ -149,6 +161,29 @@ export default function AdminUsers() {
     queryClient.invalidateQueries({ queryKey: ['admin-all-providers'] });
   };
 
+  const handleEdit = (profile, provider) => {
+    setEditingProfile(profile);
+    setEditingProvider(provider);
+    setEditFormData({
+      profile: { ...profile },
+      provider: { ...provider }
+    });
+  };
+
+  const handleSaveEdit = async () => {
+    if (editingProfile) {
+      await base44.entities.UserProfile.update(editingProfile.id, editFormData.profile);
+    }
+    if (editingProvider) {
+      await base44.entities.ServiceProvider.update(editingProvider.id, editFormData.provider);
+    }
+    toast.success(t('changes_saved'));
+    setEditingProfile(null);
+    setEditingProvider(null);
+    queryClient.invalidateQueries({ queryKey: ['admin-user-profiles'] });
+    queryClient.invalidateQueries({ queryKey: ['admin-all-providers'] });
+  };
+
   const isLoading = loadingProfiles || loadingProviders;
   const disabledCount = profiles.filter(p => p.is_active === false).length;
 
@@ -211,10 +246,133 @@ export default function AdminUsers() {
               provider={provider}
               onToggle={handleToggle}
               onDelete={handleDelete}
+              onEdit={handleEdit}
             />
           ))}
         </div>
       )}
+
+      {/* Edit Dialog */}
+      <Dialog open={!!editingProfile || !!editingProvider} onOpenChange={(open) => { if (!open) { setEditingProfile(null); setEditingProvider(null); } }}>
+        <DialogContent className="max-w-2xl max-h-[80vh] overflow-y-auto">
+          <DialogHeader>
+            <DialogTitle>{t('edit_user')}</DialogTitle>
+          </DialogHeader>
+
+          <div className="space-y-6">
+            {/* UserProfile Fields */}
+            {editingProfile && (
+              <div className="space-y-4 border-b pb-4">
+                <h3 className="font-semibold text-gray-900">User Profile</h3>
+                
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-1">Role</label>
+                  <Select value={editFormData.profile?.role || 'client'} onValueChange={(value) => setEditFormData(prev => ({ ...prev, profile: { ...prev.profile, role: value } }))}>
+                    <SelectTrigger>
+                      <SelectValue />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="client">Client</SelectItem>
+                      <SelectItem value="provider">Provider</SelectItem>
+                      <SelectItem value="both">Both</SelectItem>
+                    </SelectContent>
+                  </Select>
+                </div>
+
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-1">Country</label>
+                  <Select value={editFormData.profile?.country || 'brazil'} onValueChange={(value) => setEditFormData(prev => ({ ...prev, profile: { ...prev.profile, country: value } }))}>
+                    <SelectTrigger>
+                      <SelectValue />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="brazil">Brazil</SelectItem>
+                      <SelectItem value="uruguay">Uruguay</SelectItem>
+                      <SelectItem value="usa">USA</SelectItem>
+                      <SelectItem value="canada">Canada</SelectItem>
+                      <SelectItem value="philippines">Philippines</SelectItem>
+                    </SelectContent>
+                  </Select>
+                </div>
+
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-1">Company Name</label>
+                  <Input value={editFormData.profile?.company_name || ''} onChange={(e) => setEditFormData(prev => ({ ...prev, profile: { ...prev.profile, company_name: e.target.value } }))} />
+                </div>
+
+                <div className="flex gap-4">
+                  <label className="flex items-center gap-2">
+                    <input type="checkbox" checked={editFormData.profile?.is_premium || false} onChange={(e) => setEditFormData(prev => ({ ...prev, profile: { ...prev.profile, is_premium: e.target.checked } }))} />
+                    <span className="text-sm font-medium">Premium</span>
+                  </label>
+                  <label className="flex items-center gap-2">
+                    <input type="checkbox" checked={editFormData.profile?.is_active !== false} onChange={(e) => setEditFormData(prev => ({ ...prev, profile: { ...prev.profile, is_active: e.target.checked } }))} />
+                    <span className="text-sm font-medium">Active</span>
+                  </label>
+                </div>
+              </div>
+            )}
+
+            {/* ServiceProvider Fields */}
+            {editingProvider && (
+              <div className="space-y-4">
+                <h3 className="font-semibold text-gray-900">Service Provider</h3>
+                
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-1">Full Name</label>
+                  <Input value={editFormData.provider?.full_name || ''} onChange={(e) => setEditFormData(prev => ({ ...prev, provider: { ...prev.provider, full_name: e.target.value } }))} />
+                </div>
+
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-1">Phone</label>
+                  <Input value={editFormData.provider?.phone || ''} onChange={(e) => setEditFormData(prev => ({ ...prev, provider: { ...prev.provider, phone: e.target.value } }))} />
+                </div>
+
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-1">Bio</label>
+                  <textarea className="w-full border rounded-md p-2 text-sm" rows="3" value={editFormData.provider?.bio || ''} onChange={(e) => setEditFormData(prev => ({ ...prev, provider: { ...prev.provider, bio: e.target.value } }))} />
+                </div>
+
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-1">Hourly Rate</label>
+                  <Input type="number" value={editFormData.provider?.hourly_rate || ''} onChange={(e) => setEditFormData(prev => ({ ...prev, provider: { ...prev.provider, hourly_rate: e.target.value ? parseFloat(e.target.value) : null } }))} />
+                </div>
+
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-1">Verification Status</label>
+                  <Select value={editFormData.provider?.verification_status || 'unverified'} onValueChange={(value) => setEditFormData(prev => ({ ...prev, provider: { ...prev.provider, verification_status: value } }))}>
+                    <SelectTrigger>
+                      <SelectValue />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="unverified">Unverified</SelectItem>
+                      <SelectItem value="pending">Pending</SelectItem>
+                      <SelectItem value="verified">Verified</SelectItem>
+                      <SelectItem value="rejected">Rejected</SelectItem>
+                    </SelectContent>
+                  </Select>
+                </div>
+
+                <div className="flex gap-4">
+                  <label className="flex items-center gap-2">
+                    <input type="checkbox" checked={editFormData.provider?.is_premium || false} onChange={(e) => setEditFormData(prev => ({ ...prev, provider: { ...prev.provider, is_premium: e.target.checked } }))} />
+                    <span className="text-sm font-medium">Premium</span>
+                  </label>
+                  <label className="flex items-center gap-2">
+                    <input type="checkbox" checked={editFormData.provider?.is_active !== false} onChange={(e) => setEditFormData(prev => ({ ...prev, provider: { ...prev.provider, is_active: e.target.checked } }))} />
+                    <span className="text-sm font-medium">Active</span>
+                  </label>
+                </div>
+              </div>
+            )}
+          </div>
+
+          <div className="flex gap-2 justify-end pt-4 border-t">
+            <Button variant="outline" onClick={() => { setEditingProfile(null); setEditingProvider(null); }}>Cancel</Button>
+            <Button onClick={handleSaveEdit}>Save Changes</Button>
+          </div>
+        </DialogContent>
+      </Dialog>
     </div>
   );
 }

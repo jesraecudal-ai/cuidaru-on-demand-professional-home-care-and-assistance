@@ -68,12 +68,31 @@ export default function Bookings() {
         await updateMutation.mutateAsync({ id: bookingId, data: { status: 'accepted' } });
         toast.success('Booking accepted! Waiting for client payment.');
         break;
-      case 'pay':
-        // Simulate payment — in production connect real payment
-        const releaseAt = new Date(Date.now() + 24 * 3600 * 1000).toISOString();
-        await updateMutation.mutateAsync({ id: bookingId, data: { status: 'paid_confirmed', payment_status: 'paid_held' } });
-        toast.success('Payment held in escrow. Provider has been notified!');
+      case 'pay': {
+        // Check if running inside iframe (Base44 preview) — Stripe checkout won't work there
+        if (window.self !== window.top) {
+          toast.error('Checkout only works from the published app, not the preview.');
+          break;
+        }
+        toast.loading('Redirecting to payment...', { id: 'pay-toast' });
+        const checkoutRes = await base44.functions.invoke('createCheckoutSession', {
+          booking_id: bookingId,
+          amount: booking.total_amount,
+          currency: booking.country ? (booking.country === 'brazil' ? 'brl' : booking.country === 'uruguay' ? 'uyu' : 'usd') : 'usd',
+          provider_name: booking.provider_name,
+          provider_id: booking.provider_id,
+          provider_email: booking.provider_email,
+          description: `${booking.category} service booking`,
+          platform_fee_pct: booking.platform_fee_pct ?? 10,
+        });
+        toast.dismiss('pay-toast');
+        if (checkoutRes.data?.url) {
+          window.location.href = checkoutRes.data.url;
+        } else {
+          toast.error(checkoutRes.data?.error || 'Failed to create checkout session');
+        }
         break;
+      }
       case 'in_progress':
         await updateMutation.mutateAsync({ id: bookingId, data: { status: 'in_progress' } });
         toast.success('Job started!');

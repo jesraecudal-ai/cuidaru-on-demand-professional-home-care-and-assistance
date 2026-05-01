@@ -3,8 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import { base44 } from '@/api/base44Client';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
-import { Heart, ChevronRight, GitBranch } from 'lucide-react';
-import AffiliateApplyCode from '@/components/affiliate/AffiliateApplyCode';
+import { Heart, ChevronRight } from 'lucide-react';
 import TermsAndConditionsModal from '@/components/TermsAndConditionsModal';
 import { motion } from 'framer-motion';
 
@@ -125,35 +124,12 @@ export default function Onboarding() {
                 if (!isAuthed) {
                   base44.auth.redirectToLogin('/onboarding');
                 } else {
-                  setStep(2);
+                  handleComplete();
                 }
               }}
             >
-              {isAuthed ? 'Continue' : 'Sign up / Sign in to continue'} <ChevronRight className="w-4 h-4 ml-1" />
+              {isAuthed ? "Let's Go!" : 'Sign up / Sign in to continue'} <ChevronRight className="w-4 h-4 ml-1" />
             </Button>
-          </motion.div>
-        )}
-
-        {/* Step 2 — Referral code */}
-        {step === 2 && (
-          <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }}>
-            <div className="text-center mb-6">
-              <div className="w-14 h-14 rounded-2xl bg-purple-100 flex items-center justify-center mx-auto mb-3">
-                <GitBranch className="w-7 h-7 text-purple-600" />
-              </div>
-              <h2 className="text-2xl font-bold text-gray-800">Got a referral code?</h2>
-              <p className="text-gray-500 text-sm mt-1">If someone referred you to Cuidaru, enter their code to reward them.</p>
-            </div>
-
-            <AffiliateApplyCode userEmail={userEmail} />
-
-            <div className="flex gap-3 mt-6">
-              <Button variant="outline" className="flex-1 h-12" onClick={() => setStep(1)}>Back</Button>
-              <Button className="flex-1 h-12" onClick={handleComplete} disabled={loading}>
-                {loading ? 'Setting up...' : "Let's Go!"}
-              </Button>
-            </div>
-            <p className="text-center text-xs text-gray-400 mt-3">You can skip this — entering a code is optional.</p>
           </motion.div>
         )}
       </div>

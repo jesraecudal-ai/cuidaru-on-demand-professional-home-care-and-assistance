@@ -237,9 +237,17 @@ export default function Jobs() {
                           <span className="text-sm font-semibold text-gray-600">{(selectedJob.client_name || 'A')[0].toUpperCase()}</span>
                         )}
                       </div>
-                      <div>
+                      <div className="flex-1">
                         <p className="text-gray-900 font-semibold">{selectedJob.client_name || 'Anonymous'}</p>
                         <p className="text-sm text-gray-500">{selectedJob.client_email}</p>
+                        {getUserProfileByEmail(selectedJob.client_email)?.company_name && (
+                          <div className="mt-1">
+                            <p className="text-sm font-semibold text-gray-700">{getUserProfileByEmail(selectedJob.client_email).company_name}</p>
+                            {getUserProfileByEmail(selectedJob.client_email)?.position && (
+                              <p className="text-xs text-gray-600">{getUserProfileByEmail(selectedJob.client_email).position}</p>
+                            )}
+                          </div>
+                        )}
                       </div>
                     </div>
                     {getUserProfileByEmail(selectedJob.client_email)?.company_logo_url && (

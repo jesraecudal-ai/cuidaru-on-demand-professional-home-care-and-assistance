@@ -34,7 +34,7 @@ export default function MyProfile() {
   });
 
   const isClient = !userProfile?.role || userProfile?.role === 'client' || userProfile?.role === 'both';
-  const isProvider = userProfile?.role === 'provider' || userProfile?.role === 'both' || !!existingProvider;
+  const isProvider = (userProfile?.role === 'provider' || userProfile?.role === 'both') && !!existingProvider;
   const country = userProfile?.country || 'brazil';
   const countryInfo = COUNTRY_SETTINGS[country] || COUNTRY_SETTINGS.brazil;
   const [companyName, setCompanyName] = useState('');

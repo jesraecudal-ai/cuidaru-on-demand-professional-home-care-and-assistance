@@ -228,18 +228,25 @@ export default function Jobs() {
                   onClick={() => setSelectedProfile(getProfileByEmail(selectedJob.client_email))}
                 >
                   <h3 className="text-sm font-semibold text-gray-700 mb-3">Posted by</h3>
-                  <div className="flex items-center gap-3">
-                    <div className="w-12 h-12 rounded-full bg-gray-200 flex items-center justify-center flex-shrink-0 overflow-hidden">
-                      {getProfileByEmail(selectedJob.client_email)?.avatar_url ? (
-                        <img src={getProfileByEmail(selectedJob.client_email).avatar_url} alt="" className="w-full h-full object-cover" />
-                      ) : (
-                        <span className="text-sm font-semibold text-gray-600">{(selectedJob.client_name || 'A')[0].toUpperCase()}</span>
-                      )}
+                  <div className="flex items-center gap-4">
+                    <div className="flex gap-3 flex-1">
+                      <div className="w-12 h-12 rounded-full bg-gray-200 flex items-center justify-center flex-shrink-0 overflow-hidden">
+                        {getProfileByEmail(selectedJob.client_email)?.avatar_url ? (
+                          <img src={getProfileByEmail(selectedJob.client_email).avatar_url} alt="" className="w-full h-full object-cover" />
+                        ) : (
+                          <span className="text-sm font-semibold text-gray-600">{(selectedJob.client_name || 'A')[0].toUpperCase()}</span>
+                        )}
+                      </div>
+                      <div>
+                        <p className="text-gray-900 font-semibold">{selectedJob.client_name || 'Anonymous'}</p>
+                        <p className="text-sm text-gray-500">{selectedJob.client_email}</p>
+                      </div>
                     </div>
-                    <div>
-                      <p className="text-gray-900 font-semibold">{selectedJob.client_name || 'Anonymous'}</p>
-                      <p className="text-sm text-gray-500">{selectedJob.client_email}</p>
-                    </div>
+                    {getUserProfileByEmail(selectedJob.client_email)?.company_logo_url && (
+                      <div className="w-12 h-12 flex items-center justify-center flex-shrink-0 bg-white rounded-lg p-1 border border-gray-300">
+                        <img src={getUserProfileByEmail(selectedJob.client_email).company_logo_url} alt="" className="w-full h-full object-contain" />
+                      </div>
+                    )}
                   </div>
                 </div>
 

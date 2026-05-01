@@ -12,7 +12,7 @@ import { Search } from 'lucide-react';
 
 export default function Jobs() {
   const { t } = useI18n();
-  const { user } = useUserProfile();
+  const { user, profile } = useUserProfile();
   const [search, setSearch] = useState('');
   const [selectedJob, setSelectedJob] = useState(null);
 
@@ -20,6 +20,18 @@ export default function Jobs() {
     queryKey: ['job-orders'],
     queryFn: () => base44.entities.JobOrder.list('-created_date', 100),
   });
+
+  const currencyMap = {
+    uruguay: { symbol: '$', code: 'UYU' },
+    brazil: { symbol: 'R$', code: 'BRL' },
+    usa: { symbol: '$', code: 'USD' },
+    canada: { symbol: '$', code: 'CAD' },
+    philippines: { symbol: '₱', code: 'PHP' },
+  };
+
+  const getCurrency = () => {
+    return currencyMap[profile?.country] || currencyMap.usa;
+  };
 
   const filteredJobs = useMemo(() => {
     if (!search.trim()) return jobs;
@@ -109,7 +121,7 @@ export default function Jobs() {
                   {job.budget && (
                     <div className="text-xs text-gray-600 mt-2 flex items-center gap-1">
                       <DollarSign className="w-3 h-3" />
-                      {job.budget} {budgetTypeLabels[job.budget_type] || job.budget_type}
+                      {getCurrency().symbol} {job.budget} {budgetTypeLabels[job.budget_type] || job.budget_type}
                     </div>
                   )}
                 </div>
@@ -144,7 +156,7 @@ export default function Jobs() {
                       <DollarSign className="w-4 h-4" /> Budget
                     </h3>
                     <p className="text-2xl font-bold text-blue-600">
-                      {selectedJob.budget} <span className="text-sm text-gray-500">{budgetTypeLabels[selectedJob.budget_type] || selectedJob.budget_type}</span>
+                      {getCurrency().symbol} {selectedJob.budget} <span className="text-sm text-gray-500">{budgetTypeLabels[selectedJob.budget_type] || selectedJob.budget_type}</span>
                     </p>
                   </div>
                 )}

@@ -143,8 +143,8 @@ export default function Onboarding() {
 
             <div className="flex gap-3 mt-6">
               <Button variant="outline" className="flex-1 h-12" onClick={() => setStep(1)}>Back</Button>
-              <Button className="flex-1 h-12" onClick={() => setStep(3)}>
-                Continue <ChevronRight className="w-4 h-4 ml-1" />
+              <Button className="flex-1 h-12" onClick={handleComplete} disabled={loading}>
+                {loading ? 'Setting up...' : 'Continue'} <ChevronRight className="w-4 h-4 ml-1" />
               </Button>
             </div>
           </motion.div>

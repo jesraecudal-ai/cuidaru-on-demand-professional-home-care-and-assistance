@@ -532,6 +532,7 @@ const translations = {
     onboarding_both_desc: 'Find help and offer your own services',
     onboarding_lets_go: "Let's Go!",
     onboarding_signup_to_continue: 'Sign up / Sign in to continue',
+    onboarding_terms_notice: 'By signing up to Cuidaru, you agree to our',
 
     // User not registered
     not_registered_title: 'Access Restricted',
@@ -1082,6 +1083,7 @@ const translations = {
     onboarding_both_desc: 'Encontre ajuda e ofereça seus próprios serviços',
     onboarding_lets_go: 'Vamos lá!',
     onboarding_signup_to_continue: 'Cadastre-se / Entre para continuar',
+    onboarding_terms_notice: 'Ao se cadastrar no Cuidaru, você concorda com nossos',
 
     // User not registered
     not_registered_title: 'Acesso Restrito',
@@ -1632,6 +1634,7 @@ const translations = {
     onboarding_both_desc: 'Encuentra ayuda y ofrece tus propios servicios',
     onboarding_lets_go: '¡Vamos!',
     onboarding_signup_to_continue: 'Regístrate / Inicia sesión para continuar',
+    onboarding_terms_notice: 'Al registrarte en Cuidaru, aceptas nuestros',
 
     // User not registered
     not_registered_title: 'Acceso Restringido',

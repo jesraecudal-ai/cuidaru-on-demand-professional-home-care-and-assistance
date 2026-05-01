@@ -9,9 +9,15 @@ Deno.serve(async (req) => {
     const user = await base44.auth.me();
     if (!user) return Response.json({ error: 'Unauthorized' }, { status: 401 });
 
-    const { booking_id, amount, currency, provider_name, provider_id, provider_email, description, platform_fee, provider_payout } = await req.json();
+    const { booking_id, amount, currency, provider_name, provider_id, provider_email, description, platform_fee_pct } = await req.json();
 
     if (!booking_id || !amount) return Response.json({ error: 'Missing required fields' }, { status: 400 });
+
+    // Client pays only the service subtotal (no platform fee added to client bill)
+    // Platform fee is deducted from provider payout on release
+    const feePct = platform_fee_pct ?? 10;
+    const platform_fee = parseFloat((amount * feePct / 100).toFixed(2));
+    const provider_payout = parseFloat((amount - platform_fee).toFixed(2));
 
     const amountCents = Math.round(amount * 100);
 

@@ -315,9 +315,11 @@ function RegularBookingForm({ provider, clientProfile }) {
 
     const platformFeePercent = 10;
     const platformFee = subtotal * (platformFeePercent / 100);
-    const total = subtotal + platformFee;
+    // Client pays only the subtotal; platform fee is deducted from provider payout
+    const total = subtotal;
+    const providerPayout = subtotal - platformFee;
 
-    return { subtotal, platformFee, total, platformFeePercent };
+    return { subtotal, platformFee, total, platformFeePercent, providerPayout };
   };
 
   const handleCreateBooking = async () => {
@@ -326,7 +328,7 @@ function RegularBookingForm({ provider, clientProfile }) {
     setLoading(true);
     try {
       const user = await base44.auth.me();
-      const { subtotal, platformFee, total } = calculateCost();
+      const { subtotal, platformFee, total, providerPayout } = calculateCost();
 
       const bookingData = {
         client_email: user.email,
@@ -347,7 +349,7 @@ function RegularBookingForm({ provider, clientProfile }) {
         platform_fee_pct: 10,
         platform_fee: platformFee,
         total_amount: total,
-        provider_payout: subtotal,
+        provider_payout: providerPayout,
         address: form.address,
         instructions: form.instructions,
         country: provider.country
@@ -364,7 +366,7 @@ function RegularBookingForm({ provider, clientProfile }) {
     }
   };
 
-  const { subtotal, platformFee, total } = calculateCost();
+  const { subtotal, platformFee, total, providerPayout } = calculateCost();
 
   return (
     <Card className="sticky top-24 shadow-lg border border-gray-100">
@@ -477,18 +479,11 @@ function RegularBookingForm({ provider, clientProfile }) {
 
         {/* Pricing Summary */}
         <div className="border-t pt-4 space-y-2 bg-gray-50 rounded-lg p-3">
-          <div className="flex justify-between text-sm">
-            <span className="text-gray-600">Subtotal:</span>
-            <span className="font-semibold">${subtotal.toFixed(2)}</span>
-          </div>
-          <div className="flex justify-between text-sm">
-            <span className="text-gray-600">Platform Fee (10%):</span>
-            <span className="font-semibold">${platformFee.toFixed(2)}</span>
-          </div>
           <div className="flex justify-between text-sm border-t pt-2">
             <span className="font-semibold text-gray-900">Total:</span>
             <span className="font-bold text-blue-600">${total.toFixed(2)}</span>
           </div>
+          <p className="text-xs text-gray-400">* Stripe processing fee applies at checkout. Provider receives ${providerPayout.toFixed(2)} after platform fee.</p>
         </div>
 
         {!provider.hourly_rate && !provider.daily_rate && !provider.weekly_rate && (

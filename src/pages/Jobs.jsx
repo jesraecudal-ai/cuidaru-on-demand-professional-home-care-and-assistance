@@ -178,9 +178,9 @@ export default function Jobs() {
                 </div>
 
                 {/* Client Info */}
-                <div>
-                  <h3 className="text-sm font-semibold text-gray-700 mb-2">Client</h3>
-                  <p className="text-gray-900">{selectedJob.client_name}</p>
+                <div className="bg-blue-50 border border-blue-200 rounded-lg p-4">
+                  <h3 className="text-sm font-semibold text-gray-700 mb-2">Posted by</h3>
+                  <p className="text-gray-900 font-semibold">{selectedJob.client_name || 'Anonymous'}</p>
                   <p className="text-sm text-gray-500">{selectedJob.client_email}</p>
                 </div>
 

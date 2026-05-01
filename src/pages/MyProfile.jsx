@@ -106,7 +106,7 @@ export default function MyProfile() {
     if (!file) return;
     const { file_url } = await base44.integrations.Core.UploadFile({ file });
     setForm(f => ({ ...f, avatar_url: file_url }));
-    toast.success('Photo uploaded!');
+    toast.success(t('photo_uploaded'));
   };
 
   const addSkill = () => {
@@ -126,7 +126,7 @@ export default function MyProfile() {
     if (userProfile) {
       await base44.entities.UserProfile.delete(userProfile.id);
     }
-    toast.success('Account deleted. Logging you out...');
+    toast.success(t('account_deleted'));
     setTimeout(() => base44.auth.logout(), 1500);
   };
 
@@ -162,7 +162,7 @@ export default function MyProfile() {
       {userProfile && (
         <Card className="mb-4 sm:mb-6 border border-gray-100 shadow-sm">
         <CardContent className="p-3 sm:p-4">
-          <p className="text-xs sm:text-sm font-medium text-gray-600 mb-3">I am on Cuidaru as:</p>
+          <p className="text-xs sm:text-sm font-medium text-gray-600 mb-3">{t('role_on_platform')}</p>
           <div className="flex gap-2 sm:gap-3 flex-wrap">
               <button
                 onClick={async () => {
@@ -181,7 +181,7 @@ export default function MyProfile() {
                     : 'border-gray-200 text-gray-500 hover:border-blue-300'
                 }`}
               >
-                <Search className="w-4 h-4" /> Client
+                <Search className="w-4 h-4" /> {t('client_label')}
                 {isClient && <span className="text-xs bg-blue-500 text-white rounded-full px-1.5 py-0.5 leading-none">✓</span>}
               </button>
               <button
@@ -201,7 +201,7 @@ export default function MyProfile() {
                     : 'border-gray-200 text-gray-500 hover:border-green-300'
                 }`}
               >
-                <Briefcase className="w-4 h-4" /> Provider
+                <Briefcase className="w-4 h-4" /> {t('provider_label')}
                 {isProvider && <span className="text-xs bg-green-500 text-white rounded-full px-1.5 py-0.5 leading-none">✓</span>}
               </button>
             </div>
@@ -211,31 +211,31 @@ export default function MyProfile() {
 
       {isClient && userProfile && (
         <Card className="mb-4 sm:mb-6 border border-gray-100 shadow-sm">
-          <CardHeader><CardTitle className="flex items-center gap-2 text-base sm:text-lg text-gray-800"><Briefcase className="w-4 h-4 sm:w-5 sm:h-5 text-blue-600" /> Business Profile</CardTitle></CardHeader>
+          <CardHeader><CardTitle className="flex items-center gap-2 text-base sm:text-lg text-gray-800"><Briefcase className="w-4 h-4 sm:w-5 sm:h-5 text-blue-600" /> {t('business_profile')}</CardTitle></CardHeader>
           <CardContent className="space-y-3 sm:space-y-4">
             <div>
-              <Label htmlFor="company_name">Company Name (Optional)</Label>
-              <p className="text-xs text-gray-500 mb-2">Display your company or business name instead of your personal name</p>
+              <Label htmlFor="company_name">{t('company_name_label')}</Label>
+              <p className="text-xs text-gray-500 mb-2">{t('company_name_desc')}</p>
               <Input
                 id="company_name"
                 value={companyName}
                 onChange={e => setCompanyName(e.target.value)}
-                placeholder="e.g., Acme Healthcare Services"
+                placeholder={t('company_name_placeholder')}
                 className="mt-1.5"
               />
-              <p className="text-xs text-gray-400 mt-2">Your verified identity is always kept on file for security</p>
+              <p className="text-xs text-gray-400 mt-2">{t('company_identity_note')}</p>
             </div>
             <div>
-              <Label htmlFor="company_logo">Company Logo (Optional)</Label>
-              <p className="text-xs text-gray-500 mb-2">Upload your company logo to display alongside your profile</p>
+              <Label htmlFor="company_logo">{t('company_logo_label')}</Label>
+              <p className="text-xs text-gray-500 mb-2">{t('company_logo_desc')}</p>
               <div className="flex items-center gap-4">
                 {userProfile?.company_logo_url ? (
                   <img src={userProfile.company_logo_url} alt="Company logo" className="w-16 h-16 rounded object-cover border border-gray-200" />
                 ) : (
-                  <div className="w-16 h-16 rounded border-2 border-dashed border-gray-300 bg-gray-50 flex items-center justify-center text-xs text-gray-400">No logo</div>
+                  <div className="w-16 h-16 rounded border-2 border-dashed border-gray-300 bg-gray-50 flex items-center justify-center text-xs text-gray-400">{t('optional')}</div>
                 )}
                 <Label htmlFor="company_logo" className="cursor-pointer">
-                  <Button variant="outline" size="sm" className="gap-2" asChild><span><Upload className="w-3.5 h-3.5" /> Upload Logo</span></Button>
+                  <Button variant="outline" size="sm" className="gap-2" asChild><span><Upload className="w-3.5 h-3.5" /> {t('upload_logo')}</span></Button>
                   <input 
                     id="company_logo" 
                     type="file" 
@@ -247,7 +247,7 @@ export default function MyProfile() {
                       const { file_url } = await base44.integrations.Core.UploadFile({ file });
                       await base44.entities.UserProfile.update(userProfile.id, { company_logo_url: file_url });
                       await refetchUserProfile();
-                      toast.success('Company logo uploaded!');
+                      toast.success(t('logo_uploaded'));
                     }}
                   />
                 </Label>
@@ -257,11 +257,11 @@ export default function MyProfile() {
               onClick={async () => {
                 await base44.entities.UserProfile.update(userProfile.id, { company_name: companyName });
                 await refetchUserProfile();
-                toast.success('Business profile updated!');
+                toast.success(t('business_updated'));
               }}
               className="bg-blue-600 hover:bg-blue-700"
             >
-              <Save className="w-4 h-4 mr-2" /> Save Business Name
+              <Save className="w-4 h-4 mr-2" /> {t('save_business_name')}
             </Button>
           </CardContent>
         </Card>
@@ -273,7 +273,7 @@ export default function MyProfile() {
           {existingProvider && !existingProvider.profile_complete && (
             <Card className="border-amber-200 bg-amber-50">
               <CardContent className="p-4 text-sm text-amber-800">
-                ⚠️ Complete your profile to appear in search results. Required: Photo, Name, Phone, Categories, and Location.
+                {t('profile_incomplete_warning')}
               </CardContent>
             </Card>
           )}
@@ -295,7 +295,7 @@ export default function MyProfile() {
                     <Button variant="outline" size="sm" className="gap-2" asChild><span><Upload className="w-3.5 h-3.5" /> {t('upload_photo')}</span></Button>
                   </Label>
                   <input id="avatar" type="file" accept="image/*" className="hidden" onChange={handleUploadAvatar} />
-                  <p className="text-xs text-gray-400 mt-1">Required for profile visibility</p>
+                  <p className="text-xs text-gray-400 mt-1">{t('required_for_visibility')}</p>
                 </div>
               </div>
 
@@ -305,14 +305,14 @@ export default function MyProfile() {
                   <Input value={form.full_name} onChange={e => setForm(f => ({ ...f, full_name: e.target.value }))} className="mt-1.5" />
                 </div>
                 <div>
-                  <Label>Phone *</Label>
+                  <Label>{t('phone_label')} *</Label>
                   <Input value={form.phone} onChange={e => setForm(f => ({ ...f, phone: e.target.value }))} placeholder="+1 555 000 0000" className="mt-1.5" />
                 </div>
               </div>
 
               <div>
-                <Label className="text-sm sm:text-base">{t('category')} * (up to 6)</Label>
-                <p className="text-xs text-gray-500 mb-2">Select the services you offer</p>
+                <Label className="text-sm sm:text-base">{t('category')} * ({t('category_up_to_6')})</Label>
+                <p className="text-xs text-gray-500 mb-2">{t('category_select_desc')}</p>
                 <div className="flex flex-wrap gap-1.5 sm:gap-2">
                   {CATEGORIES.map(cat => (
                     <button
@@ -396,12 +396,12 @@ export default function MyProfile() {
           {form.categories.includes('doctor') && (
             <Card className="border border-blue-100 shadow-sm overflow-hidden">
               <div className="h-2 bg-gradient-to-r from-blue-400 to-cyan-500" />
-              <CardHeader><CardTitle className="flex items-center gap-2 text-lg text-gray-800"><Briefcase className="w-5 h-5 text-blue-600" /> Consultation Fee ({countryInfo?.symbol || '$'})</CardTitle></CardHeader>
+              <CardHeader><CardTitle className="flex items-center gap-2 text-lg text-gray-800"><Briefcase className="w-5 h-5 text-blue-600" /> {t('consultation_fee_title')} ({countryInfo?.symbol || '$'})</CardTitle></CardHeader>
               <CardContent>
                 <div>
-                  <Label>Fee per Consultation</Label>
-                  <p className="text-xs text-gray-500 mb-2">One-time fee clients pay to book a consultation with you</p>
-                  <Input type="number" value={form.consultation_fee} onChange={e => {const val = e.target.value; setForm(f => ({ ...f, consultation_fee: val === '' ? '' : parseFloat(val) || 0 }));}} placeholder="e.g., 50" className="mt-1.5" />
+                  <Label>{t('consultation_fee_label')}</Label>
+                  <p className="text-xs text-gray-500 mb-2">{t('consultation_fee_desc')}</p>
+                  <Input type="number" value={form.consultation_fee} onChange={e => {const val = e.target.value; setForm(f => ({ ...f, consultation_fee: val === '' ? '' : parseFloat(val) || 0 }));}} placeholder={t('consultation_fee_placeholder')} className="mt-1.5" />
                 </div>
               </CardContent>
             </Card>
@@ -449,9 +449,9 @@ export default function MyProfile() {
             <div className="h-2 bg-gradient-to-r from-green-600 to-teal-500" />
             <CardHeader>
               <CardTitle className="flex items-center gap-2 text-lg text-gray-800">
-                <ShieldCheck className="w-5 h-5 text-green-600" /> Identity Verification
+                <ShieldCheck className="w-5 h-5 text-green-600" /> {t('identity_verification')}
               </CardTitle>
-              <p className="text-sm text-gray-500">Verify your identity to earn a trusted badge. Required documents vary by country.</p>
+              <p className="text-sm text-gray-500">{t('identity_verification_desc')}</p>
             </CardHeader>
             <CardContent>
               {existingProvider && user ? (
@@ -461,7 +461,7 @@ export default function MyProfile() {
                   onUpdated={() => user?.email && base44.entities.ServiceProvider.filter({ user_email: user.email }).then(list => list[0] && setExistingProvider(list[0]))}
                 />
               ) : (
-                <p className="text-sm text-gray-400">Save your profile first, then you can upload your identity documents.</p>
+                <p className="text-sm text-gray-400">{t('save_profile_first')}</p>
               )}
             </CardContent>
           </Card>
@@ -481,9 +481,9 @@ export default function MyProfile() {
               <div className="h-2 bg-gradient-to-r from-indigo-400 to-purple-500" />
               <CardHeader>
                 <CardTitle className="flex items-center gap-2 text-lg text-gray-800">
-                  <CalendarDays className="w-5 h-5 text-blue-600" /> Consultation Availability
+                  <CalendarDays className="w-5 h-5 text-blue-600" /> {t('consultation_availability')}
                 </CardTitle>
-                <p className="text-sm text-gray-500">Set your working days, hours, block dates, and view booked consultations. Clients will see your availability when booking.</p>
+                <p className="text-sm text-gray-500">{t('consultation_availability_desc')}</p>
               </CardHeader>
               <CardContent>
                 <DoctorAvailabilityCalendar 
@@ -500,8 +500,8 @@ export default function MyProfile() {
           <Card className="border border-gray-100 shadow-sm">
             <CardContent className="p-8 text-center text-gray-500">
               <Search className="w-10 h-10 mx-auto mb-3 text-gray-300" />
-              <p className="font-medium text-gray-700 mb-1">You're set up as a client</p>
-              <p className="text-sm">Toggle "Provider" above to also offer your services on Cuidaru.</p>
+              <p className="font-medium text-gray-700 mb-1">{t('setup_as_client')}</p>
+              <p className="text-sm">{t('setup_as_client_desc')}</p>
             </CardContent>
           </Card>
         </div>
@@ -511,22 +511,22 @@ export default function MyProfile() {
       <Card className="border border-red-100 shadow-sm mt-6">
         <CardHeader>
           <CardTitle className="flex items-center gap-2 text-base text-red-700">
-            <Trash2 className="w-4 h-4" /> Danger Zone
+            <Trash2 className="w-4 h-4" /> {t('danger_zone')}
           </CardTitle>
         </CardHeader>
         <CardContent>
-          <p className="text-sm text-gray-500 mb-4">Permanently delete your account and all associated data. This action cannot be undone.</p>
+          <p className="text-sm text-gray-500 mb-4">{t('danger_zone_desc')}</p>
           {!showDeleteConfirm ? (
             <Button
               variant="outline"
               className="border-red-300 text-red-600 hover:bg-red-50 hover:border-red-400 gap-2"
               onClick={() => { setShowDeleteConfirm(true); setDeleteConfirmText(''); }}
             >
-              <Trash2 className="w-4 h-4" /> Delete My Account
+              <Trash2 className="w-4 h-4" /> {t('delete_account')}
             </Button>
           ) : (
             <div className="space-y-3 max-w-sm">
-              <p className="text-sm text-red-600 font-medium">Type <span className="font-mono bg-red-50 px-1 rounded">deletemyaccount</span> to confirm:</p>
+              <p className="text-sm text-red-600 font-medium">{t('type_to_confirm')} <span className="font-mono bg-red-50 px-1 rounded">deletemyaccount</span> {t('type_to_confirm2')}</p>
               <Input
                 value={deleteConfirmText}
                 onChange={e => setDeleteConfirmText(e.target.value)}
@@ -547,7 +547,7 @@ export default function MyProfile() {
                   onClick={handleDeleteAccount}
                   className="bg-red-600 hover:bg-red-700 text-white"
                 >
-                  {deletingAccount ? 'Deleting...' : 'Confirm Delete'}
+                  {deletingAccount ? t('deleting') : t('confirm_delete')}
                 </Button>
               </div>
             </div>

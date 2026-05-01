@@ -140,7 +140,7 @@ export default function MyProfile() {
   };
 
   return (
-    <div className="bg-white">
+    <div className="bg-white light" style={{ colorScheme: 'light' }}>
       {/* Hero */}
       <div className="h-20 sm:h-32 bg-gradient-to-r from-blue-50 to-cyan-50 border-b border-blue-100" />
 

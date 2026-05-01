@@ -33,6 +33,11 @@ export default function Jobs() {
     queryFn: () => base44.entities.ServiceProvider.list('-created_date', 200),
   });
 
+  const { data: userProfiles = [] } = useQuery({
+    queryKey: ['all-user-profiles'],
+    queryFn: () => base44.entities.UserProfile.list('-created_date', 200),
+  });
+
   const currencyMap = {
     uruguay: { symbol: '$', code: 'UYU' },
     brazil: { symbol: 'R$', code: 'BRL' },
@@ -67,6 +72,10 @@ export default function Jobs() {
 
   const getProfileByEmail = (email) => {
     return providers.find(p => p.user_email === email);
+  };
+
+  const getUserProfileByEmail = (email) => {
+    return userProfiles.find(p => p.user_email === email);
   };
 
   const filteredJobs = useMemo(() => {
@@ -286,6 +295,14 @@ export default function Jobs() {
                 </div>
                 <h2 className="text-xl font-bold text-gray-900">{selectedProfile.full_name}</h2>
                 <p className="text-sm text-gray-500 mt-1">{selectedProfile.user_email}</p>
+                {getUserProfileByEmail(selectedProfile.user_email)?.company_name && (
+                  <div className="mt-3 pt-3 border-t">
+                    {getUserProfileByEmail(selectedProfile.user_email)?.company_logo_url && (
+                      <img src={getUserProfileByEmail(selectedProfile.user_email).company_logo_url} alt="" className="h-8 mx-auto mb-2" />
+                    )}
+                    <p className="text-sm font-semibold text-gray-700">{getUserProfileByEmail(selectedProfile.user_email).company_name}</p>
+                  </div>
+                )}
               </div>
 
               {selectedProfile.bio && (

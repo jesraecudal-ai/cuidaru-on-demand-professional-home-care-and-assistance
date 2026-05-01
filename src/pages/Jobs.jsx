@@ -20,11 +20,17 @@ export default function Jobs() {
   const [selectedJob, setSelectedJob] = useState(null);
   const [editingJob, setEditingJob] = useState(null);
   const [editFormData, setEditFormData] = useState({});
+  const [selectedProfile, setSelectedProfile] = useState(null);
   const queryClient = useQueryClient();
 
   const { data: jobs = [], isLoading } = useQuery({
     queryKey: ['job-orders'],
     queryFn: () => base44.entities.JobOrder.list('-created_date', 100),
+  });
+
+  const { data: providers = [] } = useQuery({
+    queryKey: ['all-providers'],
+    queryFn: () => base44.entities.ServiceProvider.list('-created_date', 200),
   });
 
   const currencyMap = {
@@ -57,6 +63,10 @@ export default function Jobs() {
     } catch (error) {
       toast.error('Failed to update job');
     }
+  };
+
+  const getProfileByEmail = (email) => {
+    return providers.find(p => p.user_email === email);
   };
 
   const filteredJobs = useMemo(() => {
@@ -203,11 +213,25 @@ export default function Jobs() {
                   <p className="text-gray-700 whitespace-pre-wrap">{selectedJob.description}</p>
                 </div>
 
-                {/* Client Info */}
-                <div className="bg-blue-50 border border-blue-200 rounded-lg p-4">
-                  <h3 className="text-sm font-semibold text-gray-700 mb-2">Posted by</h3>
-                  <p className="text-gray-900 font-semibold">{selectedJob.client_name || 'Anonymous'}</p>
-                  <p className="text-sm text-gray-500">{selectedJob.client_email}</p>
+                {/* Client Info - Clickable Profile */}
+                <div 
+                  className="bg-blue-50 border border-blue-200 rounded-lg p-4 cursor-pointer hover:bg-blue-100 transition-colors"
+                  onClick={() => setSelectedProfile(getProfileByEmail(selectedJob.client_email))}
+                >
+                  <h3 className="text-sm font-semibold text-gray-700 mb-3">Posted by</h3>
+                  <div className="flex items-center gap-3">
+                    <div className="w-12 h-12 rounded-full bg-gray-200 flex items-center justify-center flex-shrink-0 overflow-hidden">
+                      {getProfileByEmail(selectedJob.client_email)?.avatar_url ? (
+                        <img src={getProfileByEmail(selectedJob.client_email).avatar_url} alt="" className="w-full h-full object-cover" />
+                      ) : (
+                        <span className="text-sm font-semibold text-gray-600">{(selectedJob.client_name || 'A')[0].toUpperCase()}</span>
+                      )}
+                    </div>
+                    <div>
+                      <p className="text-gray-900 font-semibold">{selectedJob.client_name || 'Anonymous'}</p>
+                      <p className="text-sm text-gray-500">{selectedJob.client_email}</p>
+                    </div>
+                  </div>
                 </div>
 
                 {/* Posted Date */}
@@ -242,6 +266,62 @@ export default function Jobs() {
           </div>
         )}
       </div>
+
+      {/* Profile Modal */}
+      <Dialog open={!!selectedProfile} onOpenChange={(open) => { if (!open) setSelectedProfile(null); }}>
+        <DialogContent className="max-w-sm">
+          <DialogHeader>
+            <DialogTitle>Provider Profile</DialogTitle>
+          </DialogHeader>
+
+          {selectedProfile && (
+            <div className="space-y-4">
+              <div className="text-center">
+                <div className="w-20 h-20 rounded-full bg-gray-200 flex items-center justify-center mx-auto mb-3 overflow-hidden">
+                  {selectedProfile.avatar_url ? (
+                    <img src={selectedProfile.avatar_url} alt="" className="w-full h-full object-cover" />
+                  ) : (
+                    <span className="text-2xl font-semibold text-gray-600">{(selectedProfile.full_name || 'P')[0].toUpperCase()}</span>
+                  )}
+                </div>
+                <h2 className="text-xl font-bold text-gray-900">{selectedProfile.full_name}</h2>
+                <p className="text-sm text-gray-500 mt-1">{selectedProfile.user_email}</p>
+              </div>
+
+              {selectedProfile.bio && (
+                <div>
+                  <h3 className="text-sm font-semibold text-gray-700 mb-1">Bio</h3>
+                  <p className="text-sm text-gray-700">{selectedProfile.bio}</p>
+                </div>
+              )}
+
+              {selectedProfile.categories && selectedProfile.categories.length > 0 && (
+                <div>
+                  <h3 className="text-sm font-semibold text-gray-700 mb-2">Services</h3>
+                  <div className="flex flex-wrap gap-2">
+                    {selectedProfile.categories.map(cat => (
+                      <Badge key={cat} variant="outline" className="capitalize">{cat}</Badge>
+                    ))}
+                  </div>
+                </div>
+              )}
+
+              {selectedProfile.hourly_rate && (
+                <div>
+                  <h3 className="text-sm font-semibold text-gray-700 mb-1">Hourly Rate</h3>
+                  <p className="text-sm text-gray-900 font-semibold">${selectedProfile.hourly_rate}</p>
+                </div>
+              )}
+
+              {selectedProfile.verification_status === 'verified' && (
+                <div className="bg-green-50 border border-green-200 rounded p-2 text-center">
+                  <p className="text-sm font-semibold text-green-700">✓ Verified</p>
+                </div>
+              )}
+            </div>
+          )}
+        </DialogContent>
+      </Dialog>
 
       {/* Edit Job Dialog */}
       <Dialog open={!!editingJob} onOpenChange={(open) => { if (!open) setEditingJob(null); }}>

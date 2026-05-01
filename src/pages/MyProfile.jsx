@@ -162,7 +162,7 @@ export default function MyProfile() {
       {userProfile && (
         <Card className="mb-4 sm:mb-6 border border-gray-100 shadow-sm">
         <CardContent className="p-3 sm:p-4">
-          <p className="text-xs sm:text-sm font-medium text-gray-600 mb-3">I am on CareBook as:</p>
+          <p className="text-xs sm:text-sm font-medium text-gray-600 mb-3">I am on Cuidaru as:</p>
           <div className="flex gap-2 sm:gap-3 flex-wrap">
               <button
                 onClick={async () => {
@@ -501,7 +501,7 @@ export default function MyProfile() {
             <CardContent className="p-8 text-center text-gray-500">
               <Search className="w-10 h-10 mx-auto mb-3 text-gray-300" />
               <p className="font-medium text-gray-700 mb-1">You're set up as a client</p>
-              <p className="text-sm">Toggle "Provider" above to also offer your services on CareBook.</p>
+              <p className="text-sm">Toggle "Provider" above to also offer your services on Cuidaru.</p>
             </CardContent>
           </Card>
         </div>

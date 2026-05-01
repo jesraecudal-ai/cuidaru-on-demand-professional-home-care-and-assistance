@@ -275,9 +275,11 @@ export default function Jobs() {
             </div>
 
             <div className="p-4 border-t bg-gray-50 flex gap-2">
-              <Button className="flex-1 bg-blue-600 hover:bg-blue-700">
-                Submit Proposal
-              </Button>
+              {(profile?.role === 'provider' || profile?.role === 'both') && (
+                <Button className="flex-1 bg-blue-600 hover:bg-blue-700">
+                  Submit Proposal
+                </Button>
+              )}
               {canEditJob(selectedJob) && (
                 <Button variant="outline" onClick={() => handleEditClick(selectedJob)} className="gap-2">
                   <Edit className="w-4 h-4" /> Edit

@@ -76,8 +76,11 @@ export default function Messages() {
 
       let otherName = other?.sender_name || conv.providerEmail || conv.providerId;
       if (isAdmin) {
-        const clientName = me?.sender_name || other?.sender_name || conv.clientEmail;
-        otherName = `${clientName} ↔ ${other?.sender_name || 'Provider'}`;
+        const clientMsg = relevantMsgs.find(m => m.sender_role === 'client');
+        const providerMsg = relevantMsgs.find(m => m.sender_role === 'provider');
+        const clientName = clientMsg?.sender_name || conv.clientEmail || 'Client';
+        const providerName = providerMsg?.sender_name || 'Provider';
+        otherName = `${clientName} ↔ ${providerName}`;
       }
 
       return { ...conv, otherName };

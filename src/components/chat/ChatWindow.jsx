@@ -342,14 +342,6 @@ export default function ChatWindow({
               <div key={msg.id} className={`flex ${isMe ? 'justify-end' : 'justify-start'}`}>
                 <div className={`flex flex-col gap-1 ${isMe ? 'items-end' : 'items-start'}`}>
                   <div className="flex items-center gap-2">
-                    {!isMe && (
-                      <button
-                        onClick={() => handleProfileClick(msg)}
-                        className="text-xs font-medium text-gray-600 hover:text-blue-600 hover:underline cursor-pointer"
-                      >
-                        {msg.sender_name}
-                      </button>
-                    )}
                     <Badge className={`text-xs py-0 px-1.5 ${roleColor(msg.sender_role)}`}>{msg.sender_role}</Badge>
                   </div>
                   <CounterOfferBubble
@@ -371,14 +363,6 @@ export default function ChatWindow({
               <div key={msg.id} className={`flex ${isMe ? 'justify-end' : 'justify-start'}`}>
                 <div className={`max-w-[80%] ${isMe ? 'items-end' : 'items-start'} flex flex-col gap-1`}>
                   <div className="flex items-center gap-2">
-                    {!isMe && (
-                      <button
-                        onClick={() => handleProfileClick(msg)}
-                        className="text-xs font-medium text-gray-600 hover:text-blue-600 hover:underline cursor-pointer"
-                      >
-                        {msg.sender_name}
-                      </button>
-                    )}
                     <Badge className={`text-xs py-0 px-1.5 ${roleColor(msg.sender_role)}`}>{msg.sender_role}</Badge>
                   </div>
                   {msg.media_type === 'image' ? (
@@ -396,14 +380,6 @@ export default function ChatWindow({
             <div key={msg.id} className={`flex ${isMe ? 'justify-end' : 'justify-start'}`}>
               <div className={`max-w-[75%] ${isMe ? 'items-end' : 'items-start'} flex flex-col gap-1`}>
                 <div className="flex items-center gap-2">
-                  {!isMe && (
-                    <button
-                      onClick={() => handleProfileClick(msg)}
-                      className="text-xs font-medium text-gray-600 hover:text-blue-600 hover:underline cursor-pointer"
-                    >
-                      {msg.sender_name}
-                    </button>
-                  )}
                   <Badge className={`text-xs py-0 px-1.5 ${roleColor(msg.sender_role)}`}>{msg.sender_role}</Badge>
                 </div>
                 <div className={`rounded-2xl px-4 py-2.5 text-sm ${isMe ? 'bg-blue-600 text-white rounded-br-sm' : 'bg-gray-100 text-gray-900 rounded-bl-sm'}`}>

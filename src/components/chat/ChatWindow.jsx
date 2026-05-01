@@ -3,7 +3,7 @@ import { base44 } from '@/api/base44Client';
 import { Button } from '@/components/ui/button';
 import { Textarea } from '@/components/ui/textarea';
 import { Badge } from '@/components/ui/badge';
-import { Send, Shield, ArrowLeftRight, AlertTriangle, Image as ImageIcon, Loader } from 'lucide-react';
+import { Send, Shield, ArrowLeftRight, AlertTriangle, Image as ImageIcon, Loader, User } from 'lucide-react';
 import { detectBypass } from '@/lib/constants';
 import { toast } from 'sonner';
 import { format } from 'date-fns';
@@ -24,8 +24,19 @@ export default function ChatWindow({
   const [profilePopupOpen, setProfilePopupOpen] = useState(false);
   const [selectedProfile, setSelectedProfile] = useState(null);
   const [uploadingMedia, setUploadingMedia] = useState(false);
+  const [otherPersonAvatarUrl, setOtherPersonAvatarUrl] = useState(null);
   const bottomRef = useRef(null);
   const fileInputRef = useRef(null);
+
+  // Load avatar for the other person
+  useEffect(() => {
+    if (providerId && currentUser) {
+      // If current user is a client, load provider's avatar
+      base44.entities.ServiceProvider.filter({ id: providerId }).then(list => {
+        if (list[0]?.avatar_url) setOtherPersonAvatarUrl(list[0].avatar_url);
+      }).catch(() => {});
+    }
+  }, [providerId, currentUser]);
 
   // Load active booking for this conversation if not passed in
   useEffect(() => {
@@ -252,8 +263,30 @@ export default function ChatWindow({
   // Can make a counter offer if there's an active booking that's not yet paid
   const canCounterOffer = activeBooking && ['pending_approval', 'counter_offered'].includes(activeBooking.status);
 
+  const otherPersonAvatar = otherPersonAvatarUrl;
+
+  // Get initials from name
+  const getInitials = (name) => {
+    if (!name) return '?';
+    return name.split(' ').map(n => n[0]).join('').toUpperCase().slice(0, 2);
+  };
+
   return (
     <div className="flex flex-col h-full">
+      {/* Chat header with other person's avatar */}
+      <div className="px-4 py-3 border-b border-gray-100 bg-white flex items-center gap-3">
+        <div className="w-9 h-9 rounded-full bg-blue-100 flex items-center justify-center overflow-hidden flex-shrink-0">
+          {otherPersonAvatar ? (
+            <img src={otherPersonAvatar} alt={otherPersonName} className="w-full h-full object-cover" />
+          ) : (
+            <span className="text-sm font-semibold text-blue-600">{getInitials(otherPersonName)}</span>
+          )}
+        </div>
+        <div>
+          <p className="text-sm font-semibold text-gray-900">{otherPersonName || '...'}</p>
+        </div>
+      </div>
+
       {/* Protection warning for pre-booking chats */}
       {!activeBooking && (
         <div className="px-4 py-3 border-b border-amber-200 bg-amber-50 flex items-start gap-2">
@@ -261,7 +294,7 @@ export default function ChatWindow({
           <div className="flex-1">
             <p className="text-xs font-semibold text-amber-900">You're chatting without an active booking</p>
             <p className="text-xs text-amber-700 mt-1">
-              For your protection, keep all communication and payments within CareBook. Exchanging contact details or arranging outside payments voids our protection policies.
+              For your protection, keep all communication and payments within Cuidaru. Exchanging contact details or arranging outside payments voids our protection policies.
             </p>
           </div>
         </div>

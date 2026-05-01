@@ -245,6 +245,9 @@ export default function Jobs() {
                         )}
                       </div>
                       <p className="text-gray-900 font-semibold text-sm">{selectedJob.client_name || 'Anonymous'}</p>
+                      {getUserProfileByEmail(selectedJob.client_email)?.position && (
+                        <p className="text-xs text-gray-600">{getUserProfileByEmail(selectedJob.client_email).position}</p>
+                      )}
                     </div>
                     {getUserProfileByEmail(selectedJob.client_email)?.company_logo_url && (
                       <div className="flex flex-col items-center text-center">

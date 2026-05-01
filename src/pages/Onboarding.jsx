@@ -21,25 +21,43 @@ export default function Onboarding() {
   const [showTerms, setShowTerms] = useState(true);
   const [termsAccepted, setTermsAccepted] = useState(false);
 
+  const [isAuthed, setIsAuthed] = useState(false);
+
   useEffect(() => {
-    base44.auth.me().then(u => setUserEmail(u?.email)).catch(() => {});
+    base44.auth.me()
+      .then(u => { setUserEmail(u?.email); setIsAuthed(!!u); })
+      .catch(() => setIsAuthed(false));
   }, []);
 
   const handleComplete = async () => {
+    if (!isAuthed) {
+      base44.auth.redirectToLogin('/onboarding');
+      return;
+    }
     setLoading(true);
-    const me = await base44.auth.me();
-    const existing = await base44.entities.UserProfile.filter({ user_email: me.email });
-    if (existing.length > 0) {
-      await base44.entities.UserProfile.update(existing[0].id, { role, country, onboarding_complete: true });
-    } else {
-      await base44.entities.UserProfile.create({ user_email: me.email, role, country, onboarding_complete: true });
+    try {
+      const me = await base44.auth.me();
+      if (!me) {
+        base44.auth.redirectToLogin('/onboarding');
+        return;
+      }
+      const existing = await base44.entities.UserProfile.filter({ user_email: me.email });
+      if (existing.length > 0) {
+        await base44.entities.UserProfile.update(existing[0].id, { role, country, onboarding_complete: true });
+      } else {
+        await base44.entities.UserProfile.create({ user_email: me.email, role, country, onboarding_complete: true });
+      }
+      if (role === 'provider' || role === 'both') {
+        navigate('/my-profile');
+      } else {
+        navigate('/browse');
+      }
+    } catch (err) {
+      console.error('Onboarding error:', err);
+      base44.auth.redirectToLogin('/onboarding');
+    } finally {
+      setLoading(false);
     }
-    if (role === 'provider' || role === 'both') {
-      navigate('/my-profile');
-    } else {
-      navigate('/browse');
-    }
-    setLoading(false);
   };
 
   return (
@@ -144,7 +162,7 @@ export default function Onboarding() {
             <div className="flex gap-3 mt-6">
               <Button variant="outline" className="flex-1 h-12" onClick={() => setStep(1)}>Back</Button>
               <Button className="flex-1 h-12" onClick={handleComplete} disabled={loading}>
-                {loading ? 'Setting up...' : 'Continue'} <ChevronRight className="w-4 h-4 ml-1" />
+                {loading ? 'Setting up...' : isAuthed ? 'Continue' : 'Sign in to continue'} <ChevronRight className="w-4 h-4 ml-1" />
               </Button>
             </div>
           </motion.div>
@@ -165,7 +183,7 @@ export default function Onboarding() {
             <div className="flex gap-3 mt-6">
               <Button variant="outline" className="flex-1 h-12" onClick={() => setStep(2)}>Back</Button>
               <Button className="flex-1 h-12" onClick={handleComplete} disabled={loading}>
-                {loading ? 'Setting up...' : "Let's Go!"}
+                {loading ? 'Setting up...' : isAuthed ? "Let's Go!" : 'Sign in to continue'}
               </Button>
             </div>
             <p className="text-center text-xs text-gray-400 mt-3">You can skip this — entering a code is optional.</p>

@@ -70,19 +70,15 @@ export default function Messages() {
 
     // Determine "other" person name
     const convList = Object.values(convMap).map(conv => {
-      const parts = conv.id.split('__');
-      const clientEmail = parts[0];
-      const providerId = parts[1];
-      let otherName = isAdmin
-        ? `${clientEmail} ↔ Provider`
-        : profile?.role === 'provider'
-        ? clientEmail
-        : conv.providerEmail || providerId;
-
-      // Try to get sender names from messages
       const relevantMsgs = messages.filter(m => m.conversation_id === conv.id);
       const other = relevantMsgs.find(m => m.sender_email !== user.email);
-      if (other) otherName = other.sender_name || otherName;
+      const me = relevantMsgs.find(m => m.sender_email === user.email);
+
+      let otherName = other?.sender_name || conv.providerEmail || conv.providerId;
+      if (isAdmin) {
+        const clientName = me?.sender_name || other?.sender_name || conv.clientEmail;
+        otherName = `${clientName} ↔ ${other?.sender_name || 'Provider'}`;
+      }
 
       return { ...conv, otherName };
     });

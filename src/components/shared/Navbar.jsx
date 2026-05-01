@@ -62,6 +62,7 @@ export default function Navbar() {
             <LanguagePicker />
             <NotificationBell />
             {profile?.is_premium && <Badge className="bg-amber-100 text-amber-700 border-amber-300 text-xs gap-1"><Zap className="w-3 h-3" />Cuidaru+</Badge>}
+            {user ? (
             <DropdownMenu>
               <DropdownMenuTrigger asChild>
                 <Button variant="ghost" size="icon" className="rounded-full">
@@ -89,14 +90,24 @@ export default function Navbar() {
                 <DropdownMenuItem onClick={() => base44.auth.logout()} className="gap-2 text-red-600">
                   <LogOut className="w-4 h-4" /> {t('nav_logout')}
                 </DropdownMenuItem>
-              </DropdownMenuContent>
-            </DropdownMenu>
-          </div>
+                </DropdownMenuContent>
+                </DropdownMenu>
+                ) : (
+                <div className="flex items-center gap-2">
+                <Button variant="ghost" size="sm" onClick={() => base44.auth.redirectToLogin()} className="text-gray-600">
+                  {t('nav_login')}
+                </Button>
+                <Button size="sm" className="bg-blue-600 hover:bg-blue-700" onClick={() => base44.auth.redirectToLogin()}>
+                  {t('nav_signup')}
+                </Button>
+                </div>
+                )}
+                </div>
 
           {/* Mobile */}
           <div className="md:hidden flex items-center gap-2">
             <LanguagePicker />
-            <NotificationBell />
+            {user && <NotificationBell />}
             <button onClick={() => setMobileOpen(!mobileOpen)} className="p-2 text-gray-600">
               {mobileOpen ? <X className="w-6 h-6" /> : <Menu className="w-6 h-6" />}
             </button>
@@ -106,58 +117,93 @@ export default function Navbar() {
 
       {mobileOpen && (
         <div className="md:hidden border-t border-gray-100 bg-white px-4 pb-4 pt-2 space-y-1">
-          {navLinks.map(link => (
-            <Link key={link.path} to={link.path} onClick={() => setMobileOpen(false)}>
-              <Button variant={isActive(link.path) ? 'default' : 'ghost'} className="w-full justify-start gap-2 text-sm">
-                <link.icon className="w-4 h-4" /> {link.label}
+          {user ? (
+            <>
+              {navLinks.map(link => (
+                <Link key={link.path} to={link.path} onClick={() => setMobileOpen(false)}>
+                  <Button variant={isActive(link.path) ? 'default' : 'ghost'} className="w-full justify-start gap-2 text-sm">
+                    <link.icon className="w-4 h-4" /> {link.label}
+                  </Button>
+                </Link>
+              ))}
+              <Link to="/premium" onClick={() => setMobileOpen(false)}>
+                <Button variant="ghost" className="w-full justify-start gap-2 text-sm text-amber-600">
+                  <Zap className="w-4 h-4" /> Cuidaru+
+                </Button>
+              </Link>
+              <Link to="/messages" onClick={() => setMobileOpen(false)}>
+                <Button variant="ghost" className="w-full justify-start gap-2 text-sm"><MessageCircle className="w-4 h-4" /> {t('messages')}</Button>
+              </Link>
+              <Link to="/payments" onClick={() => setMobileOpen(false)}>
+                <Button variant="ghost" className="w-full justify-start gap-2 text-sm"><Wallet className="w-4 h-4" /> {t('payments')}</Button>
+              </Link>
+              {(profile?.role === 'provider' || profile?.role === 'both') && (
+                <Link to="/payouts" onClick={() => setMobileOpen(false)}>
+                  <Button variant="ghost" className="w-full justify-start gap-2 text-sm text-green-700"><ArrowDownCircle className="w-4 h-4" /> {t('payout_history')}</Button>
+                </Link>
+              )}
+              <Link to="/affiliate" onClick={() => setMobileOpen(false)}>
+                <Button variant="ghost" className="w-full justify-start gap-2 text-sm text-purple-600"><GitBranch className="w-4 h-4" /> {t('affiliate')}</Button>
+              </Link>
+              {user?.role === 'admin' && (
+                <Link to="/admin/verifications" onClick={() => setMobileOpen(false)}>
+                  <Button variant="ghost" className="w-full justify-start gap-2 text-sm text-blue-600"><ShieldCheck className="w-4 h-4" /> {t('verify_providers')}</Button>
+                </Link>
+              )}
+              {user?.role === 'admin' && (
+                <Link to="/admin/disputes" onClick={() => setMobileOpen(false)}>
+                  <Button variant="ghost" className="w-full justify-start gap-2 text-sm text-orange-600"><AlertTriangle className="w-4 h-4" /> {t('disputes')}</Button>
+                </Link>
+              )}
+              {user?.role === 'admin' && (
+                <Link to="/admin/pricing" onClick={() => setMobileOpen(false)}>
+                  <Button variant="ghost" className="w-full justify-start gap-2 text-sm text-blue-600"><Settings className="w-4 h-4" /> {t('manage_pricing')}</Button>
+                </Link>
+              )}
+              {user?.role === 'admin' && (
+                <Link to="/admin/users" onClick={() => setMobileOpen(false)}>
+                  <Button variant="ghost" className="w-full justify-start gap-2 text-sm text-indigo-600"><Users className="w-4 h-4" /> {t('admin')}</Button>
+                </Link>
+              )}
+              <Link to="/my-profile" onClick={() => setMobileOpen(false)}>
+                <Button variant="ghost" className="w-full justify-start gap-2 text-sm"><User className="w-4 h-4" /> {t('my_profile')}</Button>
+              </Link>
+              <Button variant="ghost" onClick={() => base44.auth.logout()} className="w-full justify-start gap-2 text-sm text-red-600">
+                <LogOut className="w-4 h-4" /> {t('nav_logout')}
               </Button>
-            </Link>
-          ))}
-          <Link to="/premium" onClick={() => setMobileOpen(false)}>
-            <Button variant="ghost" className="w-full justify-start gap-2 text-sm text-amber-600">
-              <Zap className="w-4 h-4" /> Cuidaru+
-            </Button>
-          </Link>
-          <Link to="/messages" onClick={() => setMobileOpen(false)}>
-            <Button variant="ghost" className="w-full justify-start gap-2 text-sm"><MessageCircle className="w-4 h-4" /> {t('messages')}</Button>
-          </Link>
-          <Link to="/payments" onClick={() => setMobileOpen(false)}>
-            <Button variant="ghost" className="w-full justify-start gap-2 text-sm"><Wallet className="w-4 h-4" /> {t('payments')}</Button>
-          </Link>
-          {(profile?.role === 'provider' || profile?.role === 'both') && (
-            <Link to="/payouts" onClick={() => setMobileOpen(false)}>
-              <Button variant="ghost" className="w-full justify-start gap-2 text-sm text-green-700"><ArrowDownCircle className="w-4 h-4" /> {t('payout_history')}</Button>
-            </Link>
+            </>
+          ) : (
+            <>
+              <Link to="/browse" onClick={() => setMobileOpen(false)}>
+                <Button variant={isActive('/browse') ? 'default' : 'ghost'} className="w-full justify-start gap-2 text-sm">
+                  <Search className="w-4 h-4" /> {t('nav_find')}
+                </Button>
+              </Link>
+              <Link to="/premium" onClick={() => setMobileOpen(false)}>
+                <Button variant="ghost" className="w-full justify-start gap-2 text-sm text-amber-600">
+                  <Zap className="w-4 h-4" /> Cuidaru+
+                </Button>
+              </Link>
+              <Link to="/about" onClick={() => setMobileOpen(false)}>
+                <Button variant="ghost" className="w-full justify-start gap-2 text-sm">
+                  About
+                </Button>
+              </Link>
+              <Link to="/careers" onClick={() => setMobileOpen(false)}>
+                <Button variant="ghost" className="w-full justify-start gap-2 text-sm">
+                  {t('become_provider')}
+                </Button>
+              </Link>
+              <div className="pt-2 border-t border-gray-100 space-y-2">
+                <Button variant="outline" className="w-full" onClick={() => { base44.auth.redirectToLogin(); setMobileOpen(false); }}>
+                  {t('nav_login')}
+                </Button>
+                <Button className="w-full bg-blue-600 hover:bg-blue-700" onClick={() => { base44.auth.redirectToLogin(); setMobileOpen(false); }}>
+                  {t('nav_signup')}
+                </Button>
+              </div>
+            </>
           )}
-          <Link to="/affiliate" onClick={() => setMobileOpen(false)}>
-            <Button variant="ghost" className="w-full justify-start gap-2 text-sm text-purple-600"><GitBranch className="w-4 h-4" /> {t('affiliate')}</Button>
-          </Link>
-          {user?.role === 'admin' && (
-            <Link to="/admin/verifications" onClick={() => setMobileOpen(false)}>
-              <Button variant="ghost" className="w-full justify-start gap-2 text-sm text-blue-600"><ShieldCheck className="w-4 h-4" /> {t('verify_providers')}</Button>
-            </Link>
-          )}
-          {user?.role === 'admin' && (
-            <Link to="/admin/disputes" onClick={() => setMobileOpen(false)}>
-              <Button variant="ghost" className="w-full justify-start gap-2 text-sm text-orange-600"><AlertTriangle className="w-4 h-4" /> {t('disputes')}</Button>
-            </Link>
-          )}
-          {user?.role === 'admin' && (
-            <Link to="/admin/pricing" onClick={() => setMobileOpen(false)}>
-              <Button variant="ghost" className="w-full justify-start gap-2 text-sm text-blue-600"><Settings className="w-4 h-4" /> {t('manage_pricing')}</Button>
-            </Link>
-          )}
-          {user?.role === 'admin' && (
-            <Link to="/admin/users" onClick={() => setMobileOpen(false)}>
-              <Button variant="ghost" className="w-full justify-start gap-2 text-sm text-indigo-600"><Users className="w-4 h-4" /> {t('admin')}</Button>
-            </Link>
-          )}
-          <Link to="/my-profile" onClick={() => setMobileOpen(false)}>
-            <Button variant="ghost" className="w-full justify-start gap-2 text-sm"><User className="w-4 h-4" /> {t('my_profile')}</Button>
-          </Link>
-          <Button variant="ghost" onClick={() => base44.auth.logout()} className="w-full justify-start gap-2 text-sm text-red-600">
-            <LogOut className="w-4 h-4" /> {t('nav_logout')}
-          </Button>
         </div>
       )}
     </nav>

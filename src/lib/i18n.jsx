@@ -1034,7 +1034,13 @@ export function I18nProvider({ children }) {
   const changeLang = (code) => {
     setLang(code);
     localStorage.setItem('cuidaru_lang', code);
+    document.documentElement.lang = code;
   };
+
+  // Set lang attribute on mount
+  useEffect(() => {
+    document.documentElement.lang = lang;
+  }, [lang]);
 
   const setCountry = (country) => {
     localStorage.setItem('cuidaru_country', country);

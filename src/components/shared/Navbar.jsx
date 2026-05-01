@@ -22,8 +22,8 @@ export default function Navbar() {
   const navLinks = [
     { label: t('nav_find'), path: '/browse', icon: Search },
     { label: t('nav_bookings'), path: '/bookings', icon: Calendar },
-    { label: 'Messages', path: '/messages', icon: MessageCircle },
-    { label: 'Payments', path: '/payments', icon: Wallet },
+    { label: t('messages'), path: '/messages', icon: MessageCircle },
+    { label: t('payments'), path: '/payments', icon: Wallet },
   ];
 
   const isActive = (path) => location.pathname === path;
@@ -74,17 +74,17 @@ export default function Navbar() {
                 {user && <div className="px-3 py-2 text-xs text-gray-500 border-b">{user.email}</div>}
                 <DropdownMenuItem asChild><Link to="/my-profile" className="gap-2"><User className="w-4 h-4" /> {t('my_profile')}</Link></DropdownMenuItem>
                 <DropdownMenuItem asChild><Link to="/bookings" className="gap-2"><Calendar className="w-4 h-4" /> {t('nav_bookings')}</Link></DropdownMenuItem>
-                <DropdownMenuItem asChild><Link to="/messages" className="gap-2"><MessageCircle className="w-4 h-4" /> Messages</Link></DropdownMenuItem>
-                <DropdownMenuItem asChild><Link to="/payments" className="gap-2"><Wallet className="w-4 h-4" /> Payments</Link></DropdownMenuItem>
+                <DropdownMenuItem asChild><Link to="/messages" className="gap-2"><MessageCircle className="w-4 h-4" /> {t('messages')}</Link></DropdownMenuItem>
+                <DropdownMenuItem asChild><Link to="/payments" className="gap-2"><Wallet className="w-4 h-4" /> {t('payments')}</Link></DropdownMenuItem>
                 {(profile?.role === 'provider' || profile?.role === 'both') && (
-                  <DropdownMenuItem asChild><Link to="/payouts" className="gap-2 text-green-700"><ArrowDownCircle className="w-4 h-4" /> My Payouts</Link></DropdownMenuItem>
+                  <DropdownMenuItem asChild><Link to="/payouts" className="gap-2 text-green-700"><ArrowDownCircle className="w-4 h-4" /> {t('payout_history')}</Link></DropdownMenuItem>
                 )}
                 <DropdownMenuItem asChild><Link to="/premium" className="gap-2 text-amber-600"><Zap className="w-4 h-4" /> Cuidaru+</Link></DropdownMenuItem>
-                <DropdownMenuItem asChild><Link to="/affiliate" className="gap-2 text-purple-600"><GitBranch className="w-4 h-4" /> Affiliate</Link></DropdownMenuItem>
-                {user?.role === 'admin' && <DropdownMenuItem asChild><Link to="/admin/verifications" className="gap-2 text-blue-600"><ShieldCheck className="w-4 h-4" /> Verifications</Link></DropdownMenuItem>}
-                {user?.role === 'admin' && <DropdownMenuItem asChild><Link to="/admin/disputes" className="gap-2 text-orange-600"><AlertTriangle className="w-4 h-4" /> Disputes</Link></DropdownMenuItem>}
-                {user?.role === 'admin' && <DropdownMenuItem asChild><Link to="/admin/pricing" className="gap-2 text-blue-600"><Settings className="w-4 h-4" /> Pricing</Link></DropdownMenuItem>}
-                {user?.role === 'admin' && <DropdownMenuItem asChild><Link to="/admin/users" className="gap-2 text-indigo-600"><Users className="w-4 h-4" /> Manage Users</Link></DropdownMenuItem>}
+                <DropdownMenuItem asChild><Link to="/affiliate" className="gap-2 text-purple-600"><GitBranch className="w-4 h-4" /> {t('affiliate')}</Link></DropdownMenuItem>
+                {user?.role === 'admin' && <DropdownMenuItem asChild><Link to="/admin/verifications" className="gap-2 text-blue-600"><ShieldCheck className="w-4 h-4" /> {t('verify_providers')}</Link></DropdownMenuItem>}
+                {user?.role === 'admin' && <DropdownMenuItem asChild><Link to="/admin/disputes" className="gap-2 text-orange-600"><AlertTriangle className="w-4 h-4" /> {t('disputes')}</Link></DropdownMenuItem>}
+                {user?.role === 'admin' && <DropdownMenuItem asChild><Link to="/admin/pricing" className="gap-2 text-blue-600"><Settings className="w-4 h-4" /> {t('manage_pricing')}</Link></DropdownMenuItem>}
+                {user?.role === 'admin' && <DropdownMenuItem asChild><Link to="/admin/users" className="gap-2 text-indigo-600"><Users className="w-4 h-4" /> {t('admin')}</Link></DropdownMenuItem>}
                 <DropdownMenuSeparator />
                 <DropdownMenuItem onClick={() => base44.auth.logout()} className="gap-2 text-red-600">
                   <LogOut className="w-4 h-4" /> {t('nav_logout')}
@@ -119,37 +119,37 @@ export default function Navbar() {
             </Button>
           </Link>
           <Link to="/messages" onClick={() => setMobileOpen(false)}>
-            <Button variant="ghost" className="w-full justify-start gap-2 text-sm"><MessageCircle className="w-4 h-4" /> Messages</Button>
+            <Button variant="ghost" className="w-full justify-start gap-2 text-sm"><MessageCircle className="w-4 h-4" /> {t('messages')}</Button>
           </Link>
           <Link to="/payments" onClick={() => setMobileOpen(false)}>
-            <Button variant="ghost" className="w-full justify-start gap-2 text-sm"><Wallet className="w-4 h-4" /> Payments</Button>
+            <Button variant="ghost" className="w-full justify-start gap-2 text-sm"><Wallet className="w-4 h-4" /> {t('payments')}</Button>
           </Link>
           {(profile?.role === 'provider' || profile?.role === 'both') && (
             <Link to="/payouts" onClick={() => setMobileOpen(false)}>
-              <Button variant="ghost" className="w-full justify-start gap-2 text-sm text-green-700"><ArrowDownCircle className="w-4 h-4" /> My Payouts</Button>
+              <Button variant="ghost" className="w-full justify-start gap-2 text-sm text-green-700"><ArrowDownCircle className="w-4 h-4" /> {t('payout_history')}</Button>
             </Link>
           )}
           <Link to="/affiliate" onClick={() => setMobileOpen(false)}>
-            <Button variant="ghost" className="w-full justify-start gap-2 text-sm text-purple-600"><GitBranch className="w-4 h-4" /> Affiliate</Button>
+            <Button variant="ghost" className="w-full justify-start gap-2 text-sm text-purple-600"><GitBranch className="w-4 h-4" /> {t('affiliate')}</Button>
           </Link>
           {user?.role === 'admin' && (
             <Link to="/admin/verifications" onClick={() => setMobileOpen(false)}>
-              <Button variant="ghost" className="w-full justify-start gap-2 text-sm text-blue-600"><ShieldCheck className="w-4 h-4" /> Verifications</Button>
+              <Button variant="ghost" className="w-full justify-start gap-2 text-sm text-blue-600"><ShieldCheck className="w-4 h-4" /> {t('verify_providers')}</Button>
             </Link>
           )}
           {user?.role === 'admin' && (
             <Link to="/admin/disputes" onClick={() => setMobileOpen(false)}>
-              <Button variant="ghost" className="w-full justify-start gap-2 text-sm text-orange-600"><AlertTriangle className="w-4 h-4" /> Disputes</Button>
+              <Button variant="ghost" className="w-full justify-start gap-2 text-sm text-orange-600"><AlertTriangle className="w-4 h-4" /> {t('disputes')}</Button>
             </Link>
           )}
           {user?.role === 'admin' && (
             <Link to="/admin/pricing" onClick={() => setMobileOpen(false)}>
-              <Button variant="ghost" className="w-full justify-start gap-2 text-sm text-blue-600"><Settings className="w-4 h-4" /> Pricing</Button>
+              <Button variant="ghost" className="w-full justify-start gap-2 text-sm text-blue-600"><Settings className="w-4 h-4" /> {t('manage_pricing')}</Button>
             </Link>
           )}
           {user?.role === 'admin' && (
             <Link to="/admin/users" onClick={() => setMobileOpen(false)}>
-              <Button variant="ghost" className="w-full justify-start gap-2 text-sm text-indigo-600"><Users className="w-4 h-4" /> Manage Users</Button>
+              <Button variant="ghost" className="w-full justify-start gap-2 text-sm text-indigo-600"><Users className="w-4 h-4" /> {t('admin')}</Button>
             </Link>
           )}
           <Link to="/my-profile" onClick={() => setMobileOpen(false)}>

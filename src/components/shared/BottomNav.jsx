@@ -1,16 +1,18 @@
 import React from 'react';
 import { Link, useLocation } from 'react-router-dom';
 import { Search, Calendar, MessageCircle, User } from 'lucide-react';
-
-const tabs = [
-  { label: 'Browse', path: '/browse', icon: Search },
-  { label: 'Bookings', path: '/bookings', icon: Calendar },
-  { label: 'Messages', path: '/messages', icon: MessageCircle },
-  { label: 'Profile', path: '/my-profile', icon: User },
-];
+import { useI18n } from '@/lib/i18n';
 
 export default function BottomNav() {
   const location = useLocation();
+  const { t } = useI18n();
+
+  const tabs = [
+    { label: t('nav_find'), path: '/browse', icon: Search },
+    { label: t('nav_bookings'), path: '/bookings', icon: Calendar },
+    { label: t('messages'), path: '/messages', icon: MessageCircle },
+    { label: t('nav_profile'), path: '/my-profile', icon: User },
+  ];
 
   return (
     <nav

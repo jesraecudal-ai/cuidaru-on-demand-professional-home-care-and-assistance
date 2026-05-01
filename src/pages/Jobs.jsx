@@ -24,6 +24,17 @@ export default function Jobs() {
   const [selectedProfile, setSelectedProfile] = useState(null);
   const queryClient = useQueryClient();
 
+  // Restrict access to providers only
+  const isProvider = profile?.role === 'provider' || profile?.role === 'both';
+  if (!isProvider) {
+    return (
+      <div className="max-w-7xl mx-auto px-4 py-20 text-center">
+        <h2 className="text-2xl font-bold text-gray-700 mb-2">Access Restricted</h2>
+        <p className="text-gray-500">Clients cannot access the jobs board. Please visit Browse to find service providers.</p>
+      </div>
+    );
+  }
+
   const { data: jobs = [], isLoading } = useQuery({
     queryKey: ['job-orders'],
     queryFn: () => base44.entities.JobOrder.list('-created_date', 100),

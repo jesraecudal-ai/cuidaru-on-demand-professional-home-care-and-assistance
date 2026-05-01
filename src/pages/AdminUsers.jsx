@@ -3,7 +3,7 @@ import { useI18n } from '@/lib/i18n';
 import { useQuery, useQueryClient } from '@tanstack/react-query';
 import { base44 } from '@/api/base44Client';
 import { useUserProfile } from '@/lib/useUserProfile';
-import { Users, Search, AlertTriangle, CheckCircle2, Ban, Star, ShieldCheck, Eye, EyeOff } from 'lucide-react';
+import { Users, Search, AlertTriangle, CheckCircle2, Ban, Star, ShieldCheck, Eye, EyeOff, Trash2 } from 'lucide-react';
 import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
@@ -11,7 +11,7 @@ import { Skeleton } from '@/components/ui/skeleton';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { toast } from 'sonner';
 
-function UserRow({ profile, provider, onToggle }) {
+function UserRow({ profile, provider, onToggle, onDelete }) {
   const { t } = useI18n();
   const isDisabled = profile?.is_active === false || provider?.is_active === false;
   const isPremium = profile?.is_premium || provider?.is_premium;
@@ -41,14 +41,28 @@ function UserRow({ profile, provider, onToggle }) {
         </div>
       </div>
 
-      <Button
-        size="sm"
-        variant={isDisabled ? 'outline' : 'destructive'}
-        className={isDisabled ? 'border-green-400 text-green-700 hover:bg-green-50 gap-1.5' : 'gap-1.5'}
-        onClick={() => onToggle(profile, provider, !isDisabled)}
-      >
-        {isDisabled ? <><Eye className="w-3.5 h-3.5" /> {t('enable')}</> : <><EyeOff className="w-3.5 h-3.5" /> {t('disable_user')}</>}
-      </Button>
+      <div className="flex gap-2">
+        <Button
+          size="sm"
+          variant={isDisabled ? 'outline' : 'destructive'}
+          className={isDisabled ? 'border-green-400 text-green-700 hover:bg-green-50 gap-1.5' : 'gap-1.5'}
+          onClick={() => onToggle(profile, provider, !isDisabled)}
+        >
+          {isDisabled ? <><Eye className="w-3.5 h-3.5" /> {t('enable')}</> : <><EyeOff className="w-3.5 h-3.5" /> {t('disable_user')}</>}
+        </Button>
+        <Button
+          size="sm"
+          variant="destructive"
+          className="gap-1.5"
+          onClick={() => {
+            if (confirm(`Delete ${name}? This cannot be undone.`)) {
+              onDelete(profile, provider);
+            }
+          }}
+        >
+          <Trash2 className="w-3.5 h-3.5" /> {t('delete')}
+        </Button>
+      </div>
     </div>
   );
 }
@@ -123,6 +137,18 @@ export default function AdminUsers() {
     queryClient.invalidateQueries({ queryKey: ['admin-all-providers'] });
   };
 
+  const handleDelete = async (profile, provider) => {
+    if (profile) {
+      await base44.entities.UserProfile.delete(profile.id);
+    }
+    if (provider) {
+      await base44.entities.ServiceProvider.delete(provider.id);
+    }
+    toast.success(t('user_deleted_toast'));
+    queryClient.invalidateQueries({ queryKey: ['admin-user-profiles'] });
+    queryClient.invalidateQueries({ queryKey: ['admin-all-providers'] });
+  };
+
   const isLoading = loadingProfiles || loadingProviders;
   const disabledCount = profiles.filter(p => p.is_active === false).length;
 
@@ -184,6 +210,7 @@ export default function AdminUsers() {
               profile={profile}
               provider={provider}
               onToggle={handleToggle}
+              onDelete={handleDelete}
             />
           ))}
         </div>

@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { Link, useLocation } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
-import { Menu, X, Search, User, Calendar, LogOut, Zap, Heart, Wallet, MessageCircle, AlertTriangle, Settings, ArrowDownCircle, ShieldCheck, GitBranch, Users } from 'lucide-react';
+import { Menu, X, Search, User, Calendar, LogOut, Zap, Heart, Wallet, MessageCircle, AlertTriangle, Settings, ArrowDownCircle, ShieldCheck, GitBranch, Users, Briefcase } from 'lucide-react';
 import { base44 } from '@/api/base44Client';
 import {
   DropdownMenu, DropdownMenuContent, DropdownMenuItem,
@@ -22,6 +22,7 @@ export default function Navbar() {
   const navLinks = [
     { label: t('nav_find'), path: '/browse', icon: Search },
     { label: t('nav_bookings'), path: '/bookings', icon: Calendar },
+    { label: 'Job Board', path: '/jobs', icon: Briefcase },
     { label: t('messages'), path: '/messages', icon: MessageCircle },
     { label: t('payments'), path: '/payments', icon: Wallet },
   ];

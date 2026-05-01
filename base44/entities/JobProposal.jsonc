@@ -1,0 +1,65 @@
+{
+  "name": "JobProposal",
+  "type": "object",
+  "properties": {
+    "job_order_id": {
+      "type": "string"
+    },
+    "job_title": {
+      "type": "string"
+    },
+    "client_email": {
+      "type": "string"
+    },
+    "client_name": {
+      "type": "string"
+    },
+    "provider_id": {
+      "type": "string"
+    },
+    "provider_email": {
+      "type": "string"
+    },
+    "provider_name": {
+      "type": "string"
+    },
+    "cover_letter": {
+      "type": "string"
+    },
+    "proposed_rate": {
+      "type": "number"
+    },
+    "rate_type": {
+      "type": "string",
+      "enum": [
+        "hourly",
+        "daily",
+        "weekly",
+        "fixed"
+      ],
+      "default": "hourly"
+    },
+    "attachments": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "description": "Array of uploaded file URLs"
+    },
+    "status": {
+      "type": "string",
+      "enum": [
+        "pending",
+        "accepted",
+        "declined"
+      ],
+      "default": "pending"
+    }
+  },
+  "required": [
+    "job_order_id",
+    "client_email",
+    "provider_id",
+    "cover_letter"
+  ]
+}

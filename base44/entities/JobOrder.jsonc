@@ -1,0 +1,67 @@
+{
+  "name": "JobOrder",
+  "type": "object",
+  "properties": {
+    "client_email": {
+      "type": "string"
+    },
+    "client_name": {
+      "type": "string"
+    },
+    "title": {
+      "type": "string"
+    },
+    "description": {
+      "type": "string"
+    },
+    "category": {
+      "type": "string",
+      "enum": [
+        "caregiver",
+        "assistant_nurse",
+        "nurse",
+        "doctor",
+        "social_worker",
+        "house_cleaner",
+        "cook",
+        "laundry_helper",
+        "nanny",
+        "errand_runner",
+        "tutor",
+        "teacher",
+        "sports_teacher",
+        "gym"
+      ]
+    },
+    "location_text": {
+      "type": "string"
+    },
+    "budget": {
+      "type": "number"
+    },
+    "budget_type": {
+      "type": "string",
+      "enum": [
+        "hourly",
+        "daily",
+        "weekly",
+        "fixed"
+      ],
+      "default": "hourly"
+    },
+    "status": {
+      "type": "string",
+      "enum": [
+        "open",
+        "in_progress",
+        "closed"
+      ],
+      "default": "open"
+    }
+  },
+  "required": [
+    "client_email",
+    "title",
+    "description"
+  ]
+}

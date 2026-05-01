@@ -5,7 +5,9 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import BookingCard from '../components/booking/BookingCard';
 import ReviewForm from '../components/reviews/ReviewForm';
 import { Skeleton } from '@/components/ui/skeleton';
-import { Calendar, Briefcase, AlertTriangle, ShieldAlert } from 'lucide-react';
+import { Calendar, Briefcase, AlertTriangle, ShieldAlert, ClipboardList } from 'lucide-react';
+import JobOrdersTab from '../components/jobs/JobOrdersTab';
+import PostJobModal from '../components/jobs/PostJobModal';
 import { toast } from 'sonner';
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog';
 import { Textarea } from '@/components/ui/textarea';
@@ -20,6 +22,7 @@ export default function Bookings() {
   const [reviewBooking, setReviewBooking] = useState(null);
   const [disputeState, setDisputeState] = useState(null);
   const [disputeReason, setDisputeReason] = useState('');
+  const [showPostJob, setShowPostJob] = useState(false);
   const queryClient = useQueryClient();
 
   useEffect(() => {
@@ -173,7 +176,12 @@ export default function Bookings() {
 
   return (
     <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-      <h1 className="text-3xl font-bold text-gray-900 mb-6">{t('my_bookings')}</h1>
+      <div className="flex items-center justify-between mb-6">
+        <h1 className="text-3xl font-bold text-gray-900">{t('my_bookings')}</h1>
+        <Button size="sm" className="bg-blue-600 hover:bg-blue-700 gap-2" onClick={() => setShowPostJob(true)}>
+          <ClipboardList className="w-4 h-4" /> Post a Job
+        </Button>
+      </div>
 
       <Tabs defaultValue={profile?.role === 'provider' ? 'provider' : 'client'}>
         <TabsList className="mb-6">
@@ -183,6 +191,11 @@ export default function Bookings() {
           {isProvider && (
             <TabsTrigger value="provider" className="gap-2">
               <Briefcase className="w-4 h-4" /> {t('as_provider')}
+            </TabsTrigger>
+          )}
+          {isProvider && (
+            <TabsTrigger value="job_orders" className="gap-2">
+              <ClipboardList className="w-4 h-4" /> Job Board
             </TabsTrigger>
           )}
           {myDisputes.length > 0 && (
@@ -268,6 +281,12 @@ export default function Bookings() {
           </TabsContent>
         )}
 
+        {isProvider && (
+          <TabsContent value="job_orders">
+            <JobOrdersTab user={user} providerProfile={providerProfile} />
+          </TabsContent>
+        )}
+
         {myDisputes.length > 0 && (
           <TabsContent value="disputes">
             <div className="space-y-4">
@@ -313,6 +332,15 @@ export default function Bookings() {
           )}
         </DialogContent>
       </Dialog>
+
+      {/* Post Job Modal */}
+      {showPostJob && (
+        <PostJobModal
+          user={user}
+          onClose={() => setShowPostJob(false)}
+          onSuccess={() => setShowPostJob(false)}
+        />
+      )}
 
       {/* Dispute dialog */}
       <Dialog open={!!disputeState} onOpenChange={() => setDisputeState(null)}>

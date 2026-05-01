@@ -22,7 +22,7 @@ export default function Premium() {
       if (profiles.length > 0) {
         await base44.entities.UserProfile.update(profiles[0].id, { is_premium: true, premium_expires_at: expiresAt });
       }
-      toast.success('🎉 You are now a Premium Client! Enjoy 0% platform fees.');
+      toast.success('🎉 You are now a Premium Client!');
     } else {
       const providers = await base44.entities.ServiceProvider.filter({ user_email: user.email });
       if (providers.length > 0) {
@@ -40,7 +40,7 @@ export default function Premium() {
            <Zap className="w-4 h-4" /> Cuidaru+
          </div>
          <h1 className="text-4xl font-bold text-gray-900">Upgrade Your Experience</h1>
-         <p className="text-gray-500 mt-3 text-lg max-w-2xl mx-auto">Cuidaru+ gives providers priority placement and clients zero platform fees.</p>
+         <p className="text-gray-500 mt-3 text-lg max-w-2xl mx-auto">Cuidaru+ gives providers priority placement and visibility in the marketplace.</p>
        </div>
 
       {/* Referral Reward Card */}
@@ -94,7 +94,6 @@ export default function Premium() {
           </CardHeader>
           <CardContent className="space-y-3">
             {[
-              { icon: CheckCircle2, text: '0% platform fee on all bookings' },
               { icon: Star, text: 'See premium providers first' },
               { icon: Zap, text: 'Priority responses from providers' },
               { icon: Shield, text: 'Premium client badge' },
@@ -115,7 +114,7 @@ export default function Premium() {
       {/* Country info */}
       <div className="mt-8 text-center text-sm text-gray-500">
         <span>{c.flag} Prices shown in {c.currency} for {c.label}. </span>
-        <span>Platform fee: {c.fee_pct}% (0% with Client Cuidaru+).</span>
+        <span>Provider platform fee: {c.fee_pct}%.</span>
       </div>
     </div>
   );

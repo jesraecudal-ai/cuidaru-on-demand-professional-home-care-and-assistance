@@ -73,7 +73,7 @@ function CountryPricingCard({ country, existing, onSave, saving }) {
             onChange={e => setValues(v => ({ ...v, fee_pct: e.target.value }))}
             className="h-9"
           />
-          <p className="text-xs text-gray-400 mt-1">Charged on each completed booking</p>
+          <p className="text-xs text-gray-400 mt-1">Deducted from provider payout on each completed booking</p>
         </div>
 
         <div>
@@ -86,7 +86,7 @@ function CountryPricingCard({ country, existing, onSave, saving }) {
             onChange={e => setValues(v => ({ ...v, sub_client: e.target.value }))}
             className="h-9"
           />
-          <p className="text-xs text-gray-400 mt-1">Subscription for clients (0% fee benefit)</p>
+          <p className="text-xs text-gray-400 mt-1">Subscription for clients (priority provider access)</p>
         </div>
 
         <div>
@@ -193,7 +193,7 @@ export default function AdminPricing() {
                 <DollarSign className="w-3.5 h-3.5 text-blue-500" />
                 <span className="font-bold text-gray-900 text-sm">{data.fee_pct}% fee</span>
               </div>
-              <p className="text-xs text-gray-500">{c.symbol}{data.sub_client} / {c.symbol}{data.sub_provider} /mo</p>
+              <p className="text-xs text-gray-500">Provider sub: {c.symbol}{data.sub_provider}/mo</p>
               {saved && <span className="text-[10px] text-green-600 font-medium">● Custom</span>}
               {!saved && <span className="text-[10px] text-gray-400">● Default</span>}
             </div>

@@ -483,7 +483,7 @@ function RegularBookingForm({ provider, clientProfile }) {
             <span className="font-semibold text-gray-900">Total:</span>
             <span className="font-bold text-blue-600">${total.toFixed(2)}</span>
           </div>
-          <p className="text-xs text-gray-400">* Stripe processing fee applies at checkout. Provider receives ${providerPayout.toFixed(2)} after platform fee.</p>
+          <p className="text-xs text-gray-400">* Stripe processing fee applies at checkout.</p>
         </div>
 
         {!provider.hourly_rate && !provider.daily_rate && !provider.weekly_rate && (

@@ -186,6 +186,10 @@ export default function AdminUsers() {
 
   const isLoading = loadingProfiles || loadingProviders;
   const disabledCount = profiles.filter(p => p.is_active === false).length;
+  
+  // Find orphaned providers (no matching user profile)
+  const profileEmails = new Set(profiles.map(p => p.user_email));
+  const orphanedProviders = providers.filter(p => !profileEmails.has(p.user_email));
 
   return (
     <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
@@ -193,8 +197,44 @@ export default function AdminUsers() {
         <h1 className="text-3xl font-bold text-gray-900 flex items-center gap-2">
           <Users className="w-7 h-7 text-blue-600" /> {t('user_management')}
         </h1>
-        <p className="text-sm text-gray-500 mt-1">{profiles.length} {t('total_users')} · {disabledCount} {t('disabled')}</p>
+        <p className="text-sm text-gray-500 mt-1">{profiles.length} {t('total_users')} · {disabledCount} {t('disabled')} · {orphanedProviders.length} orphaned providers</p>
       </div>
+
+      {/* Orphaned Providers Alert */}
+      {orphanedProviders.length > 0 && (
+        <div className="mb-6 p-4 bg-amber-50 border border-amber-200 rounded-lg">
+          <div className="flex items-start justify-between">
+            <div>
+              <h3 className="font-semibold text-amber-900 mb-2">Orphaned Providers ({orphanedProviders.length})</h3>
+              <p className="text-sm text-amber-700 mb-3">These service providers don't have user profiles:</p>
+              <div className="space-y-2">
+                {orphanedProviders.map(p => (
+                  <div key={p.id} className="flex items-center justify-between text-sm bg-white p-2 rounded border border-amber-100">
+                    <div>
+                      <p className="font-medium text-gray-900">{p.full_name}</p>
+                      <p className="text-xs text-gray-500">{p.user_email}</p>
+                    </div>
+                    <Button
+                      size="sm"
+                      variant="destructive"
+                      onClick={() => {
+                        if (confirm(`Delete ${p.full_name}?`)) {
+                          base44.entities.ServiceProvider.delete(p.id).then(() => {
+                            toast.success('Provider deleted');
+                            queryClient.invalidateQueries({ queryKey: ['admin-all-providers'] });
+                          });
+                        }
+                      }}
+                    >
+                      Delete
+                    </Button>
+                  </div>
+                ))}
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
 
       {/* Filters */}
       <div className="flex flex-col sm:flex-row gap-3 mb-6">

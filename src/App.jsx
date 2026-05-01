@@ -32,6 +32,7 @@ import About from './pages/About';
 import Careers from './pages/Careers';
 import AdminCareers from './pages/AdminCareers';
 import AdminUsers from './pages/AdminUsers';
+import Jobs from './pages/Jobs';
 import Layout from './components/shared/Layout';
 
 const AuthenticatedApp = () => {
@@ -67,6 +68,7 @@ const AuthenticatedApp = () => {
         <Route path="/browse" element={<BrowseProviders />} />
         <Route path="/provider/:id" element={<ProviderProfile />} />
         <Route path="/bookings" element={<Bookings />} />
+        <Route path="/jobs" element={<Jobs />} />
         <Route path="/my-profile" element={<MyProfile />} />
         <Route path="/premium" element={<Premium />} />
         <Route path="/payments" element={<Payments />} />

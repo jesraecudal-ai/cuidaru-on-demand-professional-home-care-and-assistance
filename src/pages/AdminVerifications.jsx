@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { useI18n } from '@/lib/i18n';
 import { useQuery, useQueryClient } from '@tanstack/react-query';
 import { base44 } from '@/api/base44Client';
 import { useUserProfile } from '@/lib/useUserProfile';
@@ -29,6 +30,7 @@ const DOC_TYPE_LABELS = {
 };
 
 function VerificationCard({ provider, onReview }) {
+  const { t } = useI18n();
   const status = STATUS_CONFIG[provider.verification_status] || STATUS_CONFIG.unverified;
   const Icon = status.icon;
 
@@ -54,7 +56,7 @@ function VerificationCard({ provider, onReview }) {
             {status.label}
           </span>
           <Button size="sm" variant="outline" onClick={() => onReview(provider)} className="gap-1.5">
-            <Eye className="w-4 h-4" /> Review
+            <Eye className="w-4 h-4" /> {t('review')}
           </Button>
         </div>
       </div>
@@ -68,10 +70,10 @@ function VerificationCard({ provider, onReview }) {
             </div>
           )}
           {provider.id_secondary_url && (
-            <div className="flex items-center gap-2 text-xs bg-blue-50 text-blue-700 px-3 py-1.5 rounded-lg">
-              <FileText className="w-3.5 h-3.5" />
-              Secondary doc uploaded
-            </div>
+          <div className="flex items-center gap-2 text-xs bg-blue-50 text-blue-700 px-3 py-1.5 rounded-lg">
+            <FileText className="w-3.5 h-3.5" />
+            {t('secondary_doc_uploaded')}
+          </div>
           )}
         </div>
       )}
@@ -80,6 +82,7 @@ function VerificationCard({ provider, onReview }) {
 }
 
 function ReviewModal({ provider, onClose, onUpdated }) {
+  const { t } = useI18n();
   const [notes, setNotes] = useState('');
   const [loading, setLoading] = useState(false);
 
@@ -88,7 +91,7 @@ function ReviewModal({ provider, onClose, onUpdated }) {
   const handleDecision = async (decision) => {
     setLoading(true);
     await base44.entities.ServiceProvider.update(provider.id, { verification_status: decision });
-    toast.success(decision === 'verified' ? 'Provider verified!' : 'Provider rejected.');
+    toast.success(decision === 'verified' ? t('provider_verified_toast') : t('provider_rejected_toast'));
     setLoading(false);
     onUpdated();
     onClose();
@@ -107,7 +110,7 @@ function ReviewModal({ provider, onClose, onUpdated }) {
     if (profiles[0]) {
       await base44.entities.UserProfile.update(profiles[0].id, { is_premium: true, premium_expires_at: expiry });
     }
-    toast.success('Premium + Verified granted for 1 year (no payment required)!');
+    toast.success(t('premium_granted_toast'));
     setLoading(false);
     onUpdated();
     onClose();
@@ -119,7 +122,7 @@ function ReviewModal({ provider, onClose, onUpdated }) {
         <DialogHeader>
           <DialogTitle className="flex items-center gap-2">
             <ShieldCheck className="w-5 h-5 text-blue-600" />
-            Identity Review — {provider.full_name}
+            {t('identity_review')} — {provider.full_name}
           </DialogTitle>
         </DialogHeader>
 
@@ -156,13 +159,13 @@ function ReviewModal({ provider, onClose, onUpdated }) {
                     className="w-full max-h-72 object-contain rounded-lg border border-gray-200 bg-gray-50 cursor-pointer hover:opacity-90 transition-opacity"
                   />
                 </a>
-                <p className="text-xs text-blue-600 mt-1">Click to open full size</p>
+                <p className="text-xs text-blue-600 mt-1">{t('click_full_size')}</p>
               </div>
             )}
 
             {provider.id_secondary_url && (
               <div>
-                <p className="text-sm font-medium text-gray-700 mb-2">Secondary Document</p>
+                <p className="text-sm font-medium text-gray-700 mb-2">{t('secondary_document')}</p>
                 <a href={provider.id_secondary_url} target="_blank" rel="noopener noreferrer">
                   <img
                     src={provider.id_secondary_url}
@@ -170,21 +173,21 @@ function ReviewModal({ provider, onClose, onUpdated }) {
                     className="w-full max-h-72 object-contain rounded-lg border border-gray-200 bg-gray-50 cursor-pointer hover:opacity-90 transition-opacity"
                   />
                 </a>
-                <p className="text-xs text-blue-600 mt-1">Click to open full size</p>
+                <p className="text-xs text-blue-600 mt-1">{t('click_full_size')}</p>
               </div>
             )}
 
             {!provider.id_document_url && !provider.id_secondary_url && (
               <div className="text-center py-8 text-gray-400">
                 <FileText className="w-10 h-10 mx-auto mb-2 opacity-40" />
-                <p className="text-sm">No documents uploaded yet.</p>
+                <p className="text-sm">{t('no_documents_uploaded')}</p>
               </div>
             )}
           </div>
 
           {/* Current status */}
           <div className="flex items-center gap-2">
-            <span className="text-sm text-gray-600">Current status:</span>
+            <span className="text-sm text-gray-600">{t('current_status')}:</span>
             <span className={`inline-flex items-center gap-1 text-xs font-medium px-2.5 py-1 rounded-full ${STATUS_CONFIG[provider.verification_status]?.color || 'bg-gray-100 text-gray-600'}`}>
               {STATUS_CONFIG[provider.verification_status]?.label || 'Unknown'}
             </span>
@@ -197,7 +200,7 @@ function ReviewModal({ provider, onClose, onUpdated }) {
               disabled={loading}
               onClick={handleGrantPremium}
             >
-              <Zap className="w-4 h-4" /> Grant Premium + Verified (Free Override)
+              <Zap className="w-4 h-4" /> {t('grant_premium_verified')}
             </Button>
             <div className="flex gap-3">
               <Button
@@ -205,7 +208,7 @@ function ReviewModal({ provider, onClose, onUpdated }) {
                 disabled={loading || provider.verification_status === 'verified'}
                 onClick={() => handleDecision('verified')}
               >
-                <CheckCircle2 className="w-4 h-4" /> Verify Only
+                <CheckCircle2 className="w-4 h-4" /> {t('verify_only')}
               </Button>
               <Button
                 variant="destructive"
@@ -213,7 +216,7 @@ function ReviewModal({ provider, onClose, onUpdated }) {
                 disabled={loading || provider.verification_status === 'rejected'}
                 onClick={() => handleDecision('rejected')}
               >
-                <XCircle className="w-4 h-4" /> Reject
+                <XCircle className="w-4 h-4" /> {t('reject')}
               </Button>
             </div>
           </div>
@@ -224,6 +227,7 @@ function ReviewModal({ provider, onClose, onUpdated }) {
 }
 
 export default function AdminVerifications() {
+  const { t } = useI18n();
   const { user } = useUserProfile();
   const [statusFilter, setStatusFilter] = useState('pending');
   const [reviewing, setReviewing] = useState(null);
@@ -246,8 +250,8 @@ export default function AdminVerifications() {
     return (
       <div className="max-w-2xl mx-auto px-4 py-16 text-center">
         <AlertTriangle className="w-12 h-12 text-orange-400 mx-auto mb-4" />
-        <h2 className="text-xl font-bold text-gray-800 mb-2">Access Restricted</h2>
-        <p className="text-gray-500">Only administrators can access the verification panel.</p>
+        <h2 className="text-xl font-bold text-gray-800 mb-2">{t('access_restricted')}</h2>
+        <p className="text-gray-500">{t('admin_only_verifications')}</p>
       </div>
     );
   }
@@ -266,10 +270,10 @@ export default function AdminVerifications() {
       <div className="flex items-center justify-between mb-6">
         <div>
           <h1 className="text-3xl font-bold text-gray-900 flex items-center gap-2">
-            <ShieldCheck className="w-7 h-7 text-blue-600" /> Identity Verification
+            <ShieldCheck className="w-7 h-7 text-blue-600" /> {t('identity_verification')}
           </h1>
           {pendingCount > 0 && (
-            <p className="text-sm text-yellow-700 mt-1 font-medium">{pendingCount} pending review{pendingCount > 1 ? 's' : ''}</p>
+            <p className="text-sm text-yellow-700 mt-1 font-medium">{pendingCount} {t('pending_reviews_count')}</p>
           )}
         </div>
         <div className="flex items-center gap-2">
@@ -279,11 +283,11 @@ export default function AdminVerifications() {
               <SelectValue />
             </SelectTrigger>
             <SelectContent>
-              <SelectItem value="all">All Providers</SelectItem>
-              <SelectItem value="pending">Pending</SelectItem>
-              <SelectItem value="verified">Verified</SelectItem>
-              <SelectItem value="rejected">Rejected</SelectItem>
-              <SelectItem value="unverified">Unverified</SelectItem>
+              <SelectItem value="all">{t('all_providers')}</SelectItem>
+              <SelectItem value="pending">{t('pending')}</SelectItem>
+              <SelectItem value="verified">{t('verified')}</SelectItem>
+              <SelectItem value="rejected">{t('rejected')}</SelectItem>
+              <SelectItem value="unverified">{t('unverified')}</SelectItem>
             </SelectContent>
           </Select>
         </div>
@@ -293,7 +297,7 @@ export default function AdminVerifications() {
       <div className="relative mb-6">
         <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400" />
         <Input
-          placeholder="Search by name or email to find any provider…"
+          placeholder={t('search_provider_placeholder')}
           value={searchQuery}
           onChange={e => setSearchQuery(e.target.value)}
           className="pl-9"
@@ -322,7 +326,7 @@ export default function AdminVerifications() {
       ) : providers.length === 0 ? (
         <div className="text-center py-16">
           <ShieldCheck className="w-12 h-12 text-gray-200 mx-auto mb-3" />
-          <p className="text-gray-400 font-medium">No providers in this category</p>
+          <p className="text-gray-400 font-medium">{t('no_providers_in_category')}</p>
         </div>
       ) : (
         <div className="space-y-4">

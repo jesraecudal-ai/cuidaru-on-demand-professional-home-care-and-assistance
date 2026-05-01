@@ -1,12 +1,14 @@
 import React, { useState, useEffect } from 'react';
 import { base44 } from '@/api/base44Client';
 import { useUserProfile } from '@/lib/useUserProfile';
+import { useI18n } from '@/lib/i18n';
 import { MessageCircle, Users } from 'lucide-react';
 import { Skeleton } from '@/components/ui/skeleton';
 import ConversationList from '@/components/chat/ConversationList';
 import ChatWindow from '@/components/chat/ChatWindow';
 
 export default function Messages() {
+  const { t } = useI18n();
   const { user, profile } = useUserProfile();
   const [providerProfile, setProviderProfile] = useState(null);
   const [conversations, setConversations] = useState([]);
@@ -98,7 +100,7 @@ export default function Messages() {
   return (
     <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
       <h1 className="text-3xl font-bold text-gray-900 mb-6 flex items-center gap-2">
-        <MessageCircle className="w-7 h-7 text-blue-600" /> Messages
+        <MessageCircle className="w-7 h-7 text-blue-600" /> {t('messages')}
       </h1>
 
       <div className="bg-white rounded-2xl border border-gray-200 overflow-hidden" style={{ height: '70vh' }}>
@@ -107,8 +109,8 @@ export default function Messages() {
           <div className="w-72 shrink-0 border-r border-gray-100 flex flex-col">
             <div className="px-4 py-3 border-b border-gray-100 flex items-center gap-2">
               <Users className="w-4 h-4 text-gray-400" />
-              <span className="text-sm font-medium text-gray-700">Conversations</span>
-              {isAdmin && <span className="ml-auto text-xs bg-purple-100 text-purple-700 px-2 py-0.5 rounded-full">Admin</span>}
+              <span className="text-sm font-medium text-gray-700">{t('conversations')}</span>
+              {isAdmin && <span className="ml-auto text-xs bg-purple-100 text-purple-700 px-2 py-0.5 rounded-full">{t('admin')}</span>}
             </div>
             {loading ? (
               <div className="p-4 space-y-3">
@@ -138,9 +140,9 @@ export default function Messages() {
             ) : (
               <div className="flex-1 flex flex-col items-center justify-center text-gray-400">
                 <MessageCircle className="w-12 h-12 mb-3 text-gray-200" />
-                <p className="text-sm">Select a conversation to start chatting</p>
+                <p className="text-sm">{t('select_conversation')}</p>
                 {!isAdmin && !providerProfile && (
-                  <p className="text-xs mt-2 text-gray-300">Visit a provider's profile to start a conversation</p>
+                  <p className="text-xs mt-2 text-gray-300">{t('visit_provider_to_chat')}</p>
                 )}
               </div>
             )}

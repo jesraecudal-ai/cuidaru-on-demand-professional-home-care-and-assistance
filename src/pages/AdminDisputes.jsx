@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { useI18n } from '@/lib/i18n';
 import { useQuery, useQueryClient } from '@tanstack/react-query';
 import { base44 } from '@/api/base44Client';
 import { useUserProfile } from '@/lib/useUserProfile';
@@ -8,6 +9,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@
 import DisputeCard from '@/components/disputes/DisputeCard';
 
 export default function AdminDisputes() {
+  const { t } = useI18n();
   const { user } = useUserProfile();
   const [statusFilter, setStatusFilter] = useState('all');
   const queryClient = useQueryClient();
@@ -28,8 +30,8 @@ export default function AdminDisputes() {
     return (
       <div className="max-w-2xl mx-auto px-4 py-16 text-center">
         <AlertTriangle className="w-12 h-12 text-orange-400 mx-auto mb-4" />
-        <h2 className="text-xl font-bold text-gray-800 mb-2">Access Restricted</h2>
-        <p className="text-gray-500">Only administrators can access the disputes panel.</p>
+        <h2 className="text-xl font-bold text-gray-800 mb-2">{t('access_restricted')}</h2>
+        <p className="text-gray-500">{t('admin_only_disputes')}</p>
       </div>
     );
   }
@@ -41,10 +43,10 @@ export default function AdminDisputes() {
       <div className="flex items-center justify-between mb-6">
         <div>
           <h1 className="text-3xl font-bold text-gray-900 flex items-center gap-2">
-            <AlertTriangle className="w-7 h-7 text-orange-500" /> Dispute Management
+            <AlertTriangle className="w-7 h-7 text-orange-500" /> {t('dispute_management')}
           </h1>
           {openCount > 0 && (
-            <p className="text-sm text-orange-600 mt-1 font-medium">{openCount} open dispute{openCount > 1 ? 's' : ''} requiring attention</p>
+            <p className="text-sm text-orange-600 mt-1 font-medium">{openCount} {t('open_disputes_requiring_attention')}</p>
           )}
         </div>
         <div className="flex items-center gap-2">
@@ -54,13 +56,13 @@ export default function AdminDisputes() {
               <SelectValue />
             </SelectTrigger>
             <SelectContent>
-              <SelectItem value="all">All Disputes</SelectItem>
-              <SelectItem value="open">Open</SelectItem>
-              <SelectItem value="under_review">Under Review</SelectItem>
-              <SelectItem value="resolved_client">Resolved — Client</SelectItem>
-              <SelectItem value="resolved_provider">Resolved — Provider</SelectItem>
-              <SelectItem value="resolved_split">Resolved — Split</SelectItem>
-              <SelectItem value="closed">Closed</SelectItem>
+              <SelectItem value="all">{t('all_disputes')}</SelectItem>
+              <SelectItem value="open">{t('open')}</SelectItem>
+              <SelectItem value="under_review">{t('under_review')}</SelectItem>
+              <SelectItem value="resolved_client">{t('resolved_client')}</SelectItem>
+              <SelectItem value="resolved_provider">{t('resolved_provider')}</SelectItem>
+              <SelectItem value="resolved_split">{t('resolved_split')}</SelectItem>
+              <SelectItem value="closed">{t('closed')}</SelectItem>
             </SelectContent>
           </Select>
         </div>
@@ -71,7 +73,7 @@ export default function AdminDisputes() {
       ) : disputes.length === 0 ? (
         <div className="text-center py-16">
           <AlertTriangle className="w-12 h-12 text-gray-200 mx-auto mb-3" />
-          <p className="text-gray-400 font-medium">No disputes found</p>
+          <p className="text-gray-400 font-medium">{t('no_disputes_found')}</p>
         </div>
       ) : (
         <div className="space-y-4">

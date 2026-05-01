@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { useI18n } from '@/lib/i18n';
 import { useQuery, useQueryClient } from '@tanstack/react-query';
 import { base44 } from '@/api/base44Client';
 import { useUserProfile } from '@/lib/useUserProfile';
@@ -11,6 +12,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@
 import { toast } from 'sonner';
 
 function UserRow({ profile, provider, onToggle }) {
+  const { t } = useI18n();
   const isDisabled = profile?.is_active === false || provider?.is_active === false;
   const isPremium = profile?.is_premium || provider?.is_premium;
   const isVerified = provider?.verification_status === 'verified';
@@ -32,9 +34,9 @@ function UserRow({ profile, provider, onToggle }) {
         <p className="text-xs text-gray-400 truncate">{email}</p>
         <div className="flex flex-wrap gap-1.5 mt-1">
           <Badge variant="outline" className="text-xs capitalize">{role}</Badge>
-          {isPremium && <Badge className="text-xs bg-amber-100 text-amber-700 border-amber-200">Premium</Badge>}
-          {isVerified && <Badge className="text-xs bg-green-100 text-green-700 border-green-200">Verified</Badge>}
-          {isDisabled && <Badge className="text-xs bg-red-100 text-red-700 border-red-200">Disabled</Badge>}
+          {isPremium && <Badge className="text-xs bg-amber-100 text-amber-700 border-amber-200">{t('premium')}</Badge>}
+          {isVerified && <Badge className="text-xs bg-green-100 text-green-700 border-green-200">{t('verified')}</Badge>}
+          {isDisabled && <Badge className="text-xs bg-red-100 text-red-700 border-red-200">{t('disabled')}</Badge>}
           {profile?.country && <Badge variant="outline" className="text-xs capitalize">{profile.country}</Badge>}
         </div>
       </div>
@@ -45,13 +47,14 @@ function UserRow({ profile, provider, onToggle }) {
         className={isDisabled ? 'border-green-400 text-green-700 hover:bg-green-50 gap-1.5' : 'gap-1.5'}
         onClick={() => onToggle(profile, provider, !isDisabled)}
       >
-        {isDisabled ? <><Eye className="w-3.5 h-3.5" /> Enable</> : <><EyeOff className="w-3.5 h-3.5" /> Disable</>}
+        {isDisabled ? <><Eye className="w-3.5 h-3.5" /> {t('enable')}</> : <><EyeOff className="w-3.5 h-3.5" /> {t('disable_user')}</>}
       </Button>
     </div>
   );
 }
 
 export default function AdminUsers() {
+  const { t } = useI18n();
   const { user } = useUserProfile();
   const [search, setSearch] = useState('');
   const [roleFilter, setRoleFilter] = useState('all');
@@ -76,8 +79,8 @@ export default function AdminUsers() {
     return (
       <div className="max-w-2xl mx-auto px-4 py-16 text-center">
         <AlertTriangle className="w-12 h-12 text-orange-400 mx-auto mb-4" />
-        <h2 className="text-xl font-bold text-gray-800 mb-2">Access Restricted</h2>
-        <p className="text-gray-500">Only administrators can manage users.</p>
+        <h2 className="text-xl font-bold text-gray-800 mb-2">{t('access_restricted')}</h2>
+        <p className="text-gray-500">{t('admin_only_users')}</p>
       </div>
     );
   }
@@ -115,7 +118,7 @@ export default function AdminUsers() {
     if (provider) {
       await base44.entities.ServiceProvider.update(provider.id, { is_active: enable });
     }
-    toast.success(enable ? 'User enabled.' : 'User disabled.');
+    toast.success(enable ? t('user_enabled_toast') : t('user_disabled_toast'));
     queryClient.invalidateQueries({ queryKey: ['admin-user-profiles'] });
     queryClient.invalidateQueries({ queryKey: ['admin-all-providers'] });
   };
@@ -127,9 +130,9 @@ export default function AdminUsers() {
     <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
       <div className="mb-6">
         <h1 className="text-3xl font-bold text-gray-900 flex items-center gap-2">
-          <Users className="w-7 h-7 text-blue-600" /> User Management
+          <Users className="w-7 h-7 text-blue-600" /> {t('user_management')}
         </h1>
-        <p className="text-sm text-gray-500 mt-1">{profiles.length} total users · {disabledCount} disabled</p>
+        <p className="text-sm text-gray-500 mt-1">{profiles.length} {t('total_users')} · {disabledCount} {t('disabled')}</p>
       </div>
 
       {/* Filters */}
@@ -137,7 +140,7 @@ export default function AdminUsers() {
         <div className="relative flex-1">
           <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400" />
           <Input
-            placeholder="Search by name or email…"
+            placeholder={t('search_name_email')}
             value={search}
             onChange={e => setSearch(e.target.value)}
             className="pl-9"
@@ -148,10 +151,10 @@ export default function AdminUsers() {
             <SelectValue placeholder="Role" />
           </SelectTrigger>
           <SelectContent>
-            <SelectItem value="all">All Roles</SelectItem>
-            <SelectItem value="client">Client</SelectItem>
-            <SelectItem value="provider">Provider</SelectItem>
-            <SelectItem value="both">Both</SelectItem>
+            <SelectItem value="all">{t('all_roles')}</SelectItem>
+            <SelectItem value="client">{t('client_label')}</SelectItem>
+            <SelectItem value="provider">{t('provider_label')}</SelectItem>
+            <SelectItem value="both">{t('both')}</SelectItem>
           </SelectContent>
         </Select>
         <Select value={statusFilter} onValueChange={setStatusFilter}>
@@ -159,9 +162,9 @@ export default function AdminUsers() {
             <SelectValue placeholder="Status" />
           </SelectTrigger>
           <SelectContent>
-            <SelectItem value="all">All</SelectItem>
-            <SelectItem value="active">Active</SelectItem>
-            <SelectItem value="disabled">Disabled</SelectItem>
+            <SelectItem value="all">{t('all')}</SelectItem>
+            <SelectItem value="active">{t('active')}</SelectItem>
+            <SelectItem value="disabled">{t('disabled')}</SelectItem>
           </SelectContent>
         </Select>
       </div>
@@ -171,7 +174,7 @@ export default function AdminUsers() {
       ) : rows.length === 0 ? (
         <div className="text-center py-16 text-gray-400">
           <Users className="w-12 h-12 mx-auto mb-3 opacity-30" />
-          <p>No users found.</p>
+          <p>{t('no_users_found')}</p>
         </div>
       ) : (
         <div className="space-y-3">

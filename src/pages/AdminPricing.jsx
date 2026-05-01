@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import { useI18n } from '@/lib/i18n';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { base44 } from '@/api/base44Client';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
@@ -18,6 +19,7 @@ const COUNTRIES = [
 ];
 
 function CountryPricingCard({ country, existing, onSave, saving }) {
+  const { t } = useI18n();
   const defaults = COUNTRY_SETTINGS[country.key];
   const [values, setValues] = useState({
     fee_pct: existing?.fee_pct ?? defaults.fee_pct,
@@ -43,7 +45,7 @@ function CountryPricingCard({ country, existing, onSave, saving }) {
       sub_provider: parseFloat(values.sub_provider),
     };
     if (Object.values(parsed).some(isNaN)) {
-      toast.error('All fields must be valid numbers');
+    toast.error(t('all_fields_numbers'));
       return;
     }
     onSave(country.key, existing?.id, { ...parsed, country: country.key, currency: country.currency, symbol: country.symbol });
@@ -58,12 +60,12 @@ function CountryPricingCard({ country, existing, onSave, saving }) {
             <p className="text-base font-bold text-gray-900">{country.label.split(' ')[0]}</p>
             <p className="text-xs font-normal text-gray-400">{country.currency} · {country.symbol}</p>
           </div>
-          {existing && <span className="ml-auto text-xs bg-green-100 text-green-700 px-2 py-0.5 rounded-full font-medium">Saved</span>}
+          {existing && <span className="ml-auto text-xs bg-green-100 text-green-700 px-2 py-0.5 rounded-full font-medium">{t('saved')}</span>}
         </CardTitle>
       </CardHeader>
       <CardContent className="space-y-4">
         <div>
-          <Label className="flex items-center gap-1.5 text-sm mb-1.5"><Percent className="w-3.5 h-3.5 text-blue-500" /> Platform Fee (%)</Label>
+          <Label className="flex items-center gap-1.5 text-sm mb-1.5"><Percent className="w-3.5 h-3.5 text-blue-500" /> {t('platform_fee_label')}</Label>
           <Input
             type="number"
             step="0.1"
@@ -73,7 +75,7 @@ function CountryPricingCard({ country, existing, onSave, saving }) {
             onChange={e => setValues(v => ({ ...v, fee_pct: e.target.value }))}
             className="h-9"
           />
-          <p className="text-xs text-gray-400 mt-1">Deducted from provider payout on each completed booking</p>
+          <p className="text-xs text-gray-400 mt-1">{t('platform_fee_desc')}</p>
         </div>
 
         <div>
@@ -86,11 +88,11 @@ function CountryPricingCard({ country, existing, onSave, saving }) {
             onChange={e => setValues(v => ({ ...v, sub_provider: e.target.value }))}
             className="h-9"
           />
-          <p className="text-xs text-gray-400 mt-1">Subscription for providers (priority listing)</p>
+          <p className="text-xs text-gray-400 mt-1">{t('provider_sub_desc')}</p>
         </div>
 
         <Button onClick={handleSave} disabled={saving} className="w-full h-9 bg-blue-600 hover:bg-blue-700 gap-2">
-          <Save className="w-4 h-4" /> {saving ? 'Saving...' : 'Save Pricing'}
+          <Save className="w-4 h-4" /> {saving ? t('saving') : t('save_pricing')}
         </Button>
       </CardContent>
     </Card>
@@ -98,6 +100,7 @@ function CountryPricingCard({ country, existing, onSave, saving }) {
 }
 
 export default function AdminPricing() {
+  const { t } = useI18n();
   const { user, loading: userLoading } = useUserProfile();
   const queryClient = useQueryClient();
   const [savingCountry, setSavingCountry] = useState(null);
@@ -118,7 +121,7 @@ export default function AdminPricing() {
   if (user?.role !== 'admin') {
     return (
       <div className="max-w-2xl mx-auto px-4 py-20 text-center">
-        <p className="text-gray-500 text-lg">Access denied. Admins only.</p>
+        <p className="text-gray-500 text-lg">{t('access_denied_admins')}</p>
       </div>
     );
   }
@@ -141,13 +144,13 @@ export default function AdminPricing() {
   };
 
   const handleResetAll = async () => {
-    if (!confirm('Reset all countries to default values?')) return;
+    if (!confirm(t('confirm_reset_pricing'))) return;
     setSavingCountry('all');
     try {
       const existing = await base44.entities.PricingSettings.list();
       await Promise.all(existing.map(r => base44.entities.PricingSettings.delete(r.id)));
       await queryClient.invalidateQueries({ queryKey: ['pricingSettings'] });
-      toast.success('All pricing reset to defaults');
+      toast.success(t('pricing_reset_toast'));
     } finally {
       setSavingCountry(null);
     }
@@ -159,12 +162,12 @@ export default function AdminPricing() {
         <div>
           <div className="flex items-center gap-2 mb-1">
             <Settings className="w-5 h-5 text-blue-600" />
-            <h1 className="text-2xl font-bold text-gray-900">Pricing Management</h1>
+            <h1 className="text-2xl font-bold text-gray-900">{t('pricing_management')}</h1>
           </div>
-          <p className="text-gray-500 text-sm">Configure platform fees and subscription prices per country. Changes apply immediately across the app.</p>
+          <p className="text-gray-500 text-sm">{t('pricing_management_desc')}</p>
         </div>
         <Button variant="outline" onClick={handleResetAll} disabled={!!savingCountry} className="gap-2 text-red-600 border-red-200 hover:bg-red-50">
-          <RefreshCw className="w-4 h-4" /> Reset to Defaults
+          <RefreshCw className="w-4 h-4" /> {t('reset_to_defaults')}
         </Button>
       </div>
 

@@ -18,6 +18,7 @@ import PayoutRequestModal from '@/components/payments/PayoutRequestModal';
 import MonthlyReportDownload from '@/components/reports/MonthlyReportDownload';
 import { useUserProfile } from '@/lib/useUserProfile';
 import { COUNTRY_SETTINGS } from '@/lib/constants';
+import { useI18n } from '@/lib/i18n';
 
 const STATUS_STYLE = {
   pending_approval: 'bg-gray-100 text-gray-600',
@@ -31,6 +32,7 @@ const STATUS_STYLE = {
 };
 
 export default function Payments() {
+  const { t } = useI18n();
   const { user, profile } = useUserProfile();
   const [providerProfile, setProviderProfile] = useState(null);
   const [finance, setFinance] = useState(null);
@@ -66,11 +68,11 @@ export default function Payments() {
     const paymentStatus = params.get('payment');
     const bookingId = params.get('booking_id');
     if (paymentStatus === 'success' && bookingId) {
-      toast.success('Payment successful! Funds held in escrow.', { duration: 5000 });
+      toast.success(t('payment_successful'), { duration: 5000 });
       window.history.replaceState({}, '', '/payments');
       setTimeout(loadFinance, 2000);
     } else if (paymentStatus === 'cancelled') {
-      toast.info('Payment was cancelled.');
+      toast.info(t('payment_cancelled'));
       window.history.replaceState({}, '', '/payments');
     }
   }, []);
@@ -123,17 +125,17 @@ export default function Payments() {
       <div className="flex items-center justify-between mb-6">
         <div>
           <h1 className="text-3xl font-bold text-gray-900 flex items-center gap-2">
-            <Wallet className="w-8 h-8 text-blue-600" /> Payments & Finance
+            <Wallet className="w-8 h-8 text-blue-600" /> {t('payments_finance')}
           </h1>
-          <p className="text-gray-500 mt-1">Track your income, escrow funds, and payouts</p>
+          <p className="text-gray-500 mt-1">{t('track_income')}</p>
         </div>
         <div className="flex items-center gap-3">
           <div className="flex items-center gap-1.5 bg-gray-50 border border-gray-200 rounded-lg px-3 py-1.5">
-            <span className="text-xs text-gray-400">Powered by</span>
+            <span className="text-xs text-gray-400">{t('powered_by')}</span>
             <img src="https://upload.wikimedia.org/wikipedia/commons/b/ba/Stripe_Logo%2C_revised_2016.svg" alt="Stripe" className="h-4" />
           </div>
           <Button variant="outline" size="sm" onClick={loadFinance} className="gap-2">
-            <RefreshCw className="w-4 h-4" /> Refresh
+            <RefreshCw className="w-4 h-4" /> {t('refresh')}
           </Button>
         </div>
       </div>
@@ -154,28 +156,28 @@ export default function Payments() {
           {!isProvider && (
             <>
               <TabsTrigger value="pay" className="gap-1.5">
-                <CreditCard className="w-3.5 h-3.5" /> Pay for Service
+                <CreditCard className="w-3.5 h-3.5" /> {t('pay_for_service')}
                 {payableBookings.length > 0 && (
                   <span className="ml-1 bg-blue-600 text-white text-xs rounded-full px-1.5">{payableBookings.length}</span>
                 )}
               </TabsTrigger>
               <TabsTrigger value="escrow" className="gap-1.5">
-                <Clock className="w-3.5 h-3.5" /> In Escrow
+                <Clock className="w-3.5 h-3.5" /> {t('in_escrow')}
               </TabsTrigger>
             </>
           )}
           {isProvider && (
             <>
               <TabsTrigger value="earnings" className="gap-1.5">
-                <TrendingUp className="w-3.5 h-3.5" /> Earnings
+                <TrendingUp className="w-3.5 h-3.5" /> {t('completed_earnings')}
               </TabsTrigger>
               <TabsTrigger value="payout" className="gap-1.5">
-                <ArrowDownCircle className="w-3.5 h-3.5" /> Request Payout
+                <ArrowDownCircle className="w-3.5 h-3.5" /> {t('request_payout')}
               </TabsTrigger>
             </>
           )}
           <TabsTrigger value="history" className="gap-1.5">
-            <Wallet className="w-3.5 h-3.5" /> All Transactions
+            <Wallet className="w-3.5 h-3.5" /> {t('all_transactions')}
           </TabsTrigger>
         </TabsList>
 
@@ -184,8 +186,8 @@ export default function Payments() {
           <TabsContent value="pay">
             <Card className="border border-gray-100 shadow-sm">
               <CardHeader>
-                <CardTitle className="text-base text-gray-800">Ready to Pay</CardTitle>
-                <p className="text-sm text-gray-500">Accepted bookings awaiting payment. Funds are held in escrow until work is complete.</p>
+                <CardTitle className="text-base text-gray-800">{t('ready_to_pay')}</CardTitle>
+                <p className="text-sm text-gray-500">{t('accepted_bookings')}</p>
               </CardHeader>
               <CardContent>
                 {loadingBookings ? (
@@ -193,7 +195,7 @@ export default function Payments() {
                 ) : payableBookings.length === 0 ? (
                   <div className="text-center py-10 text-gray-400">
                     <CheckCircle2 className="w-10 h-10 mx-auto mb-2 opacity-40" />
-                    <p className="text-sm">No pending payments right now</p>
+                    <p className="text-sm">{t('no_pending_payments')}</p>
                   </div>
                 ) : payableBookings.map(b => (
                   <div key={b.id} className="flex items-center justify-between p-4 rounded-xl border border-gray-100 bg-gray-50 mb-3">
@@ -207,7 +209,7 @@ export default function Payments() {
                       <Button size="sm" className="mt-2 bg-blue-600 hover:bg-blue-700 gap-1.5"
                         onClick={() => handlePay(b)} disabled={payingBookingId === b.id}>
                         {payingBookingId === b.id ? <Loader2 className="w-3.5 h-3.5 animate-spin" /> : <CreditCard className="w-3.5 h-3.5" />}
-                        Pay with Stripe
+                         {t('pay_with_stripe')}
                       </Button>
                     </div>
                   </div>
@@ -223,26 +225,26 @@ export default function Payments() {
             <Card className="border border-gray-100 shadow-sm">
               <CardHeader>
                 <CardTitle className="text-base text-gray-800 flex items-center gap-2">
-                  <Clock className="w-4 h-4 text-amber-500" /> Funds in Escrow
+                  <Clock className="w-4 h-4 text-amber-500" /> {t('funds_in_escrow')}
                 </CardTitle>
-                <p className="text-sm text-gray-500">Payments held securely until you confirm the service is complete.</p>
+                <p className="text-sm text-gray-500">{t('funds_held_securely')}</p>
               </CardHeader>
               <CardContent>
                 {escrowBookings.length === 0 ? (
                   <div className="text-center py-10 text-gray-400">
                     <Clock className="w-10 h-10 mx-auto mb-2 opacity-40" />
-                    <p className="text-sm">No funds currently in escrow</p>
+                    <p className="text-sm">{t('no_funds_in_escrow')}</p>
                   </div>
                 ) : escrowBookings.map(b => (
                   <div key={b.id} className="flex items-center justify-between p-4 rounded-xl border border-amber-100 bg-amber-50 mb-3">
                     <div>
                       <p className="font-semibold text-gray-900">{b.provider_name}</p>
                       <p className="text-sm text-gray-500">{b.start_date} · {b.booking_type}</p>
-                      <Badge className="text-xs mt-1 bg-amber-100 text-amber-700 border-0">In Escrow — Protected</Badge>
+                      <Badge className="text-xs mt-1 bg-amber-100 text-amber-700 border-0">{t('in_escrow_protected')}</Badge>
                     </div>
                     <div className="text-right">
                       <p className="text-xl font-bold text-amber-700">{symbol}{b.total_amount?.toFixed(2)}</p>
-                      <p className="text-xs text-gray-400 mt-1">Held until job complete</p>
+                      <p className="text-xs text-gray-400 mt-1">{t('held_until_complete')}</p>
                     </div>
                   </div>
                 ))}
@@ -256,8 +258,8 @@ export default function Payments() {
           <TabsContent value="earnings">
             <Card className="border border-gray-100 shadow-sm">
               <CardHeader>
-                <CardTitle className="text-base text-gray-800">Completed Earnings</CardTitle>
-                <p className="text-sm text-gray-500">Payments released from escrow after clients confirm completion.</p>
+                <CardTitle className="text-base text-gray-800">{t('completed_earnings')}</CardTitle>
+                <p className="text-sm text-gray-500">{t('earnings_from_escrow')}</p>
               </CardHeader>
               <CardContent>
                 {loadingProviderBookings ? (
@@ -265,20 +267,20 @@ export default function Payments() {
                 ) : earningsBookings.length === 0 ? (
                   <div className="text-center py-10 text-gray-400">
                     <TrendingUp className="w-10 h-10 mx-auto mb-2 opacity-40" />
-                    <p className="text-sm">No released earnings yet</p>
+                    <p className="text-sm">{t('no_released_earnings')}</p>
                   </div>
                 ) : earningsBookings.map(b => (
                   <div key={b.id} className="flex items-center justify-between p-4 rounded-xl border border-green-100 bg-green-50 mb-3">
                     <div>
                       <p className="font-semibold text-gray-900">{b.client_name}</p>
                       <p className="text-sm text-gray-500">{b.category} · {b.start_date}</p>
-                      <Badge className="text-xs mt-1 bg-green-100 text-green-700 border-0">Released ✓</Badge>
+                      <Badge className="text-xs mt-1 bg-green-100 text-green-700 border-0">{t('released')}</Badge>
                     </div>
                     <div className="text-right">
                       <p className="text-xl font-bold text-green-700">{symbol}{b.provider_payout?.toFixed(2)}</p>
                       <Button size="sm" variant="outline" className="mt-2 gap-1 border-green-300 text-green-700"
                         onClick={() => setPayoutBooking(b)}>
-                        <ArrowDownCircle className="w-3.5 h-3.5" /> Request Payout
+                        <ArrowDownCircle className="w-3.5 h-3.5" /> {t('request_payout')}
                       </Button>
                     </div>
                   </div>
@@ -293,15 +295,15 @@ export default function Payments() {
           <TabsContent value="payout">
             <Card className="border border-gray-100 shadow-sm">
               <CardHeader>
-                <CardTitle className="text-base text-gray-800">Payout History</CardTitle>
-                <p className="text-sm text-gray-500">Earnings sent to your debit or prepaid card via Stripe.</p>
+                <CardTitle className="text-base text-gray-800">{t('payout_history')}</CardTitle>
+                <p className="text-sm text-gray-500">{t('earnings_sent')}</p>
               </CardHeader>
               <CardContent>
                 {!finance?.payouts || finance.payouts.length === 0 ? (
                   <div className="text-center py-10 text-gray-400">
                     <ArrowDownCircle className="w-10 h-10 mx-auto mb-2 opacity-40" />
-                    <p className="text-sm">No payouts requested yet</p>
-                    <p className="text-xs mt-1">Go to Earnings tab to request a payout</p>
+                    <p className="text-sm">{t('no_payouts_requested')}</p>
+                    <p className="text-xs mt-1">{t('go_to_earnings_tab')}</p>
                   </div>
                 ) : (
                   <div className="divide-y divide-gray-50">
@@ -332,8 +334,8 @@ export default function Payments() {
           <MonthlyReportDownload userRole={isProvider ? 'provider' : 'client'} />
           <Card className="border border-gray-100 shadow-sm">
             <CardHeader>
-              <CardTitle className="text-base text-gray-800">Transaction History</CardTitle>
-              <p className="text-sm text-gray-500">Complete record of all financial activity.</p>
+              <CardTitle className="text-base text-gray-800">{t('transaction_history')}</CardTitle>
+              <p className="text-sm text-gray-500">{t('complete_record')}</p>
             </CardHeader>
             <CardContent>
               {financeLoading ? (

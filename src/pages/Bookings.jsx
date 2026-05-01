@@ -15,6 +15,7 @@ import { Button } from '@/components/ui/button';
 import { useI18n } from '@/lib/i18n';
 import { useUserProfile } from '@/lib/useUserProfile';
 
+
 export default function Bookings() {
   const { t } = useI18n();
   const { user, profile } = useUserProfile();
@@ -69,7 +70,7 @@ export default function Bookings() {
     switch (action) {
       case 'accepted':
         await updateMutation.mutateAsync({ id: bookingId, data: { status: 'accepted' } });
-        toast.success('Booking accepted! Waiting for client payment.');
+        toast.success(t('booking_accepted_toast'));
         break;
       case 'pay': {
         // Check if running inside iframe (Base44 preview) — Stripe checkout won't work there
@@ -98,18 +99,18 @@ export default function Bookings() {
       }
       case 'in_progress':
         await updateMutation.mutateAsync({ id: bookingId, data: { status: 'in_progress' } });
-        toast.success('Job started!');
+        toast.success(t('job_started_toast'));
         break;
       case 'completed': {
         const autoRelease = new Date(Date.now() + 24 * 3600 * 1000).toISOString();
         await updateMutation.mutateAsync({ id: bookingId, data: { status: 'completed', payment_status: 'release_pending', auto_release_at: autoRelease } });
-        toast.success('Marked as complete. Payment auto-releases in 24h if no dispute.');
+        toast.success(t('marked_complete_toast'));
         break;
       }
       case 'release': {
         const releaseRes = await base44.functions.invoke('releasePayment', { booking_id: bookingId });
         if (releaseRes.data?.success) {
-          toast.success('Payment released to provider!');
+          toast.success(t('payment_released_toast'));
           queryClient.invalidateQueries({ queryKey: ['clientBookings'] });
           queryClient.invalidateQueries({ queryKey: ['providerBookings'] });
           if (!existingReviews.some(r => r.booking_id === bookingId)) {
@@ -125,7 +126,7 @@ export default function Bookings() {
         break;
       case 'cancelled':
         await updateMutation.mutateAsync({ id: bookingId, data: { status: 'cancelled' } });
-        toast.info('Booking cancelled.');
+        toast.info(t('booking_cancelled_toast'));
         break;
     }
   };
@@ -154,7 +155,7 @@ export default function Bookings() {
       status: 'open',
     });
 
-    toast.warning('Dispute filed. Admin will review and resolve within 48 hours.');
+    toast.warning(t('dispute_filed_toast'));
     setDisputeState(null);
     setDisputeReason('');
   };
@@ -179,7 +180,7 @@ export default function Bookings() {
       <div className="flex items-center justify-between mb-6">
         <h1 className="text-3xl font-bold text-gray-900">{t('my_bookings')}</h1>
         <Button size="sm" className="bg-blue-600 hover:bg-blue-700 gap-2" onClick={() => setShowPostJob(true)}>
-          <ClipboardList className="w-4 h-4" /> Post a Job
+          <ClipboardList className="w-4 h-4" /> {t('post_a_job')}
         </Button>
       </div>
 
@@ -195,12 +196,12 @@ export default function Bookings() {
           )}
           {isProvider && (
             <TabsTrigger value="job_orders" className="gap-2">
-              <ClipboardList className="w-4 h-4" /> Job Board
+              <ClipboardList className="w-4 h-4" /> {t('job_board')}
             </TabsTrigger>
           )}
           {myDisputes.length > 0 && (
             <TabsTrigger value="disputes" className="gap-2 text-orange-600">
-              <ShieldAlert className="w-4 h-4" /> Disputes {myDisputes.filter(d => d.status === 'open' || d.status === 'under_review').length > 0 && `(${myDisputes.filter(d => d.status === 'open' || d.status === 'under_review').length})`}
+              <ShieldAlert className="w-4 h-4" /> {t('disputes')} {myDisputes.filter(d => d.status === 'open' || d.status === 'under_review').length > 0 && `(${myDisputes.filter(d => d.status === 'open' || d.status === 'under_review').length})`}
             </TabsTrigger>
           )}
         </TabsList>
@@ -261,7 +262,7 @@ export default function Bookings() {
             )}
             {providerUnreviewed.length > 0 && (
               <div className="mt-8">
-                <h3 className="font-semibold text-lg text-gray-800 mb-4">Rate Your Clients</h3>
+                <h3 className="font-semibold text-lg text-gray-800 mb-4">{t('rate_your_clients')}</h3>
                 <div className="space-y-4">
                   {providerUnreviewed.map(b => (
                     <ReviewForm
@@ -296,14 +297,14 @@ export default function Bookings() {
                   <div key={d.id} className="bg-white rounded-xl border border-orange-100 p-5 space-y-3">
                     <div className="flex items-center justify-between flex-wrap gap-2">
                       <span className="flex items-center gap-2 font-semibold text-gray-800 text-sm">
-                        <AlertTriangle className="w-4 h-4 text-orange-500" /> Booking #{d.booking_id?.slice(-6)}
+                      <AlertTriangle className="w-4 h-4 text-orange-500" /> {t('booking_hash')}{d.booking_id?.slice(-6)}
                       </span>
                       <span className={`text-xs px-2.5 py-1 rounded-full font-medium ${statusColors[d.status] || 'bg-gray-100 text-gray-600'}`}>{d.status.replace('_', ' ')}</span>
                     </div>
-                    <p className="text-sm text-gray-600"><span className="font-medium">Your reason:</span> {d.reason}</p>
+                    <p className="text-sm text-gray-600"><span className="font-medium">{t('your_reason')}:</span> {d.reason}</p>
                     {d.resolution_details && (
                       <div className="bg-blue-50 rounded-lg p-3">
-                        <p className="text-xs font-medium text-blue-700 mb-1">Admin Resolution</p>
+                        <p className="text-xs font-medium text-blue-700 mb-1">{t('admin_resolution')}</p>
                         <p className="text-sm text-gray-700">{d.resolution_details}</p>
                       </div>
                     )}
@@ -347,15 +348,16 @@ export default function Bookings() {
         <DialogContent>
           <DialogHeader>
             <DialogTitle className="flex items-center gap-2 text-orange-600">
-              <AlertTriangle className="w-5 h-5" /> File a Dispute
+                            <AlertTriangle className="w-5 h-5" /> {t('file_dispute')}
+
             </DialogTitle>
           </DialogHeader>
-          <p className="text-sm text-gray-600">Explain what went wrong. Admin will review and resolve within 48 hours.</p>
-          <Textarea placeholder="Describe the issue..." value={disputeReason} onChange={e => setDisputeReason(e.target.value)} rows={4} />
+          <p className="text-sm text-gray-600">{t('file_dispute_desc')}</p>
+          <Textarea placeholder={t('describe_issue')} value={disputeReason} onChange={e => setDisputeReason(e.target.value)} rows={4} />
           <div className="flex gap-3">
-            <Button variant="outline" className="flex-1" onClick={() => setDisputeState(null)}>Cancel</Button>
+            <Button variant="outline" className="flex-1" onClick={() => setDisputeState(null)}>{t('cancel')}</Button>
             <Button className="flex-1 bg-orange-600 hover:bg-orange-700" onClick={handleDispute} disabled={!disputeReason.trim()}>
-              Submit Dispute
+              {t('submit_dispute')}
             </Button>
           </div>
         </DialogContent>

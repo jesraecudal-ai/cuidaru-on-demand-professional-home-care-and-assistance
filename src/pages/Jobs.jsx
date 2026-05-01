@@ -245,7 +245,6 @@ export default function Jobs() {
                         )}
                       </div>
                       <p className="text-gray-900 font-semibold text-sm">{selectedJob.client_name || 'Anonymous'}</p>
-                      <p className="text-xs text-gray-500">{selectedJob.client_email}</p>
                     </div>
                     {getUserProfileByEmail(selectedJob.client_email)?.company_logo_url && (
                       <div className="flex flex-col items-center text-center">
@@ -253,9 +252,7 @@ export default function Jobs() {
                           <img src={getUserProfileByEmail(selectedJob.client_email).company_logo_url} alt="" className="w-full h-full object-contain" />
                         </div>
                         <p className="text-gray-700 font-semibold text-sm">{getUserProfileByEmail(selectedJob.client_email).company_name}</p>
-                        {getUserProfileByEmail(selectedJob.client_email)?.position && (
-                          <p className="text-xs text-gray-600">{getUserProfileByEmail(selectedJob.client_email).position}</p>
-                        )}
+                        <p className="text-xs text-gray-600">Founder of {getUserProfileByEmail(selectedJob.client_email).company_name}</p>
                       </div>
                     )}
                   </div>

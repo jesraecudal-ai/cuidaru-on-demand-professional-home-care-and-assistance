@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { Link, useLocation } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
-import { Menu, X, Search, User, Calendar, LogOut, Zap, Heart, Wallet, MessageCircle, AlertTriangle, Settings, ArrowDownCircle, ShieldCheck, GitBranch, Users, Briefcase } from 'lucide-react';
+import { Menu, X, Search, User, Calendar, LogOut, Zap, Heart, Wallet, MessageCircle, AlertTriangle, Settings, ArrowDownCircle, ShieldCheck, GitBranch, Users, Briefcase, Info, HelpCircle } from 'lucide-react';
 import { base44 } from '@/api/base44Client';
 import {
   DropdownMenu, DropdownMenuContent, DropdownMenuItem,
@@ -69,6 +69,17 @@ export default function Navbar() {
                 <Zap className="w-4 h-4 mr-1.5" /> Cuidaru+
               </Button>
             </Link>
+            <Link to="/about">
+              <Button variant={isActive('/about') ? 'default' : 'ghost'} size="sm"
+                className={isActive('/about') ? 'bg-blue-600 hover:bg-blue-700' : 'text-gray-600 hover:text-gray-900'}>
+                <Info className="w-4 h-4 mr-1.5" /> About
+              </Button>
+            </Link>
+            <a href="/#how-it-works">
+              <Button variant="ghost" size="sm" className="text-gray-600 hover:text-gray-900">
+                <HelpCircle className="w-4 h-4 mr-1.5" /> How It Works
+              </Button>
+            </a>
           </div>
 
           {/* Right side */}

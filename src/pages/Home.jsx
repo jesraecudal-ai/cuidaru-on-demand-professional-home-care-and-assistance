@@ -137,7 +137,7 @@ export default function Home() {
       </section>
 
       {/* How It Works */}
-      <section className="bg-gradient-to-b from-slate-50 to-white">
+      <section id="how-it-works" className="bg-gradient-to-b from-slate-50 to-white">
         <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-24">
           <div className="text-center mb-20">
             <h2 className="text-4xl sm:text-5xl font-bold text-gray-900">{t('how_it_works')}</h2>

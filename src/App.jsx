@@ -61,7 +61,7 @@ const AuthenticatedApp = () => {
       <Route path="/privacy" element={<PrivacyPolicy />} />
       <Route path="/help" element={<Help />} />
       <Route path="/share/:id" element={<ShareProfile />} />
-      <Route path="/about" element={<About />} />
+
       <Route path="/careers" element={<Careers />} />
       <Route element={<Layout />}>
         <Route path="/" element={<Home />} />
@@ -83,6 +83,7 @@ const AuthenticatedApp = () => {
         <Route path="/payouts" element={<ProviderPayouts />} />
         <Route path="/prescriptions" element={<Prescriptions />} />
         <Route path="/consultations" element={<Consultations />} />
+        <Route path="/about" element={<About />} />
       </Route>
       <Route path="*" element={<PageNotFound />} />
     </Routes>

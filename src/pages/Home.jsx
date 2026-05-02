@@ -110,16 +110,16 @@ export default function Home() {
             <div className="flex-1">
               <div className="flex items-center gap-2 mb-4">
                 <Zap className="w-5 h-5 text-amber-600" />
-                <span className="font-semibold text-amber-700 text-sm uppercase tracking-wider">Cuidaru+ Advantage</span>
+                <span className="font-semibold text-amber-700 text-sm uppercase tracking-wider">{t('premium_badge')}</span>
               </div>
-              <h3 className="text-3xl sm:text-4xl font-bold text-gray-900 mb-4">Get ahead with Cuidaru+</h3>
-              <p className="text-gray-700 text-lg mb-6">Stand out in searches and reach more clients. Cuidaru+ members enjoy priority visibility and zero fees.</p>
+              <h3 className="text-3xl sm:text-4xl font-bold text-gray-900 mb-4">{t('premium_heading')}</h3>
+              <p className="text-gray-700 text-lg mb-6">{t('premium_subheading')}</p>
               <ul className="space-y-3 mb-8">
                 {[
-                  'Providers: Featured in top searches',
-                  `Providers: From ${countryInfo.symbol}${countryInfo.sub_provider}/${t('per_month') || 'month'}`,
-                  'Clients: Zero platform fees on bookings',
-                  `Clients: From ${countryInfo.symbol}${countryInfo.sub_client}/${t('per_month') || 'month'}`,
+                  t('premium_feat1'),
+                  `${t('premium_feat2')} ${countryInfo.symbol}${countryInfo.sub_provider}/${t('per_month')}`,
+                  t('premium_feat3'),
+                  `${t('premium_feat4')} ${countryInfo.symbol}${countryInfo.sub_client}/${t('per_month')}`,
                 ].map((item, i) => (
                   <li key={i} className="flex items-center gap-3 text-gray-800">
                     <CheckCircle2 className="w-5 h-5 text-amber-600 flex-shrink-0" /> {item}
@@ -129,7 +129,7 @@ export default function Home() {
             </div>
             <Link to="/premium" className="flex-shrink-0">
                <Button size="lg" className="bg-gradient-to-r from-amber-500 to-orange-500 hover:from-amber-600 hover:to-orange-600 text-white h-14 px-10 gap-2 shadow-lg text-base">
-                 <Zap className="w-5 h-5" /> Explore Cuidaru+
+                 <Zap className="w-5 h-5" /> {t('premium_cta')}
                </Button>
              </Link>
           </div>
@@ -150,7 +150,7 @@ export default function Home() {
                   <div className="w-20 h-20 mx-auto rounded-full bg-gradient-to-br from-blue-100 to-cyan-100 flex items-center justify-center mb-6 text-4xl shadow-md">
                     {s.icon}
                   </div>
-                  <div className="text-sm font-bold text-blue-600 tracking-widest uppercase mb-3">Step {i+1}</div>
+                  <div className="text-sm font-bold text-blue-600 tracking-widest uppercase mb-3">{t('step_label')} {i+1}</div>
                   <h3 className="text-lg font-bold text-gray-900 mb-3">{s.title}</h3>
                   <p className="text-gray-600 text-sm leading-relaxed">{s.desc}</p>
                 </div>
@@ -169,8 +169,8 @@ export default function Home() {
       <section className="bg-gradient-to-br from-purple-50 via-pink-50 to-rose-50 border-t-2 border-purple-200">
         <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-24">
           <div className="text-center mb-16">
-            <h2 className="text-4xl sm:text-5xl font-bold text-gray-900">Earn & Grow Your Network</h2>
-             <p className="mt-4 text-lg text-gray-600">Get rewarded for sharing Cuidaru</p>
+            <h2 className="text-4xl sm:text-5xl font-bold text-gray-900">{t('earn_title')}</h2>
+             <p className="mt-4 text-lg text-gray-600">{t('earn_subtitle')}</p>
           </div>
           <div className="grid md:grid-cols-2 gap-8">
             {/* Referral Rewards Block */}
@@ -180,21 +180,21 @@ export default function Home() {
                   <div className="w-14 h-14 rounded-xl bg-gradient-to-br from-purple-100 to-purple-50 flex items-center justify-center mb-5">
                     <Gift className="w-7 h-7 text-purple-600" />
                   </div>
-                  <h3 className="text-2xl font-bold text-gray-900 mb-2">Referral Rewards</h3>
-                  <p className="text-gray-600 mb-6 text-sm">Invite friends and family to Cuidaru and get rewarded.</p>
+                  <h3 className="text-2xl font-bold text-gray-900 mb-2">{t('referral_title')}</h3>
+                  <p className="text-gray-600 mb-6 text-sm">{t('referral_subtitle')}</p>
                   <ul className="space-y-3 mb-8">
                     <li className="flex items-start gap-3 text-sm text-gray-700">
                       <CheckCircle2 className="w-4 h-4 text-purple-600 flex-shrink-0 mt-0.5" />
-                      <span><strong>Clients:</strong> Invite 5+ friends → Get 3 free bookings</span>
+                      <span>{t('referral_client')}</span>
                     </li>
                     <li className="flex items-start gap-3 text-sm text-gray-700">
                       <CheckCircle2 className="w-4 h-4 text-purple-600 flex-shrink-0 mt-0.5" />
-                      <span><strong>Providers:</strong> Invite 6+ → Get 1 free premium month</span>
+                      <span>{t('referral_provider')}</span>
                     </li>
                   </ul>
                   <Link to="/premium" className="block">
                     <Button className="w-full bg-purple-600 hover:bg-purple-700 text-white gap-2">
-                      <Gift className="w-4 h-4" /> Check Your Rewards
+                      <Gift className="w-4 h-4" /> {t('referral_cta')}
                     </Button>
                   </Link>
                 </CardContent>
@@ -208,25 +208,25 @@ export default function Home() {
                   <div className="w-14 h-14 rounded-xl bg-gradient-to-br from-pink-100 to-pink-50 flex items-center justify-center mb-5">
                     <GitBranch className="w-7 h-7 text-pink-600" />
                   </div>
-                  <h3 className="text-2xl font-bold text-gray-900 mb-2">Affiliate Program</h3>
-                  <p className="text-gray-600 mb-6 text-sm">Earn 5% commission on every referral's first booking.</p>
+                  <h3 className="text-2xl font-bold text-gray-900 mb-2">{t('affiliate_title')}</h3>
+                  <p className="text-gray-600 mb-6 text-sm">{t('affiliate_subtitle')}</p>
                   <ul className="space-y-3 mb-8">
                     <li className="flex items-start gap-3 text-sm text-gray-700">
                       <CheckCircle2 className="w-4 h-4 text-pink-600 flex-shrink-0 mt-0.5" />
-                      <span>Share your unique affiliate code</span>
+                      <span>{t('affiliate_feat1')}</span>
                     </li>
                     <li className="flex items-start gap-3 text-sm text-gray-700">
                       <CheckCircle2 className="w-4 h-4 text-pink-600 flex-shrink-0 mt-0.5" />
-                      <span>Earn 5% on each referred user</span>
+                      <span>{t('affiliate_feat2')}</span>
                     </li>
                     <li className="flex items-start gap-3 text-sm text-gray-700">
                       <CheckCircle2 className="w-4 h-4 text-pink-600 flex-shrink-0 mt-0.5" />
-                      <span>Easy withdrawal via Stripe</span>
+                      <span>{t('affiliate_feat3')}</span>
                     </li>
                   </ul>
                   <Link to="/affiliate" className="block">
                     <Button className="w-full bg-pink-600 hover:bg-pink-700 text-white gap-2">
-                      <GitBranch className="w-4 h-4" /> Join Program
+                      <GitBranch className="w-4 h-4" /> {t('affiliate_cta')}
                     </Button>
                   </Link>
                 </CardContent>

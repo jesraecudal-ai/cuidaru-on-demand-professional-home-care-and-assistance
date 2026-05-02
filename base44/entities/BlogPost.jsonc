@@ -1,0 +1,77 @@
+{
+  "name": "BlogPost",
+  "type": "object",
+  "properties": {
+    "slug": {
+      "type": "string",
+      "description": "URL-friendly slug"
+    },
+    "title": {
+      "type": "string"
+    },
+    "excerpt": {
+      "type": "string",
+      "description": "Short summary for listing"
+    },
+    "content": {
+      "type": "string",
+      "description": "Full HTML/markdown content"
+    },
+    "cover_image": {
+      "type": "string",
+      "description": "Cover image URL"
+    },
+    "category": {
+      "type": "string",
+      "enum": [
+        "caregiving",
+        "nursing",
+        "home-services",
+        "platform",
+        "tips",
+        "stories"
+      ],
+      "default": "platform"
+    },
+    "tags": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+    "author_name": {
+      "type": "string",
+      "default": "Cuidaru Team"
+    },
+    "author_avatar": {
+      "type": "string"
+    },
+    "read_time_minutes": {
+      "type": "number",
+      "default": 8
+    },
+    "published": {
+      "type": "boolean",
+      "default": true
+    },
+    "featured": {
+      "type": "boolean",
+      "default": false
+    },
+    "seo_title": {
+      "type": "string"
+    },
+    "seo_description": {
+      "type": "string"
+    },
+    "view_count": {
+      "type": "number",
+      "default": 0
+    }
+  },
+  "required": [
+    "title",
+    "slug",
+    "content"
+  ]
+}

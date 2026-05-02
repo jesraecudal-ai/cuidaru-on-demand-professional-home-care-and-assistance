@@ -1,0 +1,35 @@
+{
+  "name": "BlogComment",
+  "type": "object",
+  "properties": {
+    "post_id": {
+      "type": "string"
+    },
+    "post_slug": {
+      "type": "string"
+    },
+    "commenter_name": {
+      "type": "string"
+    },
+    "commenter_email": {
+      "type": "string"
+    },
+    "content": {
+      "type": "string"
+    },
+    "is_approved": {
+      "type": "boolean",
+      "default": true
+    },
+    "user_email": {
+      "type": "string",
+      "description": "Set if commenter is a logged-in user"
+    }
+  },
+  "required": [
+    "post_id",
+    "commenter_name",
+    "commenter_email",
+    "content"
+  ]
+}

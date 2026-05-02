@@ -34,6 +34,8 @@ import AdminCareers from './pages/AdminCareers';
 import AdminUsers from './pages/AdminUsers';
 import Jobs from './pages/Jobs';
 import HowItWorks from './pages/HowItWorks';
+import Blog from './pages/Blog';
+import BlogPost from './pages/BlogPost';
 import Layout from './components/shared/Layout';
 
 const AuthenticatedApp = () => {
@@ -86,6 +88,8 @@ const AuthenticatedApp = () => {
         <Route path="/consultations" element={<Consultations />} />
         <Route path="/about" element={<About />} />
         <Route path="/how-it-works" element={<HowItWorks />} />
+        <Route path="/blog" element={<Blog />} />
+        <Route path="/blog/:slug" element={<BlogPost />} />
       </Route>
       <Route path="*" element={<PageNotFound />} />
     </Routes>

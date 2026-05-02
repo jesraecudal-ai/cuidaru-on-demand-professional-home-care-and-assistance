@@ -224,8 +224,8 @@ export default function MyProfile() {
             {/* Profile Photo + Full Name */}
             <div className="flex items-center gap-4">
               <div className="w-16 h-16 rounded-full border-2 border-gray-200 bg-gray-50 flex items-center justify-center overflow-hidden shrink-0">
-                {userProfile?.company_logo_url ? (
-                  <img src={userProfile.company_logo_url} alt="Profile" className="w-full h-full object-cover" />
+                {userProfile?.avatar_url ? (
+                  <img src={userProfile.avatar_url} alt="Profile" className="w-full h-full object-cover" />
                 ) : (
                   <span className="text-xl font-bold text-blue-600">{(clientFullName || user?.full_name || '?')[0]?.toUpperCase()}</span>
                 )}
@@ -245,7 +245,7 @@ export default function MyProfile() {
                     const file = e.target.files?.[0];
                     if (!file) return;
                     const { file_url } = await base44.integrations.Core.UploadFile({ file });
-                    await base44.entities.UserProfile.update(userProfile.id, { company_logo_url: file_url });
+                    await base44.entities.UserProfile.update(userProfile.id, { avatar_url: file_url });
                     await refetchUserProfile();
                     toast.success('Photo updated!');
                   }}
@@ -289,13 +289,13 @@ export default function MyProfile() {
               />
             </div>
             <div>
-              <Label htmlFor="company_logo">{t('company_logo_label')}</Label>
+              <Label>{t('company_logo_label')}</Label>
               <p className="text-xs text-gray-500 mb-2">{t('company_logo_desc')}</p>
               <div className="flex items-center gap-4">
                 {userProfile?.company_logo_url ? (
-                  <img src={userProfile.company_logo_url} alt="Company logo" className="w-16 h-16 rounded object-cover border border-gray-200" />
+                  <img src={userProfile.company_logo_url} alt="Company logo" className="w-16 h-16 rounded-lg object-cover border border-gray-200" />
                 ) : (
-                  <div className="w-16 h-16 rounded border-2 border-dashed border-gray-300 bg-gray-50 flex items-center justify-center text-xs text-gray-400">{t('optional')}</div>
+                  <div className="w-16 h-16 rounded-lg border-2 border-dashed border-gray-300 bg-gray-50 flex items-center justify-center text-xs text-gray-400">{t('optional')}</div>
                 )}
                 <Label htmlFor="company_logo_only" className="cursor-pointer">
                   <Button variant="outline" size="sm" className="gap-2" asChild><span><Upload className="w-3.5 h-3.5" /> {t('upload_logo')}</span></Button>

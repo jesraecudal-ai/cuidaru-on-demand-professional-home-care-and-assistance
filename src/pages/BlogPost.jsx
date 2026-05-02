@@ -167,9 +167,43 @@ export default function BlogPostPage() {
           initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.5 }}
-          className="prose prose-gray max-w-none prose-headings:font-bold prose-headings:text-gray-900 prose-p:text-gray-700 prose-p:leading-relaxed prose-li:text-gray-700 prose-strong:text-gray-900 prose-a:text-blue-600"
+          className="text-gray-700 text-[17px] leading-[1.85]"
         >
-          <ReactMarkdown>{post.content}</ReactMarkdown>
+          <ReactMarkdown
+            components={{
+              h1: ({ children }) => <h1 className="text-3xl font-bold text-gray-900 mt-10 mb-4">{children}</h1>,
+              h2: ({ children }) => <h2 className="text-2xl font-bold text-gray-900 mt-10 mb-4">{children}</h2>,
+              h3: ({ children }) => <h3 className="text-xl font-semibold text-gray-900 mt-8 mb-3">{children}</h3>,
+              h4: ({ children }) => <h4 className="text-lg font-semibold text-gray-800 mt-6 mb-2">{children}</h4>,
+              p: ({ children }) => <p className="mb-6 leading-[1.85] text-gray-700">{children}</p>,
+              ul: ({ children }) => <ul className="mb-6 ml-6 space-y-2 list-disc marker:text-blue-400">{children}</ul>,
+              ol: ({ children }) => <ol className="mb-6 ml-6 space-y-2 list-decimal marker:text-blue-500 marker:font-semibold">{children}</ol>,
+              li: ({ children }) => <li className="leading-[1.8] text-gray-700 pl-1">{children}</li>,
+              strong: ({ children }) => <strong className="font-semibold text-gray-900">{children}</strong>,
+              em: ({ children }) => <em className="italic text-gray-600">{children}</em>,
+              blockquote: ({ children }) => (
+                <blockquote className="my-6 pl-5 border-l-4 border-blue-400 bg-blue-50 rounded-r-xl py-4 pr-4 text-gray-700 italic">
+                  {children}
+                </blockquote>
+              ),
+              a: ({ href, children }) => (
+                <a href={href} className="text-blue-600 underline underline-offset-2 hover:text-blue-800" target="_blank" rel="noopener noreferrer">
+                  {children}
+                </a>
+              ),
+              code: ({ inline, children }) =>
+                inline ? (
+                  <code className="bg-gray-100 text-pink-600 px-1.5 py-0.5 rounded text-[15px] font-mono">{children}</code>
+                ) : (
+                  <pre className="bg-gray-900 text-gray-100 rounded-xl p-5 my-6 overflow-x-auto text-sm font-mono leading-relaxed">
+                    <code>{children}</code>
+                  </pre>
+                ),
+              hr: () => <hr className="my-8 border-gray-200" />,
+            }}
+          >
+            {post.content}
+          </ReactMarkdown>
         </motion.div>
 
         {/* CTA Box */}

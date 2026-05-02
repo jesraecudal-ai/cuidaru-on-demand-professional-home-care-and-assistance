@@ -19,8 +19,40 @@ import ClientIdentityVerification from '@/components/verification/ClientIdentity
 import DocumentUploadSection from '@/components/providers/DocumentUploadSection';
 import DoctorAvailabilityCalendar from '@/components/doctors/DoctorAvailabilityCalendar';
 
+const CLIENT_STRINGS = {
+  en: {
+    upload_photo_label: 'Upload Photo', upload_photo_hint: 'JPG, PNG — profile picture',
+    full_name_label: 'Full Name', full_name_placeholder: 'Your full name',
+    position_label: 'Position', position_desc: 'Your job title or position at the company',
+    position_placeholder: 'e.g., Manager, Director, Founder',
+    save_profile: 'Save Profile', profile_saved_toast: 'Profile saved!', photo_updated_toast: 'Photo updated!',
+    client_identity_verification: 'Identity Verification',
+    client_identity_verification_desc: "Submit a government-issued ID so service providers know you're verified.",
+  },
+  pt: {
+    upload_photo_label: 'Enviar Foto', upload_photo_hint: 'JPG, PNG — foto de perfil',
+    full_name_label: 'Nome Completo', full_name_placeholder: 'Seu nome completo',
+    position_label: 'Cargo', position_desc: 'Seu título ou cargo na empresa',
+    position_placeholder: 'ex: Gerente, Diretor, Fundador',
+    save_profile: 'Salvar Perfil', profile_saved_toast: 'Perfil salvo!', photo_updated_toast: 'Foto atualizada!',
+    client_identity_verification: 'Verificação de Identidade',
+    client_identity_verification_desc: 'Envie um documento de identidade para que os prestadores saibam que você é verificado.',
+  },
+  es: {
+    upload_photo_label: 'Subir Foto', upload_photo_hint: 'JPG, PNG — foto de perfil',
+    full_name_label: 'Nombre Completo', full_name_placeholder: 'Tu nombre completo',
+    position_label: 'Cargo', position_desc: 'Tu título o cargo en la empresa',
+    position_placeholder: 'ej: Gerente, Director, Fundador',
+    save_profile: 'Guardar Perfil', profile_saved_toast: '¡Perfil guardado!', photo_updated_toast: '¡Foto actualizada!',
+    client_identity_verification: 'Verificación de Identidad',
+    client_identity_verification_desc: 'Envía un documento de identidad para que los proveedores sepan que estás verificado.',
+  },
+};
+
 export default function MyProfile() {
-  const { t } = useI18n();
+  const { t: tBase, lang } = useI18n();
+  const cs = CLIENT_STRINGS[lang] || CLIENT_STRINGS.en;
+  const t = (key) => cs[key] || tBase(key);
   const { user, profile: userProfile, refetch: refetchUserProfile } = useUserProfile();
   const [existingProvider, setExistingProvider] = useState(null);
   const [newSkill, setNewSkill] = useState('');
@@ -219,7 +251,7 @@ export default function MyProfile() {
 
       {isClient && userProfile && (
         <Card className="mb-4 sm:mb-6 border border-gray-100 shadow-sm">
-          <CardHeader><CardTitle className="flex items-center gap-2 text-base sm:text-lg text-gray-800"><User className="w-4 h-4 sm:w-5 sm:h-5 text-blue-600" /> My Profile</CardTitle></CardHeader>
+          <CardHeader><CardTitle className="flex items-center gap-2 text-base sm:text-lg text-gray-800"><User className="w-4 h-4 sm:w-5 sm:h-5 text-blue-600" /> {t('my_profile')}</CardTitle></CardHeader>
           <CardContent className="space-y-3 sm:space-y-4">
 
             {/* Profile Photo + Full Name */}
@@ -234,7 +266,7 @@ export default function MyProfile() {
               <div>
                 <Label htmlFor="client_photo" className="cursor-pointer">
                   <Button variant="outline" size="sm" className="gap-2" asChild>
-                    <span><Upload className="w-3.5 h-3.5" /> Upload Photo</span>
+                    <span><Upload className="w-3.5 h-3.5" /> {t('upload_photo_label')}</span>
                   </Button>
                 </Label>
                 <input
@@ -248,20 +280,20 @@ export default function MyProfile() {
                     const { file_url } = await base44.integrations.Core.UploadFile({ file });
                     await base44.entities.UserProfile.update(userProfile.id, { avatar_url: file_url });
                     await refetchUserProfile();
-                    toast.success('Photo updated!');
+                    toast.success(t('photo_updated_toast'));
                   }}
                 />
-                <p className="text-xs text-gray-400 mt-1">JPG, PNG — profile picture</p>
+                <p className="text-xs text-gray-400 mt-1">{t('upload_photo_hint')}</p>
               </div>
             </div>
 
             <div>
-              <Label htmlFor="client_full_name">Full Name</Label>
+              <Label htmlFor="client_full_name">{t('full_name_label')}</Label>
               <Input
                 id="client_full_name"
                 value={clientFullName}
                 onChange={e => setClientFullName(e.target.value)}
-                placeholder="Your full name"
+                placeholder={t('full_name_placeholder')}
                 className="mt-1.5"
               />
             </div>
@@ -279,13 +311,13 @@ export default function MyProfile() {
               <p className="text-xs text-gray-400 mt-2">{t('company_identity_note')}</p>
             </div>
             <div>
-              <Label htmlFor="position">Position</Label>
-              <p className="text-xs text-gray-500 mb-2">Your job title or position at the company</p>
+              <Label htmlFor="position">{t('position_label')}</Label>
+              <p className="text-xs text-gray-500 mb-2">{t('position_desc')}</p>
               <Input
                 id="position"
                 value={position}
                 onChange={e => setPosition(e.target.value)}
-                placeholder="e.g., Manager, Director, Founder"
+                placeholder={t('position_placeholder')}
                 className="mt-1.5"
               />
             </div>
@@ -324,11 +356,11 @@ export default function MyProfile() {
                   base44.auth.updateMe({ full_name: clientFullName }),
                 ]);
                 await refetchUserProfile();
-                toast.success('Profile saved!');
+                toast.success(t('profile_saved_toast'));
               }}
               className="bg-blue-600 hover:bg-blue-700"
             >
-              <Save className="w-4 h-4 mr-2" /> Save Profile
+              <Save className="w-4 h-4 mr-2" /> {t('save_profile')}
             </Button>
           </CardContent>
         </Card>
@@ -340,15 +372,16 @@ export default function MyProfile() {
           <div className="h-2 bg-gradient-to-r from-green-600 to-teal-500" />
           <CardHeader>
             <CardTitle className="flex items-center gap-2 text-base sm:text-lg text-gray-800">
-              <ShieldCheck className="w-4 h-4 sm:w-5 sm:h-5 text-green-600" /> Identity Verification
+              <ShieldCheck className="w-4 h-4 sm:w-5 sm:h-5 text-green-600" /> {t('client_identity_verification')}
             </CardTitle>
-            <p className="text-sm text-gray-500">Submit a government-issued ID so service providers know you're verified.</p>
+            <p className="text-sm text-gray-500">{t('client_identity_verification_desc')}</p>
           </CardHeader>
           <CardContent>
             <ClientIdentityVerification
               userProfile={userProfile}
               country={country}
               onUpdated={refetchUserProfile}
+              t={t}
             />
           </CardContent>
         </Card>

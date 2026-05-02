@@ -69,7 +69,98 @@ const DOC_CONFIG = {
   },
 };
 
-export default function ClientIdentityVerification({ userProfile, country, onUpdated }) {
+const STRINGS = {
+  en: {
+    doc_number_label: 'Document Number',
+    doc_number_optional: '(optional)',
+    doc_upload_btn: 'Upload Photo / PDF',
+    doc_replace_btn: 'Replace Document',
+    doc_uploading: 'Uploading...',
+    doc_hint: 'Accepted: JPG, PNG, PDF. Must be clearly readable.',
+    doc_secondary_brazil: 'Both documents required for Brazilian verification.',
+    doc_pending_notice: 'Documents submitted. Admin will review within 24 hours.',
+    doc_verified_notice: 'Your identity has been verified.',
+    doc_rejected_notice: 'Your document was rejected. Please re-upload a clear, valid document.',
+    verified: 'Verified',
+    pending: 'Under Review',
+    rejected: 'Rejected',
+    unverified: 'Not Verified',
+    client_identity_verification: 'Identity Verification',
+    client_identity_verification_desc: "Submit a government-issued ID so service providers know you're verified.",
+    upload_photo_label: 'Upload Photo',
+    upload_photo_hint: 'JPG, PNG — profile picture',
+    full_name_label: 'Full Name',
+    full_name_placeholder: 'Your full name',
+    position_label: 'Position',
+    position_desc: 'Your job title or position at the company',
+    position_placeholder: 'e.g., Manager, Director, Founder',
+    save_profile: 'Save Profile',
+    profile_saved_toast: 'Profile saved!',
+    photo_updated_toast: 'Photo updated!',
+  },
+  pt: {
+    doc_number_label: 'Número do Documento',
+    doc_number_optional: '(opcional)',
+    doc_upload_btn: 'Enviar Foto / PDF',
+    doc_replace_btn: 'Substituir Documento',
+    doc_uploading: 'Enviando...',
+    doc_hint: 'Aceitos: JPG, PNG, PDF. Deve estar legível.',
+    doc_secondary_brazil: 'Ambos os documentos são obrigatórios para verificação no Brasil.',
+    doc_pending_notice: 'Documentos enviados. O admin irá revisar em até 24 horas.',
+    doc_verified_notice: 'Sua identidade foi verificada.',
+    doc_rejected_notice: 'Seu documento foi rejeitado. Por favor, envie um documento válido e legível.',
+    verified: 'Verificado',
+    pending: 'Em Análise',
+    rejected: 'Rejeitado',
+    unverified: 'Não Verificado',
+    client_identity_verification: 'Verificação de Identidade',
+    client_identity_verification_desc: 'Envie um documento de identidade para que os prestadores saibam que você é verificado.',
+    upload_photo_label: 'Enviar Foto',
+    upload_photo_hint: 'JPG, PNG — foto de perfil',
+    full_name_label: 'Nome Completo',
+    full_name_placeholder: 'Seu nome completo',
+    position_label: 'Cargo',
+    position_desc: 'Seu título ou cargo na empresa',
+    position_placeholder: 'ex: Gerente, Diretor, Fundador',
+    save_profile: 'Salvar Perfil',
+    profile_saved_toast: 'Perfil salvo!',
+    photo_updated_toast: 'Foto atualizada!',
+  },
+  es: {
+    doc_number_label: 'Número de Documento',
+    doc_number_optional: '(opcional)',
+    doc_upload_btn: 'Subir Foto / PDF',
+    doc_replace_btn: 'Reemplazar Documento',
+    doc_uploading: 'Subiendo...',
+    doc_hint: 'Aceptados: JPG, PNG, PDF. Debe ser legible.',
+    doc_secondary_brazil: 'Ambos documentos son requeridos para la verificación en Brasil.',
+    doc_pending_notice: 'Documentos enviados. El admin revisará en las próximas 24 horas.',
+    doc_verified_notice: 'Tu identidad ha sido verificada.',
+    doc_rejected_notice: 'Tu documento fue rechazado. Por favor sube un documento válido y legible.',
+    verified: 'Verificado',
+    pending: 'En Revisión',
+    rejected: 'Rechazado',
+    unverified: 'No Verificado',
+    client_identity_verification: 'Verificación de Identidad',
+    client_identity_verification_desc: 'Envía un documento de identidad para que los proveedores sepan que estás verificado.',
+    upload_photo_label: 'Subir Foto',
+    upload_photo_hint: 'JPG, PNG — foto de perfil',
+    full_name_label: 'Nombre Completo',
+    full_name_placeholder: 'Tu nombre completo',
+    position_label: 'Cargo',
+    position_desc: 'Tu título o cargo en la empresa',
+    position_placeholder: 'ej: Gerente, Director, Fundador',
+    save_profile: 'Guardar Perfil',
+    profile_saved_toast: '¡Perfil guardado!',
+    photo_updated_toast: '¡Foto actualizada!',
+  },
+};
+
+export default function ClientIdentityVerification({ userProfile, country, onUpdated, t: tProp }) {
+  // Detect current language from localStorage
+  const lang = localStorage.getItem('cuidaru_lang') || 'en';
+  const s = STRINGS[lang] || STRINGS.en;
+  const tFn = (key) => (tProp ? tProp(key) : null) || s[key] || key;
   const config = DOC_CONFIG[country] || DOC_CONFIG.brazil;
   const [docType, setDocType] = useState(userProfile?.id_document_type || config.primaryDocs[0]?.value || '');
   const [docNumber, setDocNumber] = useState(userProfile?.id_document_number || '');
@@ -110,10 +201,10 @@ export default function ClientIdentityVerification({ userProfile, country, onUpd
   };
 
   const StatusBadge = () => {
-    if (status === 'verified') return <Badge className="bg-green-100 text-green-700 border-green-300 gap-1"><CheckCircle className="w-3.5 h-3.5" /> Verified</Badge>;
-    if (status === 'pending') return <Badge variant="outline" className="text-amber-600 border-amber-300 gap-1"><Clock className="w-3.5 h-3.5" /> Under Review</Badge>;
-    if (status === 'rejected') return <Badge className="bg-red-100 text-red-700 border-red-300 gap-1"><XCircle className="w-3.5 h-3.5" /> Rejected</Badge>;
-    return <Badge variant="outline" className="text-gray-500 gap-1"><AlertCircle className="w-3.5 h-3.5" /> Not Verified</Badge>;
+    if (status === 'verified') return <Badge className="bg-green-100 text-green-700 border-green-300 gap-1"><CheckCircle className="w-3.5 h-3.5" /> {tProp ? tProp('verified') : 'Verified'}</Badge>;
+    if (status === 'pending') return <Badge variant="outline" className="text-amber-600 border-amber-300 gap-1"><Clock className="w-3.5 h-3.5" /> {tProp ? tProp('pending') : 'Under Review'}</Badge>;
+    if (status === 'rejected') return <Badge className="bg-red-100 text-red-700 border-red-300 gap-1"><XCircle className="w-3.5 h-3.5" /> {tProp ? tProp('rejected') : 'Rejected'}</Badge>;
+    return <Badge variant="outline" className="text-gray-500 gap-1"><AlertCircle className="w-3.5 h-3.5" /> {tProp ? tProp('unverified') : 'Not Verified'}</Badge>;
   };
 
   return (
@@ -126,25 +217,25 @@ export default function ClientIdentityVerification({ userProfile, country, onUpd
       {status === 'verified' && (
         <div className="bg-green-50 border border-green-200 rounded-lg p-3 text-sm text-green-700 flex items-center gap-2">
           <CheckCircle className="w-4 h-4 shrink-0" />
-          Your identity has been verified.
+          {tFn('doc_verified_notice')}
         </div>
       )}
 
       {status === 'rejected' && (
         <div className="bg-red-50 border border-red-200 rounded-lg p-3 text-sm text-red-700 flex items-center gap-2">
           <XCircle className="w-4 h-4 shrink-0" />
-          Your document was rejected. Please re-upload a clear, valid document.
+          {tFn('doc_rejected_notice')}
         </div>
       )}
 
       {status !== 'verified' && (
         <>
           <div>
-            <Label className="text-sm">Document Number <span className="text-gray-400">(optional)</span></Label>
+            <Label className="text-sm">{tFn('doc_number_label')} <span className="text-gray-400">{tFn('doc_number_optional')}</span></Label>
             <Input
               value={docNumber}
               onChange={e => setDocNumber(e.target.value)}
-              placeholder="Document number"
+              placeholder={tFn('doc_number_label')}
               className="mt-1.5 max-w-sm"
             />
           </div>
@@ -172,12 +263,12 @@ export default function ClientIdentityVerification({ userProfile, country, onUpd
               <Button variant="outline" className="gap-2 w-full" asChild disabled={uploading}>
                 <span>
                   <Upload className="w-4 h-4" />
-                  {uploading ? 'Uploading...' : userProfile?.id_document_url ? 'Replace Document' : 'Upload Photo / PDF'}
+                  {uploading ? tFn('doc_uploading') : userProfile?.id_document_url ? tFn('doc_replace_btn') : tFn('doc_upload_btn')}
                 </span>
               </Button>
             </Label>
             <input id="client_primary_doc" type="file" accept="image/*,.pdf" className="hidden" onChange={handleUploadPrimary} />
-            <p className="text-xs text-gray-400">Accepted: JPG, PNG, PDF. Must be clearly readable.</p>
+            <p className="text-xs text-gray-400">{tFn('doc_hint')}</p>
           </div>
 
           {/* Secondary document (Brazil only) */}
@@ -191,19 +282,19 @@ export default function ClientIdentityVerification({ userProfile, country, onUpd
                 <Button variant="outline" className="gap-2 w-full" asChild disabled={uploadingSecondary}>
                   <span>
                     <Upload className="w-4 h-4" />
-                    {uploadingSecondary ? 'Uploading...' : userProfile?.id_secondary_url ? 'Replace Document' : 'Upload Photo / PDF'}
+                    {uploadingSecondary ? tFn('doc_uploading') : userProfile?.id_secondary_url ? tFn('doc_replace_btn') : tFn('doc_upload_btn')}
                   </span>
                 </Button>
               </Label>
               <input id="client_secondary_doc" type="file" accept="image/*,.pdf" className="hidden" onChange={handleUploadSecondary} />
-              <p className="text-xs text-gray-400">Both documents required for Brazilian verification.</p>
+              <p className="text-xs text-gray-400">{tFn('doc_secondary_brazil')}</p>
             </div>
           )}
 
           {status === 'pending' && (
             <div className="bg-amber-50 border border-amber-200 rounded-lg p-3 text-sm text-amber-700 flex items-center gap-2">
               <Clock className="w-4 h-4 shrink-0" />
-              Documents submitted. Admin will review within 24 hours.
+              {tFn('doc_pending_notice')}
             </div>
           )}
         </>

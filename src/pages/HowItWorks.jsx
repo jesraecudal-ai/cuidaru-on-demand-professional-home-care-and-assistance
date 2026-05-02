@@ -7,6 +7,7 @@ import {
 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { useI18n } from '@/lib/i18n';
+import { motion } from 'framer-motion';
 
 export default function HowItWorks() {
   const { t } = useI18n();
@@ -30,21 +31,28 @@ export default function HowItWorks() {
   return (
     <div className="min-h-screen bg-white">
       {/* Hero */}
-      <div className="bg-gradient-to-br from-blue-600 to-blue-800 text-white py-20 px-4 text-center">
-        <div className="flex items-center justify-center gap-3 mb-4">
-          <img src="https://media.base44.com/images/public/69ef625dd7c5f2aec1f5dc5d/3961b9c00_Cuidaru.png" alt="Cuidaru" className="w-10 h-10 object-contain" />
-          <span className="text-2xl font-bold">Cuidaru</span>
-        </div>
-        <h1 className="text-4xl md:text-5xl font-bold mb-4">{t('hiw_title')}</h1>
-        <p className="text-xl text-blue-100 max-w-2xl mx-auto">{t('hiw_subtitle')}</p>
-      </div>
+      <motion.div
+        initial={{ opacity: 0 }}
+        animate={{ opacity: 1 }}
+        transition={{ duration: 0.6 }}
+        className="bg-gradient-to-br from-blue-600 to-blue-800 text-white py-20 px-4 text-center"
+      >
+        <motion.div initial={{ opacity: 0, y: 25 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.5, delay: 0.15 }}>
+          <div className="flex items-center justify-center gap-3 mb-4">
+            <img src="https://media.base44.com/images/public/69ef625dd7c5f2aec1f5dc5d/3961b9c00_Cuidaru.png" alt="Cuidaru" className="w-10 h-10 object-contain" />
+            <span className="text-2xl font-bold">Cuidaru</span>
+          </div>
+          <h1 className="text-4xl md:text-5xl font-bold mb-4">{t('hiw_title')}</h1>
+          <p className="text-xl text-blue-100 max-w-2xl mx-auto">{t('hiw_subtitle')}</p>
+        </motion.div>
+      </motion.div>
 
       {/* 2-Column Section */}
       <div className="max-w-6xl mx-auto px-4 py-16">
         <div className="grid md:grid-cols-2 gap-10">
 
           {/* Client Column */}
-          <div>
+          <motion.div initial={{ opacity: 0, x: -30 }} animate={{ opacity: 1, x: 0 }} transition={{ duration: 0.5, delay: 0.2 }}>
             <div className="mb-8">
               <div className="inline-flex items-center gap-2 bg-blue-100 text-blue-700 px-4 py-2 rounded-full text-sm font-semibold mb-4">
                 <Search className="w-4 h-4" /> {t('hiw_for_clients')}
@@ -56,7 +64,7 @@ export default function HowItWorks() {
               {clientSteps.map((step, i) => {
                 const Icon = step.icon;
                 return (
-                  <div key={i} className="flex gap-4 p-5 bg-white rounded-2xl border border-gray-100 shadow-sm hover:shadow-md transition-shadow">
+                  <motion.div key={i} initial={{ opacity: 0, y: 15 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.35, delay: 0.3 + i * 0.07 }} className="flex gap-4 p-5 bg-white rounded-2xl border border-gray-100 shadow-sm hover:shadow-md transition-shadow">
                     <div className="shrink-0">
                       <div className={`w-11 h-11 rounded-xl flex items-center justify-center ${step.color}`}>
                         <Icon className="w-5 h-5" />
@@ -67,7 +75,7 @@ export default function HowItWorks() {
                       <h3 className="font-semibold text-gray-900 mb-1">{step.title}</h3>
                       <p className="text-sm text-gray-600 leading-relaxed">{step.desc}</p>
                     </div>
-                  </div>
+                  </motion.div>
                 );
               })}
             </div>
@@ -78,10 +86,10 @@ export default function HowItWorks() {
                 </Button>
               </Link>
             </div>
-          </div>
+          </motion.div>
 
           {/* Provider Column */}
-          <div>
+          <motion.div initial={{ opacity: 0, x: 30 }} animate={{ opacity: 1, x: 0 }} transition={{ duration: 0.5, delay: 0.2 }}>
             <div className="mb-8">
               <div className="inline-flex items-center gap-2 bg-green-100 text-green-700 px-4 py-2 rounded-full text-sm font-semibold mb-4">
                 <Briefcase className="w-4 h-4" /> {t('hiw_for_providers')}
@@ -93,7 +101,7 @@ export default function HowItWorks() {
               {providerSteps.map((step, i) => {
                 const Icon = step.icon;
                 return (
-                  <div key={i} className="flex gap-4 p-5 bg-white rounded-2xl border border-gray-100 shadow-sm hover:shadow-md transition-shadow">
+                  <motion.div key={i} initial={{ opacity: 0, y: 15 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.35, delay: 0.3 + i * 0.07 }} className="flex gap-4 p-5 bg-white rounded-2xl border border-gray-100 shadow-sm hover:shadow-md transition-shadow">
                     <div className="shrink-0">
                       <div className={`w-11 h-11 rounded-xl flex items-center justify-center ${step.color}`}>
                         <Icon className="w-5 h-5" />
@@ -104,7 +112,7 @@ export default function HowItWorks() {
                       <h3 className="font-semibold text-gray-900 mb-1">{step.title}</h3>
                       <p className="text-sm text-gray-600 leading-relaxed">{step.desc}</p>
                     </div>
-                  </div>
+                  </motion.div>
                 );
               })}
             </div>
@@ -115,18 +123,18 @@ export default function HowItWorks() {
                 </Button>
               </Link>
             </div>
-          </div>
+          </motion.div>
         </div>
 
         {/* Trust strip */}
-        <div className="mt-20 bg-gradient-to-br from-blue-50 to-blue-100 rounded-2xl p-10 text-center">
+        <motion.div initial={{ opacity: 0, y: 30 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} transition={{ duration: 0.5 }} className="mt-20 bg-gradient-to-br from-blue-50 to-blue-100 rounded-2xl p-10 text-center">
           <h2 className="text-2xl font-bold text-gray-900 mb-3">{t('hiw_trust_title')}</h2>
           <p className="text-gray-600 max-w-xl mx-auto mb-6">{t('hiw_trust_body')}</p>
           <div className="flex flex-col sm:flex-row gap-3 justify-center">
             <Link to="/browse"><Button className="bg-blue-600 hover:bg-blue-700">{t('hero_cta_find')}</Button></Link>
             <Link to="/about"><Button variant="outline">{t('hiw_trust_about')}</Button></Link>
           </div>
-        </div>
+        </motion.div>
       </div>
     </div>
   );

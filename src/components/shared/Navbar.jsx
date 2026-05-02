@@ -42,9 +42,7 @@ export default function Navbar() {
         <div className="flex items-center justify-between h-16">
           {/* Logo */}
           <Link to="/" className="flex items-center gap-2">
-            <div className="w-9 h-9 rounded-xl bg-blue-600 flex items-center justify-center">
-              <Heart className="w-5 h-5 text-white" />
-            </div>
+            <img src="https://media.base44.com/images/public/69ef625dd7c5f2aec1f5dc5d/3961b9c00_Cuidaru.png" alt="Cuidaru" className="w-9 h-9 object-contain" />
             <span className="text-xl font-bold text-gray-900">Cuidaru</span>
           </Link>
 

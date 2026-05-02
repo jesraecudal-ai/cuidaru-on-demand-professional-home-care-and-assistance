@@ -32,9 +32,7 @@ export default function HowItWorks() {
       {/* Hero */}
       <div className="bg-gradient-to-br from-blue-600 to-blue-800 text-white py-20 px-4 text-center">
         <div className="flex items-center justify-center gap-3 mb-4">
-          <div className="w-10 h-10 rounded-xl bg-white/20 flex items-center justify-center">
-            <Heart className="w-5 h-5 text-white" />
-          </div>
+          <img src="https://media.base44.com/images/public/69ef625dd7c5f2aec1f5dc5d/3961b9c00_Cuidaru.png" alt="Cuidaru" className="w-10 h-10 object-contain" />
           <span className="text-2xl font-bold">Cuidaru</span>
         </div>
         <h1 className="text-4xl md:text-5xl font-bold mb-4">{t('hiw_title')}</h1>

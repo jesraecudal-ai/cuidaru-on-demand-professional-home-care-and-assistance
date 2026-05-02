@@ -50,6 +50,12 @@ export default function Navbar() {
 
           {/* Desktop nav */}
           <div className="hidden md:flex items-center gap-1">
+            <Link to="/">
+              <Button variant={isActive('/') ? 'default' : 'ghost'} size="sm"
+                className={isActive('/') ? 'bg-blue-600 hover:bg-blue-700' : 'text-gray-600 hover:text-gray-900'}>
+                Home
+              </Button>
+            </Link>
             {navLinks.map(link => (
               <Link key={link.path} to={link.path}>
                 <Button variant={isActive(link.path) ? 'default' : 'ghost'} size="sm"
@@ -68,7 +74,7 @@ export default function Navbar() {
           {/* Right side */}
           <div className="hidden md:flex items-center gap-2">
             <LanguagePicker />
-            <NotificationBell />
+            {user && <NotificationBell />}
             {profile?.is_premium && <Badge className="bg-amber-100 text-amber-700 border-amber-300 text-xs gap-1"><Zap className="w-3 h-3" />Cuidaru+</Badge>}
             {user ? (
             <DropdownMenu>

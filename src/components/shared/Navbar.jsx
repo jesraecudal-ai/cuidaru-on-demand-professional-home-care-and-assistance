@@ -75,11 +75,12 @@ export default function Navbar() {
                 <Info className="w-4 h-4 mr-1.5" /> About
               </Button>
             </Link>
-            <a href="/#how-it-works">
-              <Button variant="ghost" size="sm" className="text-gray-600 hover:text-gray-900">
+            <Link to="/how-it-works">
+              <Button variant={isActive('/how-it-works') ? 'default' : 'ghost'} size="sm"
+                className={isActive('/how-it-works') ? 'bg-blue-600 hover:bg-blue-700' : 'text-gray-600 hover:text-gray-900'}>
                 <HelpCircle className="w-4 h-4 mr-1.5" /> How It Works
               </Button>
-            </a>
+            </Link>
           </div>
 
           {/* Right side */}

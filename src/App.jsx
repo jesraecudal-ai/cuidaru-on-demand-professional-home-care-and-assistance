@@ -33,6 +33,7 @@ import Careers from './pages/Careers';
 import AdminCareers from './pages/AdminCareers';
 import AdminUsers from './pages/AdminUsers';
 import Jobs from './pages/Jobs';
+import HowItWorks from './pages/HowItWorks';
 import Layout from './components/shared/Layout';
 
 const AuthenticatedApp = () => {
@@ -84,6 +85,7 @@ const AuthenticatedApp = () => {
         <Route path="/prescriptions" element={<Prescriptions />} />
         <Route path="/consultations" element={<Consultations />} />
         <Route path="/about" element={<About />} />
+        <Route path="/how-it-works" element={<HowItWorks />} />
       </Route>
       <Route path="*" element={<PageNotFound />} />
     </Routes>

@@ -39,18 +39,21 @@ export default function MyProfile() {
   const countryInfo = COUNTRY_SETTINGS[country] || COUNTRY_SETTINGS.brazil;
   const [companyName, setCompanyName] = useState('');
   const [position, setPosition] = useState('');
+  const [clientFullName, setClientFullName] = useState('');
+  const [clientAvatarUrl, setClientAvatarUrl] = useState('');
   const [deletingAccount, setDeletingAccount] = useState(false);
   const [showDeleteConfirm, setShowDeleteConfirm] = useState(false);
   const [deleteConfirmText, setDeleteConfirmText] = useState('');
 
   useEffect(() => {
-    if (userProfile?.company_name) {
-      setCompanyName(userProfile.company_name);
-    }
-    if (userProfile?.position) {
-      setPosition(userProfile.position);
-    }
+    if (userProfile?.company_name) setCompanyName(userProfile.company_name);
+    if (userProfile?.position) setPosition(userProfile.position);
   }, [userProfile?.company_name, userProfile?.position]);
+
+  useEffect(() => {
+    if (user?.full_name) setClientFullName(user.full_name);
+    if (userProfile?.company_logo_url) setClientAvatarUrl(userProfile.company_logo_url);
+  }, [user?.full_name]);
 
   useEffect(() => {
     if (!user) return;
@@ -215,8 +218,53 @@ export default function MyProfile() {
 
       {isClient && userProfile && (
         <Card className="mb-4 sm:mb-6 border border-gray-100 shadow-sm">
-          <CardHeader><CardTitle className="flex items-center gap-2 text-base sm:text-lg text-gray-800"><Briefcase className="w-4 h-4 sm:w-5 sm:h-5 text-blue-600" /> {t('business_profile')}</CardTitle></CardHeader>
+          <CardHeader><CardTitle className="flex items-center gap-2 text-base sm:text-lg text-gray-800"><User className="w-4 h-4 sm:w-5 sm:h-5 text-blue-600" /> My Profile</CardTitle></CardHeader>
           <CardContent className="space-y-3 sm:space-y-4">
+
+            {/* Profile Photo + Full Name */}
+            <div className="flex items-center gap-4">
+              <div className="w-16 h-16 rounded-full border-2 border-gray-200 bg-gray-50 flex items-center justify-center overflow-hidden shrink-0">
+                {userProfile?.company_logo_url ? (
+                  <img src={userProfile.company_logo_url} alt="Profile" className="w-full h-full object-cover" />
+                ) : (
+                  <span className="text-xl font-bold text-blue-600">{(clientFullName || user?.full_name || '?')[0]?.toUpperCase()}</span>
+                )}
+              </div>
+              <div>
+                <Label htmlFor="client_photo" className="cursor-pointer">
+                  <Button variant="outline" size="sm" className="gap-2" asChild>
+                    <span><Upload className="w-3.5 h-3.5" /> Upload Photo</span>
+                  </Button>
+                </Label>
+                <input
+                  id="client_photo"
+                  type="file"
+                  accept="image/*"
+                  className="hidden"
+                  onChange={async (e) => {
+                    const file = e.target.files?.[0];
+                    if (!file) return;
+                    const { file_url } = await base44.integrations.Core.UploadFile({ file });
+                    await base44.entities.UserProfile.update(userProfile.id, { company_logo_url: file_url });
+                    await refetchUserProfile();
+                    toast.success('Photo updated!');
+                  }}
+                />
+                <p className="text-xs text-gray-400 mt-1">JPG, PNG — profile picture</p>
+              </div>
+            </div>
+
+            <div>
+              <Label htmlFor="client_full_name">Full Name</Label>
+              <Input
+                id="client_full_name"
+                value={clientFullName}
+                onChange={e => setClientFullName(e.target.value)}
+                placeholder="Your full name"
+                className="mt-1.5"
+              />
+            </div>
+
             <div>
               <Label htmlFor="company_name">{t('company_name_label')}</Label>
               <p className="text-xs text-gray-500 mb-2">{t('company_name_desc')}</p>
@@ -249,10 +297,10 @@ export default function MyProfile() {
                 ) : (
                   <div className="w-16 h-16 rounded border-2 border-dashed border-gray-300 bg-gray-50 flex items-center justify-center text-xs text-gray-400">{t('optional')}</div>
                 )}
-                <Label htmlFor="company_logo" className="cursor-pointer">
+                <Label htmlFor="company_logo_only" className="cursor-pointer">
                   <Button variant="outline" size="sm" className="gap-2" asChild><span><Upload className="w-3.5 h-3.5" /> {t('upload_logo')}</span></Button>
                   <input 
-                    id="company_logo" 
+                    id="company_logo_only" 
                     type="file" 
                     accept="image/*" 
                     className="hidden" 
@@ -270,13 +318,16 @@ export default function MyProfile() {
             </div>
             <Button
               onClick={async () => {
-                await base44.entities.UserProfile.update(userProfile.id, { company_name: companyName, position });
+                await Promise.all([
+                  base44.entities.UserProfile.update(userProfile.id, { company_name: companyName, position }),
+                  base44.auth.updateMe({ full_name: clientFullName }),
+                ]);
                 await refetchUserProfile();
-                toast.success(t('business_updated'));
+                toast.success('Profile saved!');
               }}
               className="bg-blue-600 hover:bg-blue-700"
             >
-              <Save className="w-4 h-4 mr-2" /> {t('save_business_name')}
+              <Save className="w-4 h-4 mr-2" /> Save Profile
             </Button>
           </CardContent>
         </Card>

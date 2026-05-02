@@ -19,13 +19,20 @@ export default function Navbar() {
   const { t } = useI18n();
   const { user, profile } = useUserProfile();
 
-  const navLinks = [
+  const publicNavLinks = [
+    { label: t('nav_find'), path: '/browse', icon: Search },
+    { label: 'Job Board', path: '/jobs', icon: Briefcase },
+  ];
+
+  const authNavLinks = [
     { label: t('nav_find'), path: '/browse', icon: Search },
     { label: t('nav_bookings'), path: '/bookings', icon: Calendar },
     { label: 'Job Board', path: '/jobs', icon: Briefcase },
     { label: t('messages'), path: '/messages', icon: MessageCircle },
     { label: t('payments'), path: '/payments', icon: Wallet },
   ];
+
+  const navLinks = user ? authNavLinks : publicNavLinks;
 
   const isActive = (path) => location.pathname === path;
 
@@ -96,10 +103,10 @@ export default function Navbar() {
                 ) : (
                 <div className="flex items-center gap-2">
                 <Button variant="ghost" size="sm" onClick={() => base44.auth.redirectToLogin()} className="text-gray-600">
-                  {t('nav_login')}
+                  Login
                 </Button>
                 <Button size="sm" className="bg-blue-600 hover:bg-blue-700" onClick={() => base44.auth.redirectToLogin()}>
-                  {t('nav_signup')}
+                  Sign Up
                 </Button>
                 </div>
                 )}
@@ -197,10 +204,10 @@ export default function Navbar() {
               </Link>
               <div className="pt-2 border-t border-gray-100 space-y-2">
                 <Button variant="outline" className="w-full" onClick={() => { base44.auth.redirectToLogin(); setMobileOpen(false); }}>
-                  {t('nav_login')}
+                  Login
                 </Button>
                 <Button className="w-full bg-blue-600 hover:bg-blue-700" onClick={() => { base44.auth.redirectToLogin(); setMobileOpen(false); }}>
-                  {t('nav_signup')}
+                  Sign Up
                 </Button>
               </div>
             </>

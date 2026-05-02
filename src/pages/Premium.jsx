@@ -38,10 +38,12 @@ export default function Premium() {
         <p className="text-gray-500 mt-3 text-lg max-w-2xl mx-auto">{t('premium_upgrade_subtitle')}</p>
       </div>
 
-      {/* Referral Reward Card */}
-      <div className="mb-12">
-        <ReferralRewardCard />
-      </div>
+      {/* Referral Reward Card — only for logged-in users */}
+      {user && (
+        <div className="mb-12">
+          <ReferralRewardCard />
+        </div>
+      )}
 
       {/* Provider Premium — only plan */}
       <Card className="border-2 border-amber-300 shadow-lg relative overflow-hidden max-w-md mx-auto">

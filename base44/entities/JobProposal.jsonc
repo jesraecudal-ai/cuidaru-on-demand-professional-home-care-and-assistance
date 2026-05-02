@@ -54,6 +54,11 @@
         "declined"
       ],
       "default": "pending"
+    },
+    "description": {
+      "type": "string",
+      "maxLength": 1000,
+      "description": "Optional description for this proposal"
     }
   },
   "required": [

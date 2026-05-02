@@ -1,0 +1,213 @@
+import React, { useState } from 'react';
+import { base44 } from '@/api/base44Client';
+import { Button } from '@/components/ui/button';
+import { Input } from '@/components/ui/input';
+import { Label } from '@/components/ui/label';
+import { Badge } from '@/components/ui/badge';
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
+import { Upload, CheckCircle, Clock, XCircle, AlertCircle } from 'lucide-react';
+import { toast } from 'sonner';
+
+const DOC_CONFIG = {
+  brazil: {
+    description: 'Brazilian law requires both CPF and a photo ID (RG or CNH). Passport is also accepted.',
+    primaryDocs: [
+      { value: 'cpf', label: 'CPF (Cadastro de Pessoa Física)' },
+      { value: 'passport', label: 'Passport' },
+    ],
+    secondaryDocs: [
+      { value: 'rg', label: 'RG (Registro Geral)' },
+      { value: 'cnh', label: 'CNH (Carteira Nacional de Habilitação)' },
+    ],
+    requiresSecondary: true,
+    primaryLabel: 'Primary Document',
+    secondaryLabel: 'Photo ID (RG or CNH)',
+  },
+  uruguay: {
+    description: 'Upload your Cédula de Identidad (CI) or Passport.',
+    primaryDocs: [
+      { value: 'cedula', label: 'Cédula de Identidad (CI)' },
+      { value: 'passport', label: 'Passport' },
+    ],
+    secondaryDocs: [],
+    requiresSecondary: false,
+    primaryLabel: 'Identity Document',
+    secondaryLabel: null,
+  },
+  usa: {
+    description: 'Upload your US Passport or Permanent Resident Card.',
+    primaryDocs: [
+      { value: 'passport', label: 'US Passport' },
+      { value: 'resident_card', label: 'Permanent Resident Card (Green Card)' },
+    ],
+    secondaryDocs: [],
+    requiresSecondary: false,
+    primaryLabel: 'Government-issued Document',
+    secondaryLabel: null,
+  },
+  canada: {
+    description: 'Upload your Canadian Passport or Permanent Resident Card.',
+    primaryDocs: [
+      { value: 'passport', label: 'Canadian Passport' },
+      { value: 'resident_card', label: 'Permanent Resident Card (PR Card)' },
+    ],
+    secondaryDocs: [],
+    requiresSecondary: false,
+    primaryLabel: 'Government-issued Document',
+    secondaryLabel: null,
+  },
+  philippines: {
+    description: 'Upload your Philippine Passport or any government-issued ID.',
+    primaryDocs: [
+      { value: 'passport', label: 'Philippine Passport' },
+      { value: 'resident_card', label: 'Government-issued ID' },
+    ],
+    secondaryDocs: [],
+    requiresSecondary: false,
+    primaryLabel: 'Government-issued Document',
+    secondaryLabel: null,
+  },
+};
+
+export default function ClientIdentityVerification({ userProfile, country, onUpdated }) {
+  const config = DOC_CONFIG[country] || DOC_CONFIG.brazil;
+  const [docType, setDocType] = useState(userProfile?.id_document_type || config.primaryDocs[0]?.value || '');
+  const [docNumber, setDocNumber] = useState(userProfile?.id_document_number || '');
+  const [uploading, setUploading] = useState(false);
+  const [uploadingSecondary, setUploadingSecondary] = useState(false);
+
+  const status = userProfile?.id_verification_status || 'unverified';
+
+  const handleUploadPrimary = async (e) => {
+    const file = e.target.files[0];
+    if (!file) return;
+    setUploading(true);
+    const { file_url } = await base44.integrations.Core.UploadFile({ file });
+    const newStatus = config.requiresSecondary && !userProfile?.id_secondary_url ? 'unverified' : 'pending';
+    await base44.entities.UserProfile.update(userProfile.id, {
+      id_document_url: file_url,
+      id_document_type: docType,
+      id_document_number: docNumber,
+      id_verification_status: newStatus,
+    });
+    setUploading(false);
+    toast.success('Primary document uploaded!');
+    onUpdated?.();
+  };
+
+  const handleUploadSecondary = async (e) => {
+    const file = e.target.files[0];
+    if (!file) return;
+    setUploadingSecondary(true);
+    const { file_url } = await base44.integrations.Core.UploadFile({ file });
+    await base44.entities.UserProfile.update(userProfile.id, {
+      id_secondary_url: file_url,
+      id_verification_status: userProfile?.id_document_url ? 'pending' : 'unverified',
+    });
+    setUploadingSecondary(false);
+    toast.success('Secondary document uploaded! Pending admin review.');
+    onUpdated?.();
+  };
+
+  const StatusBadge = () => {
+    if (status === 'verified') return <Badge className="bg-green-100 text-green-700 border-green-300 gap-1"><CheckCircle className="w-3.5 h-3.5" /> Verified</Badge>;
+    if (status === 'pending') return <Badge variant="outline" className="text-amber-600 border-amber-300 gap-1"><Clock className="w-3.5 h-3.5" /> Under Review</Badge>;
+    if (status === 'rejected') return <Badge className="bg-red-100 text-red-700 border-red-300 gap-1"><XCircle className="w-3.5 h-3.5" /> Rejected</Badge>;
+    return <Badge variant="outline" className="text-gray-500 gap-1"><AlertCircle className="w-3.5 h-3.5" /> Not Verified</Badge>;
+  };
+
+  return (
+    <div className="space-y-5">
+      <div className="flex items-center justify-between flex-wrap gap-2">
+        <p className="text-sm text-gray-500">{config.description}</p>
+        <StatusBadge />
+      </div>
+
+      {status === 'verified' && (
+        <div className="bg-green-50 border border-green-200 rounded-lg p-3 text-sm text-green-700 flex items-center gap-2">
+          <CheckCircle className="w-4 h-4 shrink-0" />
+          Your identity has been verified.
+        </div>
+      )}
+
+      {status === 'rejected' && (
+        <div className="bg-red-50 border border-red-200 rounded-lg p-3 text-sm text-red-700 flex items-center gap-2">
+          <XCircle className="w-4 h-4 shrink-0" />
+          Your document was rejected. Please re-upload a clear, valid document.
+        </div>
+      )}
+
+      {status !== 'verified' && (
+        <>
+          <div>
+            <Label className="text-sm">Document Number <span className="text-gray-400">(optional)</span></Label>
+            <Input
+              value={docNumber}
+              onChange={e => setDocNumber(e.target.value)}
+              placeholder="Document number"
+              className="mt-1.5 max-w-sm"
+            />
+          </div>
+
+          {/* Primary document */}
+          <div className="border border-gray-100 rounded-xl p-4 space-y-3">
+            <div className="flex items-center justify-between">
+              <Label className="text-sm font-semibold text-gray-700">{config.primaryLabel}</Label>
+              {userProfile?.id_document_url && <span className="text-xs text-green-600 font-medium">✓ Uploaded</span>}
+            </div>
+            {config.primaryDocs.length > 1 && (
+              <Select value={docType} onValueChange={setDocType}>
+                <SelectTrigger className="w-full"><SelectValue placeholder="Select document type" /></SelectTrigger>
+                <SelectContent>
+                  {config.primaryDocs.map(d => (
+                    <SelectItem key={d.value} value={d.value}>{d.label}</SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+            )}
+            {config.primaryDocs.length === 1 && (
+              <p className="text-sm text-gray-600 font-medium">{config.primaryDocs[0].label}</p>
+            )}
+            <Label htmlFor="client_primary_doc" className="cursor-pointer block">
+              <Button variant="outline" className="gap-2 w-full" asChild disabled={uploading}>
+                <span>
+                  <Upload className="w-4 h-4" />
+                  {uploading ? 'Uploading...' : userProfile?.id_document_url ? 'Replace Document' : 'Upload Photo / PDF'}
+                </span>
+              </Button>
+            </Label>
+            <input id="client_primary_doc" type="file" accept="image/*,.pdf" className="hidden" onChange={handleUploadPrimary} />
+            <p className="text-xs text-gray-400">Accepted: JPG, PNG, PDF. Must be clearly readable.</p>
+          </div>
+
+          {/* Secondary document (Brazil only) */}
+          {config.requiresSecondary && (
+            <div className="border border-gray-100 rounded-xl p-4 space-y-3">
+              <div className="flex items-center justify-between">
+                <Label className="text-sm font-semibold text-gray-700">{config.secondaryLabel}</Label>
+                {userProfile?.id_secondary_url && <span className="text-xs text-green-600 font-medium">✓ Uploaded</span>}
+              </div>
+              <Label htmlFor="client_secondary_doc" className="cursor-pointer block">
+                <Button variant="outline" className="gap-2 w-full" asChild disabled={uploadingSecondary}>
+                  <span>
+                    <Upload className="w-4 h-4" />
+                    {uploadingSecondary ? 'Uploading...' : userProfile?.id_secondary_url ? 'Replace Document' : 'Upload Photo / PDF'}
+                  </span>
+                </Button>
+              </Label>
+              <input id="client_secondary_doc" type="file" accept="image/*,.pdf" className="hidden" onChange={handleUploadSecondary} />
+              <p className="text-xs text-gray-400">Both documents required for Brazilian verification.</p>
+            </div>
+          )}
+
+          {status === 'pending' && (
+            <div className="bg-amber-50 border border-amber-200 rounded-lg p-3 text-sm text-amber-700 flex items-center gap-2">
+              <Clock className="w-4 h-4 shrink-0" />
+              Documents submitted. Admin will review within 24 hours.
+            </div>
+          )}
+        </>
+      )}
+    </div>
+  );
+}

@@ -75,6 +75,41 @@
       "type": "string",
       "maxLength": 1000,
       "description": "Optional profile description"
+    },
+    "id_document_url": {
+      "type": "string",
+      "description": "Client primary ID document photo/PDF"
+    },
+    "id_document_type": {
+      "type": "string",
+      "enum": [
+        "cpf",
+        "rg",
+        "cnh",
+        "cedula",
+        "passport",
+        "resident_card"
+      ],
+      "description": "Type of document"
+    },
+    "id_document_number": {
+      "type": "string",
+      "description": "Document number (optional)"
+    },
+    "id_secondary_url": {
+      "type": "string",
+      "description": "Secondary document (e.g. RG for Brazil)"
+    },
+    "id_verification_status": {
+      "type": "string",
+      "enum": [
+        "unverified",
+        "pending",
+        "verified",
+        "rejected"
+      ],
+      "default": "unverified",
+      "description": "Client ID verification status"
     }
   },
   "required": [

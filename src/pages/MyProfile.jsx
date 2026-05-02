@@ -7,7 +7,7 @@ import { Label } from '@/components/ui/label';
 import { Textarea } from '@/components/ui/textarea';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Badge } from '@/components/ui/badge';
-import { User, Briefcase, Plus, X, Save, ShieldCheck, Zap, Upload, MapPin, CalendarDays, Search, Clock, Trash2 } from 'lucide-react';
+import { User, Briefcase, Plus, X, Save, ShieldCheck, Zap, Upload, MapPin, CalendarDays, Search, Trash2 } from 'lucide-react';
 // Upload still used for avatar
 import { toast } from 'sonner';
 import { useI18n } from '@/lib/i18n';
@@ -15,6 +15,7 @@ import { CATEGORIES, COUNTRY_SETTINGS } from '@/lib/constants';
 import { useUserProfile } from '@/lib/useUserProfile';
 import LocationPicker from '@/components/location/LocationPicker';
 import IdentityVerification from '@/components/verification/IdentityVerification';
+import ClientIdentityVerification from '@/components/verification/ClientIdentityVerification';
 import DocumentUploadSection from '@/components/providers/DocumentUploadSection';
 import DoctorAvailabilityCalendar from '@/components/doctors/DoctorAvailabilityCalendar';
 
@@ -329,6 +330,26 @@ export default function MyProfile() {
             >
               <Save className="w-4 h-4 mr-2" /> Save Profile
             </Button>
+          </CardContent>
+        </Card>
+      )}
+
+      {/* Client ID Verification */}
+      {isClient && userProfile && (
+        <Card className="mb-4 sm:mb-6 border border-gray-100 shadow-sm overflow-hidden">
+          <div className="h-2 bg-gradient-to-r from-green-600 to-teal-500" />
+          <CardHeader>
+            <CardTitle className="flex items-center gap-2 text-base sm:text-lg text-gray-800">
+              <ShieldCheck className="w-4 h-4 sm:w-5 sm:h-5 text-green-600" /> Identity Verification
+            </CardTitle>
+            <p className="text-sm text-gray-500">Submit a government-issued ID so service providers know you're verified.</p>
+          </CardHeader>
+          <CardContent>
+            <ClientIdentityVerification
+              userProfile={userProfile}
+              country={country}
+              onUpdated={refetchUserProfile}
+            />
           </CardContent>
         </Card>
       )}

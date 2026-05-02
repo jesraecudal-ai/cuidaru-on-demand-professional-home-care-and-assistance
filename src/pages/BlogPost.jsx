@@ -6,7 +6,8 @@ import { motion } from 'framer-motion';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
-import { Clock, ArrowLeft, MessageCircle, Send, User, ChevronRight } from 'lucide-react';
+import { Clock, ArrowLeft, MessageCircle, Send, User, Pencil } from 'lucide-react';
+import { useUserProfile } from '@/lib/useUserProfile';
 import { Skeleton } from '@/components/ui/skeleton';
 import { toast } from 'sonner';
 import ReactMarkdown from 'react-markdown';
@@ -32,6 +33,7 @@ const CATEGORY_COLORS = {
 export default function BlogPostPage() {
   const { slug } = useParams();
   const queryClient = useQueryClient();
+  const { user } = useUserProfile();
   const [commentForm, setCommentForm] = useState({ name: '', email: '', content: '' });
   const [submitting, setSubmitting] = useState(false);
 
@@ -144,6 +146,11 @@ export default function BlogPostPage() {
           <Link to="/blog" className="flex items-center gap-1.5 text-blue-600 hover:text-blue-700 font-medium">
             <ArrowLeft className="w-4 h-4" /> Blog
           </Link>
+          {user?.role === 'admin' && post && (
+            <Link to={`/admin/blog/edit/${post.id}`} className="flex items-center gap-1.5 text-gray-500 hover:text-blue-600 text-xs border border-gray-200 px-3 py-1 rounded-full">
+              <Pencil className="w-3 h-3" /> Edit Post
+            </Link>
+          )}
           <span className="flex items-center gap-1.5"><User className="w-4 h-4" /> {post.author_name || 'Cuidaru Team'}</span>
           <span className="flex items-center gap-1.5"><Clock className="w-4 h-4" /> {post.read_time_minutes || 8} min read</span>
           {post.tags?.length > 0 && (

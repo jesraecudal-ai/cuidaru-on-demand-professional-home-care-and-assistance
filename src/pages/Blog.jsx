@@ -5,8 +5,10 @@ import { base44 } from '@/api/base44Client';
 import { motion } from 'framer-motion';
 import { Badge } from '@/components/ui/badge';
 import { Input } from '@/components/ui/input';
-import { Clock, Search, ArrowRight, BookOpen, Tag } from 'lucide-react';
+import { Clock, Search, ArrowRight, BookOpen, Plus } from 'lucide-react';
 import { Skeleton } from '@/components/ui/skeleton';
+import { Button } from '@/components/ui/button';
+import { useUserProfile } from '@/lib/useUserProfile';
 
 const CATEGORY_LABELS = {
   caregiving: 'Caregiving',
@@ -29,6 +31,7 @@ const CATEGORY_COLORS = {
 export default function Blog() {
   const [search, setSearch] = useState('');
   const [activeCategory, setActiveCategory] = useState('all');
+  const { user } = useUserProfile();
 
   const { data: posts = [], isLoading } = useQuery({
     queryKey: ['blog-posts'],
@@ -78,6 +81,17 @@ export default function Blog() {
       </motion.div>
 
       <div className="max-w-6xl mx-auto px-4 py-12">
+        {/* Admin actions */}
+        {user?.role === 'admin' && (
+          <div className="flex justify-end mb-6">
+            <Link to="/admin/blog/new">
+              <Button className="gap-2 bg-blue-600 hover:bg-blue-700">
+                <Plus className="w-4 h-4" /> New Post
+              </Button>
+            </Link>
+          </div>
+        )}
+
         {/* Category filters */}
         <div className="flex flex-wrap gap-2 mb-10">
           {['all', ...Object.keys(CATEGORY_LABELS)].map(cat => (

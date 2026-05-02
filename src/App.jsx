@@ -36,6 +36,7 @@ import Jobs from './pages/Jobs';
 import HowItWorks from './pages/HowItWorks';
 import Blog from './pages/Blog';
 import BlogPost from './pages/BlogPost';
+import AdminBlogEditor from './pages/AdminBlogEditor';
 import Layout from './components/shared/Layout';
 
 const AuthenticatedApp = () => {
@@ -90,6 +91,8 @@ const AuthenticatedApp = () => {
         <Route path="/how-it-works" element={<HowItWorks />} />
         <Route path="/blog" element={<Blog />} />
         <Route path="/blog/:slug" element={<BlogPost />} />
+        <Route path="/admin/blog/new" element={<AdminBlogEditor />} />
+        <Route path="/admin/blog/edit/:id" element={<AdminBlogEditor />} />
       </Route>
       <Route path="*" element={<PageNotFound />} />
     </Routes>

@@ -82,17 +82,7 @@ export default function BrowseProviders() {
       return { ...p, _distance: distance };
     });
 
-    // Providers viewing the page: sort by distance only (nearest first)
-    if (isProviderOnly) {
-      return result.sort((a, b) => {
-        if (a._distance !== null && b._distance !== null) return a._distance - b._distance;
-        if (a._distance !== null) return -1;
-        if (b._distance !== null) return 1;
-        return (b.average_rating || 0) - (a.average_rating || 0);
-      });
-    }
-
-    // Clients: Premium first (by distance), then non-premium (by distance)
+    // Smart sort: Premium first (by distance), then non-premium (by distance)
     const premium = result.filter(p => p.is_premium).sort((a, b) => {
       if (a._distance !== null && b._distance !== null) return a._distance - b._distance;
       return (b.average_rating || 0) - (a.average_rating || 0);
@@ -103,9 +93,19 @@ export default function BrowseProviders() {
     });
 
     return [...premium, ...nonPremium];
-  }, [providers, filters, userLocation, isProviderOnly]);
+  }, [providers, filters, userLocation]);
 
-  const isProviderOnly = profile?.role === 'provider';
+  // Only clients can browse providers
+  const isClient = !profile?.role || profile?.role === 'client' || profile?.role === 'both';
+  if (!isClient) {
+    return (
+      <div className="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8 py-16 text-center">
+        <Users className="w-12 h-12 text-gray-300 mx-auto mb-4" />
+        <h2 className="text-xl font-semibold text-gray-700 mb-2">Browse Providers</h2>
+        <p className="text-gray-500">Only clients can browse providers on CareBook. If you want to see providers, toggle Client in your profile settings.</p>
+      </div>
+    );
+  }
 
   return (
     <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">

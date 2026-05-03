@@ -69,13 +69,15 @@ export default function MyProfile() {
   });
 
   const isClient = !userProfile?.role || userProfile?.role === 'client' || userProfile?.role === 'both';
-  const isProvider = (userProfile?.role === 'provider' || userProfile?.role === 'both') && !!existingProvider;
+  const isProviderRole = userProfile?.role === 'provider' || userProfile?.role === 'both';
+  const isProvider = isProviderRole; // show provider form whenever role includes provider
   const country = userProfile?.country || 'brazil';
   const countryInfo = COUNTRY_SETTINGS[country] || COUNTRY_SETTINGS.brazil;
   const [companyName, setCompanyName] = useState('');
   const [position, setPosition] = useState('');
   const [clientFullName, setClientFullName] = useState('');
   const [clientAvatarUrl, setClientAvatarUrl] = useState('');
+  const [clientAddress, setClientAddress] = useState('');
   const [deletingAccount, setDeletingAccount] = useState(false);
   const [showDeleteConfirm, setShowDeleteConfirm] = useState(false);
   const [deleteConfirmText, setDeleteConfirmText] = useState('');
@@ -83,7 +85,8 @@ export default function MyProfile() {
   useEffect(() => {
     if (userProfile?.company_name) setCompanyName(userProfile.company_name);
     if (userProfile?.position) setPosition(userProfile.position);
-  }, [userProfile?.company_name, userProfile?.position]);
+    if (userProfile?.address) setClientAddress(userProfile.address);
+  }, [userProfile?.company_name, userProfile?.position, userProfile?.address]);
 
   useEffect(() => {
     if (user?.full_name) setClientFullName(user.full_name);
@@ -238,13 +241,13 @@ export default function MyProfile() {
                   await refetchUserProfile();
                 }}
                 className={`flex items-center gap-1 sm:gap-2 px-3 sm:px-4 py-2 rounded-full border-2 text-xs sm:text-sm font-medium transition-all ${
-                  isProvider
+                  isProviderRole
                     ? 'border-green-500 bg-green-50 text-green-700'
                     : 'border-gray-200 text-gray-500 hover:border-green-300'
                 }`}
               >
                 <Briefcase className="w-4 h-4" /> {t('provider_label')}
-                {isProvider && <span className="text-xs bg-green-500 text-white rounded-full px-1.5 py-0.5 leading-none">✓</span>}
+                {isProviderRole && <span className="text-xs bg-green-500 text-white rounded-full px-1.5 py-0.5 leading-none">✓</span>}
               </button>
             </div>
           </CardContent>
@@ -363,6 +366,16 @@ export default function MyProfile() {
               />
             </div>
             <div>
+              <Label htmlFor="client_address"><MapPin className="w-3.5 h-3.5 inline mr-1" />Address</Label>
+              <Input
+                id="client_address"
+                value={clientAddress}
+                onChange={e => setClientAddress(e.target.value)}
+                placeholder="e.g. 123 Main St, City, State"
+                className="mt-1.5"
+              />
+            </div>
+            <div>
               <Label>{t('company_logo_label')}</Label>
               <p className="text-xs text-gray-500 mb-2">{t('company_logo_desc')}</p>
               <div className="flex items-center gap-4">
@@ -393,7 +406,7 @@ export default function MyProfile() {
             <Button
               onClick={async () => {
                 await Promise.all([
-                  base44.entities.UserProfile.update(userProfile.id, { company_name: companyName, position }),
+                  base44.entities.UserProfile.update(userProfile.id, { company_name: companyName, position, address: clientAddress }),
                   base44.auth.updateMe({ full_name: clientFullName }),
                 ]);
                 await refetchUserProfile();

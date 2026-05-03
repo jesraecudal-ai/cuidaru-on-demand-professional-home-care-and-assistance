@@ -30,6 +30,10 @@
       "type": "string",
       "description": "Job title or position at the company"
     },
+    "address": {
+      "type": "string",
+      "description": "Client address"
+    },
     "country": {
       "type": "string",
       "enum": [
@@ -88,7 +92,9 @@
         "cnh",
         "cedula",
         "passport",
-        "resident_card"
+        "resident_card",
+        "temp_id",
+        "visa"
       ],
       "description": "Type of document"
     },

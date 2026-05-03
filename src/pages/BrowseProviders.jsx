@@ -23,6 +23,8 @@ export default function BrowseProviders() {
     search: '',
     category: initialCategory,
     availability: 'all',
+    state: '',
+    city: '',
   });
 
   // Get GPS
@@ -50,6 +52,18 @@ export default function BrowseProviders() {
     // Filter
     if (filters.category !== 'all') result = result.filter(p => p.categories?.includes(filters.category) || p.category === filters.category);
     if (filters.availability === 'available') result = result.filter(p => p.availability === 'available');
+    if (filters.state) {
+      result = result.filter(p => {
+        const addr = p.address || p.location_text || '';
+        return addr.toLowerCase().includes(filters.state.toLowerCase());
+      });
+    }
+    if (filters.city) {
+      result = result.filter(p => {
+        const addr = p.address || p.location_text || '';
+        return addr.toLowerCase().includes(filters.city.toLowerCase());
+      });
+    }
     if (filters.search) {
       const q = filters.search.toLowerCase();
       result = result.filter(p =>
@@ -104,7 +118,7 @@ export default function BrowseProviders() {
         </p>
       </div>
 
-      <ProviderFilters filters={filters} onFilterChange={setFilters} />
+      <ProviderFilters filters={filters} onFilterChange={setFilters} country={userCountry} />
 
       <div className="mt-4 flex items-center justify-between gap-2">
         <div className="flex items-center gap-2 text-sm text-gray-500">

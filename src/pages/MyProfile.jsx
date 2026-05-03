@@ -7,11 +7,13 @@ import { Label } from '@/components/ui/label';
 import { Textarea } from '@/components/ui/textarea';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Badge } from '@/components/ui/badge';
-import { User, Briefcase, Plus, X, Save, ShieldCheck, Zap, Upload, MapPin, CalendarDays, Search, Trash2 } from 'lucide-react';
+import { User, Briefcase, Plus, X, Save, ShieldCheck, Zap, Upload, MapPin, CalendarDays, Search, Trash2, Globe } from 'lucide-react';
 // Upload still used for avatar
 import { toast } from 'sonner';
 import { useI18n } from '@/lib/i18n';
 import { CATEGORIES, COUNTRY_SETTINGS } from '@/lib/constants';
+
+const SUPPORTED_COUNTRIES = ['brazil', 'uruguay', 'usa', 'canada'];
 import { useUserProfile } from '@/lib/useUserProfile';
 import LocationPicker from '@/components/location/LocationPicker';
 import IdentityVerification from '@/components/verification/IdentityVerification';
@@ -244,6 +246,45 @@ export default function MyProfile() {
                 <Briefcase className="w-4 h-4" /> {t('provider_label')}
                 {isProvider && <span className="text-xs bg-green-500 text-white rounded-full px-1.5 py-0.5 leading-none">✓</span>}
               </button>
+            </div>
+          </CardContent>
+        </Card>
+      )}
+
+      {/* Country selector */}
+      {userProfile && (
+        <Card className="mb-4 sm:mb-6 border border-gray-100 shadow-sm">
+          <CardHeader>
+            <CardTitle className="flex items-center gap-2 text-base sm:text-lg text-gray-800">
+              <Globe className="w-4 h-4 sm:w-5 sm:h-5 text-blue-600" /> Your Country
+            </CardTitle>
+            <p className="text-sm text-gray-500">You only see providers and clients from your country. Changing country creates a fresh profile for that market.</p>
+          </CardHeader>
+          <CardContent>
+            <div className="grid grid-cols-2 sm:grid-cols-4 gap-2">
+              {SUPPORTED_COUNTRIES.map(key => {
+                const info = COUNTRY_SETTINGS[key];
+                const isSelected = (userProfile.country || 'brazil') === key;
+                return (
+                  <button
+                    key={key}
+                    onClick={async () => {
+                      await base44.entities.UserProfile.update(userProfile.id, { country: key });
+                      await refetchUserProfile();
+                      toast.success(`Country changed to ${info.label}`);
+                    }}
+                    className={`flex flex-col items-center gap-1.5 p-3 rounded-xl border-2 transition-all text-sm font-medium ${
+                      isSelected
+                        ? 'border-blue-500 bg-blue-50 text-blue-700'
+                        : 'border-gray-200 text-gray-600 hover:border-blue-300'
+                    }`}
+                  >
+                    <span className="text-2xl">{info.flag}</span>
+                    <span className="text-xs leading-tight text-center">{info.label}</span>
+                    <span className="text-xs text-gray-400">{info.symbol}</span>
+                  </button>
+                );
+              })}
             </div>
           </CardContent>
         </Card>

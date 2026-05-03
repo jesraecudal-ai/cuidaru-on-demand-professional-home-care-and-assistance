@@ -54,7 +54,7 @@ export const COUNTRY_SETTINGS = {
   uruguay: { label: 'Uruguay', flag: '🇺🇾', currency: 'UYU', symbol: '$U', fee_pct: 10, sub_client: 299, sub_provider: 499 },
   usa: { label: 'United States', flag: '🇺🇸', currency: 'USD', symbol: '$', fee_pct: 10, sub_client: 9.99, sub_provider: 14.99 },
   canada: { label: 'Canada', flag: '🇨🇦', currency: 'CAD', symbol: 'C$', fee_pct: 10, sub_client: 12.99, sub_provider: 19.99 },
-  philippines: { label: 'Philippines', flag: '🇵🇭', currency: 'PHP', symbol: '₱', fee_pct: 10, sub_client: 299, sub_provider: 499 },
+  // philippines kept for legacy data compatibility but not shown in UI
 };
 
 export const BOOKING_STATUSES = {

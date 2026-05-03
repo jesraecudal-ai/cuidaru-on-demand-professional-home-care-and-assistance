@@ -35,16 +35,20 @@ export default function BrowseProviders() {
     }
   }, []);
 
+  const userCountry = profile?.country || null;
+
   const { data: providers = [], isLoading } = useQuery({
-    queryKey: ['providers'],
-    queryFn: () => base44.entities.ServiceProvider.list(),
+    queryKey: ['providers', userCountry],
+    queryFn: () => userCountry
+      ? base44.entities.ServiceProvider.filter({ country: userCountry })
+      : base44.entities.ServiceProvider.list(),
   });
 
   const sortedProviders = useMemo(() => {
     let result = providers.filter(p => p.profile_complete !== false && p.is_active !== false);
 
     // Filter
-    if (filters.category !== 'all') result = result.filter(p => p.category === filters.category);
+    if (filters.category !== 'all') result = result.filter(p => p.categories?.includes(filters.category) || p.category === filters.category);
     if (filters.availability === 'available') result = result.filter(p => p.availability === 'available');
     if (filters.search) {
       const q = filters.search.toLowerCase();

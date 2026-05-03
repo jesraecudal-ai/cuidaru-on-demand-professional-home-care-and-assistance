@@ -12,23 +12,22 @@ import { toast } from 'sonner';
 const DOC_CONFIG = {
   brazil: {
     label: '🇧🇷 Brazil',
-    description: 'Brazilian law requires both CPF and a photo ID (RG or CNH). Passport is also accepted.',
+    description: 'Upload your RG, CNH, or CPF. A Passport is also accepted.',
     primaryDocs: [
+      { value: 'rg', label: 'RG (Registro Geral)' },
+      { value: 'cnh', label: 'CNH (Carteira Nacional de Habilitação)' },
       { value: 'cpf', label: 'CPF (Cadastro de Pessoa Física)' },
       { value: 'passport', label: 'Passport' },
     ],
-    secondaryDocs: [
-      { value: 'rg', label: 'RG (Registro Geral)' },
-      { value: 'cnh', label: 'CNH (Carteira Nacional de Habilitação)' },
-    ],
-    requiresSecondary: true,
-    primaryLabel: 'Primary Document',
-    secondaryLabel: 'Photo ID (RG or CNH)',
+    secondaryDocs: [],
+    requiresSecondary: false,
+    primaryLabel: 'Identity Document',
+    secondaryLabel: null,
     numberPlaceholder: 'Document number',
   },
   uruguay: {
     label: '🇺🇾 Uruguay',
-    description: 'Uruguayan residents use the Cédula de Identidad (CI) or a Passport.',
+    description: 'Upload your Cédula de Identidad (CI) or Passport.',
     primaryDocs: [
       { value: 'cedula', label: 'Cédula de Identidad (CI)' },
       { value: 'passport', label: 'Passport' },
@@ -41,10 +40,12 @@ const DOC_CONFIG = {
   },
   usa: {
     label: '🇺🇸 United States',
-    description: 'Upload your US Passport or Permanent Resident Card (Green Card).',
+    description: 'Upload a government-issued ID: Temporary ID, Permanent ID, Passport, or VISA.',
     primaryDocs: [
-      { value: 'passport', label: 'US Passport' },
-      { value: 'resident_card', label: 'Permanent Resident Card (Green Card)' },
+      { value: 'temp_id', label: 'Temporary ID' },
+      { value: 'resident_card', label: 'Permanent ID / Green Card' },
+      { value: 'passport', label: 'Passport' },
+      { value: 'visa', label: 'VISA' },
     ],
     secondaryDocs: [],
     requiresSecondary: false,
@@ -54,10 +55,12 @@ const DOC_CONFIG = {
   },
   canada: {
     label: '🇨🇦 Canada',
-    description: 'Upload your Canadian Passport or Permanent Resident Card.',
+    description: 'Upload a government-issued ID: Temporary ID, Permanent ID, Passport, or VISA.',
     primaryDocs: [
-      { value: 'passport', label: 'Canadian Passport' },
-      { value: 'resident_card', label: 'Permanent Resident Card (PR Card)' },
+      { value: 'temp_id', label: 'Temporary ID' },
+      { value: 'resident_card', label: 'Permanent ID / PR Card' },
+      { value: 'passport', label: 'Passport' },
+      { value: 'visa', label: 'VISA' },
     ],
     secondaryDocs: [],
     requiresSecondary: false,

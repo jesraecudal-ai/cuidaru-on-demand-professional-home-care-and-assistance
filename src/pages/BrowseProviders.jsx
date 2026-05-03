@@ -19,6 +19,7 @@ export default function BrowseProviders() {
 
   const [userLocation, setUserLocation] = useState(null);
   const [viewMode, setViewMode] = useState('grid'); // 'grid' | 'map'
+  const [filtersReady, setFiltersReady] = useState(false);
   const [filters, setFilters] = useState({
     search: '',
     category: initialCategory,
@@ -38,6 +39,19 @@ export default function BrowseProviders() {
   }, []);
 
   const userCountry = profile?.country || null;
+
+  // Pre-fill state/city from client's saved address once profile loads
+  useEffect(() => {
+    if (!profile || filtersReady) return;
+    const addr = profile.address || '';
+    if (addr) {
+      const parts = addr.split(' | ');
+      const clientState = parts[0] || '';
+      const clientCity = parts[1] || '';
+      setFilters(f => ({ ...f, state: clientState, city: clientCity }));
+    }
+    setFiltersReady(true);
+  }, [profile]);
 
   const { data: providers = [], isLoading } = useQuery({
     queryKey: ['providers', userCountry],

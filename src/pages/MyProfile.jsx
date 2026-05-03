@@ -16,6 +16,7 @@ import { CATEGORIES, COUNTRY_SETTINGS } from '@/lib/constants';
 const SUPPORTED_COUNTRIES = ['brazil', 'uruguay', 'usa', 'canada'];
 import { useUserProfile } from '@/lib/useUserProfile';
 import LocationPicker from '@/components/location/LocationPicker';
+import AddressPicker from '@/components/address/AddressPicker';
 import IdentityVerification from '@/components/verification/IdentityVerification';
 import ClientIdentityVerification from '@/components/verification/ClientIdentityVerification';
 import DocumentUploadSection from '@/components/providers/DocumentUploadSection';
@@ -64,6 +65,7 @@ export default function MyProfile() {
     experience_years: 0, hourly_rate: 25, daily_rate: 180, weekly_rate: 800,
     consultation_fee: 0,
     location_text: '', latitude: null, longitude: null,
+    address: '',
     availability: 'available', skills: [], certifications: [],
     avatar_url: '', id_document_url: '',
   });
@@ -110,6 +112,7 @@ export default function MyProfile() {
           weekly_rate: p.weekly_rate || 800,
           consultation_fee: p.consultation_fee || 0,
           location_text: p.location_text || '',
+          address: p.address || '',
           latitude: p.latitude || null,
           longitude: p.longitude || null,
           availability: p.availability || 'available',
@@ -366,13 +369,11 @@ export default function MyProfile() {
               />
             </div>
             <div>
-              <Label htmlFor="client_address"><MapPin className="w-3.5 h-3.5 inline mr-1" />Address</Label>
-              <Input
-                id="client_address"
+              <Label className="flex items-center gap-1 mb-2"><MapPin className="w-3.5 h-3.5" /> Address</Label>
+              <AddressPicker
+                country={country}
                 value={clientAddress}
-                onChange={e => setClientAddress(e.target.value)}
-                placeholder="e.g. 123 Main St, City, State"
-                className="mt-1.5"
+                onChange={setClientAddress}
               />
             </div>
             <div>
@@ -523,9 +524,9 @@ export default function MyProfile() {
                 <Textarea value={form.bio} onChange={e => setForm(f => ({ ...f, bio: e.target.value }))} placeholder={t('bio_placeholder')} className="mt-1.5" rows={3} />
               </div>
 
-              {/* Location */}
+              {/* Service Location */}
               <div>
-                <Label className="flex items-center gap-1 mb-2"><MapPin className="w-3.5 h-3.5" />{t('location')} *</Label>
+                <Label className="flex items-center gap-1 mb-2"><MapPin className="w-3.5 h-3.5" />{t('location')} * <span className="text-xs text-gray-400 font-normal">(service area shown to clients)</span></Label>
                 <LocationPicker
                   country={country}
                   locationText={form.location_text}
@@ -534,6 +535,16 @@ export default function MyProfile() {
                   onChange={({ location_text, latitude, longitude }) =>
                     setForm(f => ({ ...f, location_text, latitude, longitude }))
                   }
+                />
+              </div>
+
+              {/* Home / contact address */}
+              <div>
+                <Label className="flex items-center gap-1 mb-2"><MapPin className="w-3.5 h-3.5 text-gray-400" /> Home Address <span className="text-xs text-gray-400 font-normal">(private — not shown publicly)</span></Label>
+                <AddressPicker
+                  country={country}
+                  value={form.address}
+                  onChange={val => setForm(f => ({ ...f, address: val }))}
                 />
               </div>
 

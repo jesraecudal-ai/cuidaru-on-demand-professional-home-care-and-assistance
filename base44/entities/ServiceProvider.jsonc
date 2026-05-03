@@ -71,6 +71,10 @@
     "location_text": {
       "type": "string"
     },
+    "address": {
+      "type": "string",
+      "description": "Structured home/service address: state | city | street | postal"
+    },
     "latitude": {
       "type": "number"
     },

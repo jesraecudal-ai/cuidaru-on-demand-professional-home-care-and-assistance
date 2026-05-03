@@ -1,39 +1,53 @@
-**Welcome to your Base44 project** 
+💙 Cuidaru – Care Services Platform
+📌 About
 
-**About**
+Cuidaru is a platform designed to connect clients with trusted care service providers.
+It acts as a middleman marketplace, enabling users to find, compare, and engage with caregivers based on verified profiles, reviews, and flexible pricing.
 
-View and Edit  your app on [Base44.com](http://Base44.com) 
+This project contains everything you need to run the application locally.
 
-This project contains everything you need to run your app locally.
+💻 Local Development
+1. Clone the Repository
+git clone <your-project-git-url>
+cd <your-project-folder>
+2. Install Dependencies
+npm install
+3. Configure Environment Variables
 
-**Edit the code in your local development environment**
+Create a .env.local file in the root directory and add the required variables:
 
-Any change pushed to the repo will also be reflected in the Base44 Builder.
+VITE_APP_ID=your_app_id
+VITE_API_BASE_URL=your_backend_url
+Example:
+VITE_APP_ID=cbef744a8545c389ef439ea6
+VITE_API_BASE_URL=https://your-backend-url.com
+▶️ Run the Application
+npm run dev
 
-**Prerequisites:** 
+Open your browser at:
 
-1. Clone the repository using the project's Git URL 
-2. Navigate to the project directory
-3. Install dependencies: `npm install`
-4. Create an `.env.local` file and set the right environment variables
+http://localhost:5173
+🔄 Development Workflow
+Develop and test features locally
+Push updates to your repository
+Ensure environment variables are properly configured
+Maintain clean and version-controlled code
+🚀 Deployment
 
-```
-VITE_BASE44_APP_ID=your_app_id
-VITE_BASE44_APP_BASE_URL=your_backend_url
+To deploy your application:
 
-e.g.
-VITE_BASE44_APP_ID=cbef744a8545c389ef439ea6
-VITE_BASE44_APP_BASE_URL=https://my-to-do-list-81bfaad7.base44.app
-```
+Push your latest changes
+Run your deployment pipeline or hosting service
+Verify everything in the production environment
+🧩 Platform Features
+👤 Verified client and provider profiles
+⭐ Ratings and reviews system
+💬 Direct connection between clients and caregivers
+💰 Flexible pricing (hourly, weekly, monthly)
+🔐 Secure handling of user and payment data
+🤝 Marketplace model (Cuidaru acts as a connector, not the service provider)
+⚠️ Disclaimer
 
-Run the app: `npm run dev`
-
-**Publish your changes**
-
-Open [Base44.com](http://Base44.com) and click on Publish.
-
-**Docs & Support**
-
-Documentation: [https://docs.base44.com/Integrations/Using-GitHub](https://docs.base44.com/Integrations/Using-GitHub)
-
-Support: [https://app.base44.com/support](https://app.base44.com/support)
+Cuidaru operates solely as a platform that connects clients and service providers.
+We do not directly provide caregiving services and are not responsible for agreements, outcomes, or disputes between users.
+All parties are responsible for defining and agreeing on the terms of service independently.

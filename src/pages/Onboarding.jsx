@@ -2,7 +2,6 @@ import React, { useState, useEffect } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
 import { base44 } from '@/api/base44Client';
 import { Button } from '@/components/ui/button';
-import { Card, CardContent } from '@/components/ui/card';
 import { Heart, ChevronRight } from 'lucide-react';
 import { motion } from 'framer-motion';
 import { useI18n } from '@/lib/i18n';
@@ -10,47 +9,46 @@ import { useI18n } from '@/lib/i18n';
 export default function Onboarding() {
   const { t } = useI18n();
   const navigate = useNavigate();
-  const [role, setRole] = useState(null);
   const [loading, setLoading] = useState(false);
   const [isAuthed, setIsAuthed] = useState(false);
 
   useEffect(() => {
     base44.auth.me()
-      .then(u => setIsAuthed(!!u))
-      .catch(() => setIsAuthed(false));
+      .then(async (u) => {
+        if (u) {
+          setIsAuthed(true);
+          // Auto-complete onboarding for already-authed users
+          setLoading(true);
+          const existing = await base44.entities.UserProfile.filter({ user_email: u.email });
+          if (existing.length > 0) {
+            if (!existing[0].onboarding_complete) {
+              await base44.entities.UserProfile.update(existing[0].id, { onboarding_complete: true });
+            }
+          } else {
+            await base44.entities.UserProfile.create({ user_email: u.email, role: 'client', onboarding_complete: true });
+          }
+          navigate('/browse');
+        }
+      })
+      .catch(() => setIsAuthed(false))
+      .finally(() => setLoading(false));
   }, []);
 
-  const handleComplete = async () => {
-    if (!isAuthed) {
-      base44.auth.redirectToLogin('/onboarding');
-      return;
-    }
-    setLoading(true);
-    try {
-      const me = await base44.auth.me();
-      const existing = await base44.entities.UserProfile.filter({ user_email: me.email });
-      if (existing.length > 0) {
-        await base44.entities.UserProfile.update(existing[0].id, { role, onboarding_complete: true });
-      } else {
-        await base44.entities.UserProfile.create({ user_email: me.email, role, onboarding_complete: true });
-      }
-      if (role === 'provider' || role === 'both') {
-        navigate('/my-profile');
-      } else {
-        navigate('/browse');
-      }
-    } catch (err) {
-      console.error('Onboarding error:', err);
-      base44.auth.redirectToLogin('/onboarding');
-    } finally {
-      setLoading(false);
-    }
+  const handleGetStarted = () => {
+    base44.auth.redirectToLogin('/onboarding');
   };
+
+  if (loading) {
+    return (
+      <div className="min-h-screen flex items-center justify-center">
+        <div className="w-10 h-10 border-4 border-blue-100 border-t-blue-600 rounded-full animate-spin" />
+      </div>
+    );
+  }
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-blue-50 via-white to-green-50 flex items-center justify-center p-4">
       <div className="w-full max-w-lg">
-        {/* Logo */}
         <div className="text-center mb-8">
           <div className="inline-flex items-center gap-2 mb-2">
             <div className="w-10 h-10 rounded-xl bg-blue-600 flex items-center justify-center">
@@ -61,58 +59,12 @@ export default function Onboarding() {
           <p className="text-gray-500">{t('onboarding_welcome')}</p>
         </div>
 
-        <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }}>
-          <h2 className="text-2xl font-bold text-center mb-6 text-gray-800">{t('onboarding_iam_here')}</h2>
-          <div className="grid gap-4">
-            <Card
-              className={`cursor-pointer border-2 transition-all hover:shadow-lg ${role === 'client' ? 'border-blue-500 bg-blue-50' : 'border-gray-200 hover:border-blue-300'}`}
-              onClick={() => setRole('client')}
-            >
-              <CardContent className="p-6 flex items-center gap-4">
-                <div className="w-14 h-14 rounded-2xl bg-blue-100 flex items-center justify-center text-2xl">🔍</div>
-                <div>
-                  <h3 className="text-lg font-semibold text-gray-900">{t('onboarding_looking_help')}</h3>
-                  <p className="text-sm text-gray-500">{t('onboarding_looking_help_desc')}</p>
-                </div>
-                {role === 'client' && <ChevronRight className="ml-auto text-blue-500 w-5 h-5" />}
-              </CardContent>
-            </Card>
+        <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} className="text-center">
+          <h2 className="text-2xl font-bold mb-3 text-gray-800">Find trusted care & service professionals</h2>
+          <p className="text-gray-500 mb-8">Book verified nurses, doctors, cleaners, nannies and more. Pay securely — funds released only when the job is done.</p>
 
-            <Card
-              className={`cursor-pointer border-2 transition-all hover:shadow-lg ${role === 'provider' ? 'border-green-500 bg-green-50' : 'border-gray-200 hover:border-green-300'}`}
-              onClick={() => setRole('provider')}
-            >
-              <CardContent className="p-6 flex items-center gap-4">
-                <div className="w-14 h-14 rounded-2xl bg-green-100 flex items-center justify-center text-2xl">💼</div>
-                <div>
-                  <h3 className="text-lg font-semibold text-gray-900">{t('onboarding_looking_work')}</h3>
-                  <p className="text-sm text-gray-500">{t('onboarding_looking_work_desc')}</p>
-                </div>
-                {role === 'provider' && <ChevronRight className="ml-auto text-green-500 w-5 h-5" />}
-              </CardContent>
-            </Card>
-
-            <Card
-              className={`cursor-pointer border-2 transition-all hover:shadow-lg ${role === 'both' ? 'border-purple-500 bg-purple-50' : 'border-gray-200 hover:border-purple-300'}`}
-              onClick={() => setRole('both')}
-            >
-              <CardContent className="p-6 flex items-center gap-4">
-                <div className="w-14 h-14 rounded-2xl bg-purple-100 flex items-center justify-center text-2xl">🤝</div>
-                <div>
-                  <h3 className="text-lg font-semibold text-gray-900">{t('onboarding_both')}</h3>
-                  <p className="text-sm text-gray-500">{t('onboarding_both_desc')}</p>
-                </div>
-                {role === 'both' && <ChevronRight className="ml-auto text-purple-500 w-5 h-5" />}
-              </CardContent>
-            </Card>
-          </div>
-
-          <Button
-            className="w-full mt-6 h-12"
-            disabled={!role || loading}
-            onClick={handleComplete}
-          >
-            {isAuthed ? t('onboarding_lets_go') : t('onboarding_signup_to_continue')} <ChevronRight className="w-4 h-4 ml-1" />
+          <Button className="w-full h-12 text-base" onClick={handleGetStarted}>
+            {t('onboarding_signup_to_continue')} <ChevronRight className="w-4 h-4 ml-1" />
           </Button>
 
           <p className="text-center text-xs text-gray-400 mt-4">

@@ -47,12 +47,6 @@ export default function Navbar() {
 
           {/* Desktop nav */}
           <div className="hidden md:flex items-center gap-1">
-            <Link to="/">
-              <Button variant={isActive('/') ? 'default' : 'ghost'} size="sm"
-                className={isActive('/') ? 'bg-blue-600 hover:bg-blue-700' : 'text-gray-600 hover:text-gray-900'}>
-                Home
-              </Button>
-            </Link>
             {navLinks.map(link => (
               <Link key={link.path} to={link.path}>
                 <Button variant={isActive(link.path) ? 'default' : 'ghost'} size="sm"

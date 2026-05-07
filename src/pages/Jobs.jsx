@@ -463,6 +463,24 @@ export default function Jobs() {
                 </SelectContent>
               </Select>
             </div>
+
+            {user?.role === 'admin' && (
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-1">Country <span className="text-gray-400 font-normal">(admin only)</span></label>
+                <Select value={editFormData.country || ''} onValueChange={(value) => setEditFormData({ ...editFormData, country: value })}>
+                  <SelectTrigger>
+                    <SelectValue placeholder="Assign country..." />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="brazil">🇧🇷 Brazil</SelectItem>
+                    <SelectItem value="uruguay">🇺🇾 Uruguay</SelectItem>
+                    <SelectItem value="usa">🇺🇸 USA</SelectItem>
+                    <SelectItem value="canada">🇨🇦 Canada</SelectItem>
+                    <SelectItem value="philippines">🇵🇭 Philippines</SelectItem>
+                  </SelectContent>
+                </Select>
+              </div>
+            )}
           </div>
 
           <div className="flex gap-2 justify-end pt-4 border-t">

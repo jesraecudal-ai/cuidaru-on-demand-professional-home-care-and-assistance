@@ -7,7 +7,7 @@ import { Label } from '@/components/ui/label';
 import { Textarea } from '@/components/ui/textarea';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Badge } from '@/components/ui/badge';
-import { User, Briefcase, Plus, X, Save, ShieldCheck, Zap, Upload, MapPin, CalendarDays, Search, Trash2, Globe } from 'lucide-react';
+import { User, Briefcase, Plus, X, Save, ShieldCheck, Zap, Upload, MapPin, CalendarDays, Trash2, Globe } from 'lucide-react';
 // Upload still used for avatar
 import { toast } from 'sonner';
 import { useI18n } from '@/lib/i18n';
@@ -206,56 +206,7 @@ export default function MyProfile() {
         </div>
       </div>
 
-      {/* Role toggle */}
-      {userProfile && (
-        <Card className="mb-4 sm:mb-6 border border-gray-100 shadow-sm">
-        <CardContent className="p-3 sm:p-4">
-          <p className="text-xs sm:text-sm font-medium text-gray-600 mb-3">{t('role_on_platform')}</p>
-          <div className="flex gap-2 sm:gap-3 flex-wrap">
-              <button
-                onClick={async () => {
-                  const currentRole = userProfile.role;
-                  let newRole;
-                  if (currentRole === 'client') newRole = 'client'; // already only client, no-op
-                  else if (currentRole === 'provider') newRole = 'both';
-                  else if (currentRole === 'both') newRole = 'provider'; // toggle off client
-                  else newRole = 'client';
-                  await base44.entities.UserProfile.update(userProfile.id, { role: newRole });
-                  await refetchUserProfile();
-                }}
-                className={`flex items-center gap-1 sm:gap-2 px-3 sm:px-4 py-2 rounded-full border-2 text-xs sm:text-sm font-medium transition-all ${
-                  isClient
-                    ? 'border-blue-500 bg-blue-50 text-blue-700'
-                    : 'border-gray-200 text-gray-500 hover:border-blue-300'
-                }`}
-              >
-                <Search className="w-4 h-4" /> {t('client_label')}
-                {isClient && <span className="text-xs bg-blue-500 text-white rounded-full px-1.5 py-0.5 leading-none">✓</span>}
-              </button>
-              <button
-                onClick={async () => {
-                  const currentRole = userProfile.role;
-                  let newRole;
-                  if (currentRole === 'provider') newRole = 'provider'; // already only provider, no-op
-                  else if (currentRole === 'client') newRole = 'both';
-                  else if (currentRole === 'both') newRole = 'client'; // toggle off provider
-                  else newRole = 'provider';
-                  await base44.entities.UserProfile.update(userProfile.id, { role: newRole });
-                  await refetchUserProfile();
-                }}
-                className={`flex items-center gap-1 sm:gap-2 px-3 sm:px-4 py-2 rounded-full border-2 text-xs sm:text-sm font-medium transition-all ${
-                  isProviderRole
-                    ? 'border-green-500 bg-green-50 text-green-700'
-                    : 'border-gray-200 text-gray-500 hover:border-green-300'
-                }`}
-              >
-                <Briefcase className="w-4 h-4" /> {t('provider_label')}
-                {isProviderRole && <span className="text-xs bg-green-500 text-white rounded-full px-1.5 py-0.5 leading-none">✓</span>}
-              </button>
-            </div>
-          </CardContent>
-        </Card>
-      )}
+
 
       {/* Country selector */}
       {userProfile && (
@@ -680,17 +631,7 @@ export default function MyProfile() {
             </Card>
           )}
         </div>
-      ) : (
-        <div className="space-y-6">
-          <Card className="border border-gray-100 shadow-sm">
-            <CardContent className="p-8 text-center text-gray-500">
-              <Search className="w-10 h-10 mx-auto mb-3 text-gray-300" />
-              <p className="font-medium text-gray-700 mb-1">{t('setup_as_client')}</p>
-              <p className="text-sm">{t('setup_as_client_desc')}</p>
-            </CardContent>
-          </Card>
-        </div>
-      )}
+      ) : null}
 
       {/* Danger Zone — always at the bottom */}
       <Card className="border border-red-100 shadow-sm mt-6">

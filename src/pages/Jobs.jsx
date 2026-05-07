@@ -174,7 +174,7 @@ export default function Jobs() {
                   </div>
                   {job.budget &&
               <div className="text-xs text-gray-600 mt-2 flex items-center gap-1">
-                      <DollarSign className="w-3 h-3" />
+                      <DollarSign className="w-3 h-3 hidden" />
                       {getCurrency().symbol} {job.budget} {budgetTypeLabels[job.budget_type] || job.budget_type}
                     </div>
               }

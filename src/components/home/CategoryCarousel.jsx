@@ -1,79 +1,110 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { CATEGORIES } from '@/lib/constants';
 import { useI18n } from '@/lib/i18n';
 import { ChevronLeft, ChevronRight } from 'lucide-react';
 
+const SLIDES = [
+  {
+    label: 'Home Services',
+    items: [
+      { key: 'house_cleaner', image: 'https://images.unsplash.com/photo-1581578731548-c64695cc6952?w=400&h=300&fit=crop', label: 'House Cleaner' },
+      { key: 'laundry_helper', image: 'https://images.unsplash.com/photo-1545173168-9f1947eebb7f?w=400&h=300&fit=crop', label: 'Laundry' },
+      { key: 'errand_runner', image: 'https://images.unsplash.com/photo-1601628828688-632f38a5a7d0?w=400&h=300&fit=crop', label: 'Errand Runner' },
+    ],
+  },
+  {
+    label: 'Health & Care',
+    items: [
+      { key: 'doctor', image: 'https://images.unsplash.com/photo-1559839734-2b71ea197ec2?w=400&h=300&fit=crop', label: 'Doctor' },
+      { key: 'nurse', image: 'https://images.unsplash.com/photo-1631217868264-e5b90bb7e133?w=400&h=300&fit=crop', label: 'Nurse' },
+      { key: 'caregiver', image: 'https://images.unsplash.com/photo-1576091160399-112ba8d25d1d?w=400&h=300&fit=crop', label: 'Caregiver' },
+    ],
+  },
+  {
+    label: 'Education & Fitness',
+    items: [
+      { key: 'tutor', image: 'https://images.unsplash.com/photo-1522202176988-66273c2fd55f?w=400&h=300&fit=crop', label: 'Tutor' },
+      { key: 'sports_teacher', image: 'https://images.unsplash.com/photo-1571019613454-1cb2f99b2d8b?w=400&h=300&fit=crop', label: 'Gym Teacher' },
+      { key: 'teacher', image: 'https://images.unsplash.com/photo-1509062522246-3755977927d7?w=400&h=300&fit=crop', label: 'Teacher' },
+    ],
+  },
+];
+
 export default function CategoryCarousel() {
-  const { t } = useI18n();
   const navigate = useNavigate();
-  const [currentIndex, setCurrentIndex] = useState(0);
+  const [current, setCurrent] = useState(0);
 
   useEffect(() => {
     const interval = setInterval(() => {
-      setCurrentIndex(prev => (prev + 1) % CATEGORIES.length);
-    }, 4000);
+      setCurrent(prev => (prev + 1) % SLIDES.length);
+    }, 5000);
     return () => clearInterval(interval);
   }, []);
 
-  const handlePrev = () => {
-    setCurrentIndex(prev => (prev - 1 + CATEGORIES.length) % CATEGORIES.length);
-  };
+  const handlePrev = () => setCurrent(prev => (prev - 1 + SLIDES.length) % SLIDES.length);
+  const handleNext = () => setCurrent(prev => (prev + 1) % SLIDES.length);
 
-  const handleNext = () => {
-    setCurrentIndex(prev => (prev + 1) % CATEGORIES.length);
-  };
-
-  const getVisibleCategories = () => {
-    const visible = [];
-    for (let i = 0; i < 5; i++) {
-      visible.push(CATEGORIES[(currentIndex + i) % CATEGORIES.length]);
-    }
-    return visible;
-  };
+  const slide = SLIDES[current];
 
   return (
     <section className="py-12 sm:py-16 bg-gradient-to-b from-white to-blue-50">
-      <div className="max-w-6xl mx-auto px-3 sm:px-4">
+      <div className="max-w-6xl mx-auto px-4 sm:px-6">
         <h2 className="text-2xl sm:text-3xl font-bold mb-2 text-center">What we offer</h2>
-        <p className="text-sm sm:text-base text-gray-600 text-center mb-6 sm:mb-8">Find experts in any field</p>
-        
+        <p className="text-sm sm:text-base text-gray-600 text-center mb-8">Find experts in any field</p>
+
         <div className="relative">
-          <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-2 sm:gap-4">
-            {getVisibleCategories().map((cat, idx) => (
+          {/* Slide label */}
+          <div className="text-center mb-5">
+            <span className="inline-block bg-blue-100 text-blue-700 font-semibold text-sm px-4 py-1.5 rounded-full">
+              {slide.label}
+            </span>
+          </div>
+
+          {/* Cards */}
+          <div className="grid grid-cols-3 gap-4 sm:gap-6">
+            {slide.items.map((item) => (
               <button
-                key={`${cat.key}-${idx}`}
-                onClick={() => navigate(`/browse?category=${cat.key}`)}
-                className="p-3 sm:p-6 rounded-lg border-2 border-gray-100 bg-white hover:border-blue-400 hover:shadow-lg transition-all duration-300 text-center group"
+                key={item.key}
+                onClick={() => navigate(`/browse?category=${item.key}`)}
+                className="group rounded-2xl overflow-hidden border-2 border-gray-100 bg-white hover:border-blue-400 hover:shadow-xl transition-all duration-300 text-left"
               >
-                <div className="text-2xl sm:text-4xl mb-2 sm:mb-3 group-hover:scale-110 transition-transform inline-block">{cat.icon}</div>
-                <p className="font-semibold text-gray-800 text-xs sm:text-sm group-hover:text-blue-600 line-clamp-2">{t(`cat_${cat.key}`)}</p>
+                <div className="relative h-40 sm:h-52 overflow-hidden">
+                  <img
+                    src={item.image}
+                    alt={item.label}
+                    className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
+                  />
+                  <div className="absolute inset-0 bg-gradient-to-t from-black/50 to-transparent" />
+                  <p className="absolute bottom-3 left-3 text-white font-bold text-sm sm:text-base drop-shadow">
+                    {item.label}
+                  </p>
+                </div>
               </button>
             ))}
           </div>
 
+          {/* Arrows */}
           <button
             onClick={handlePrev}
-            className="hidden sm:flex absolute left-0 top-1/2 -translate-y-1/2 -translate-x-16 p-2 hover:bg-gray-100 rounded-full transition-colors"
+            className="absolute -left-4 sm:-left-12 top-1/2 -translate-y-1/2 w-10 h-10 bg-white border border-gray-200 rounded-full shadow flex items-center justify-center hover:bg-gray-50 transition-colors"
           >
-            <ChevronLeft className="w-6 h-6 text-gray-600" />
+            <ChevronLeft className="w-5 h-5 text-gray-600" />
           </button>
           <button
             onClick={handleNext}
-            className="hidden sm:flex absolute right-0 top-1/2 -translate-y-1/2 translate-x-16 p-2 hover:bg-gray-100 rounded-full transition-colors"
+            className="absolute -right-4 sm:-right-12 top-1/2 -translate-y-1/2 w-10 h-10 bg-white border border-gray-200 rounded-full shadow flex items-center justify-center hover:bg-gray-50 transition-colors"
           >
-            <ChevronRight className="w-6 h-6 text-gray-600" />
+            <ChevronRight className="w-5 h-5 text-gray-600" />
           </button>
         </div>
 
+        {/* Dots */}
         <div className="flex justify-center gap-2 mt-8">
-          {CATEGORIES.map((_, i) => (
+          {SLIDES.map((_, i) => (
             <button
               key={i}
-              onClick={() => setCurrentIndex(i)}
-              className={`h-2 rounded-full transition-all ${
-                i === currentIndex ? 'bg-blue-600 w-8' : 'bg-gray-300 w-2'
-              }`}
+              onClick={() => setCurrent(i)}
+              className={`h-2 rounded-full transition-all ${i === current ? 'bg-blue-600 w-8' : 'bg-gray-300 w-2'}`}
             />
           ))}
         </div>

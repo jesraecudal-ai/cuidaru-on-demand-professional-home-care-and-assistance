@@ -24,9 +24,14 @@ export default function Jobs() {
   const [selectedProfile, setSelectedProfile] = useState(null);
   const queryClient = useQueryClient();
 
+  const userCountry = profile?.country;
+
   const { data: jobs = [], isLoading } = useQuery({
-    queryKey: ['job-orders'],
-    queryFn: () => base44.entities.JobOrder.list('-created_date', 100)
+    queryKey: ['job-orders', userCountry],
+    queryFn: () => userCountry
+      ? base44.entities.JobOrder.filter({ country: userCountry }, '-created_date', 100)
+      : base44.entities.JobOrder.list('-created_date', 100),
+    enabled: !!profile,
   });
 
   const { data: providers = [] } = useQuery({
@@ -280,7 +285,7 @@ export default function Jobs() {
             </div>
 
             <div className="p-4 border-t bg-gray-50 flex gap-2">
-              {(profile?.role === 'provider' || profile?.role === 'both') &&
+              {profile?.role === 'provider' &&
             <Button className="flex-1 bg-blue-600 hover:bg-blue-700">
                   Submit Proposal
                 </Button>

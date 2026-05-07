@@ -36,6 +36,17 @@
     "location_text": {
       "type": "string"
     },
+    "country": {
+      "type": "string",
+      "enum": [
+        "brazil",
+        "uruguay",
+        "usa",
+        "canada",
+        "philippines"
+      ],
+      "description": "Country of the client who posted this job"
+    },
     "budget": {
       "type": "number"
     },

@@ -338,6 +338,7 @@ export default function Bookings() {
       {showPostJob && (
         <PostJobModal
           user={user}
+          userProfile={profile}
           onClose={() => setShowPostJob(false)}
           onSuccess={() => setShowPostJob(false)}
         />

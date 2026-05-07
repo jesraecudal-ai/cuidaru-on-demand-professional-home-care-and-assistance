@@ -58,6 +58,7 @@ export default function BrowseProviders() {
     queryFn: () => userCountry
       ? base44.entities.ServiceProvider.filter({ country: userCountry })
       : base44.entities.ServiceProvider.list(),
+    enabled: !!userCountry,
   });
 
   const sortedProviders = useMemo(() => {

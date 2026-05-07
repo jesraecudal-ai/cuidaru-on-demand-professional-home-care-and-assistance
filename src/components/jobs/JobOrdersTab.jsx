@@ -12,9 +12,14 @@ export default function JobOrdersTab({ user, providerProfile }) {
   const queryClient = useQueryClient();
   const [applyingTo, setApplyingTo] = useState(null);
 
+  const providerCountry = providerProfile?.country;
+
   const { data: jobs = [], isLoading } = useQuery({
-    queryKey: ['jobOrders'],
-    queryFn: () => base44.entities.JobOrder.filter({ status: 'open' }, '-created_date'),
+    queryKey: ['jobOrders', providerCountry],
+    queryFn: () => providerCountry
+      ? base44.entities.JobOrder.filter({ status: 'open', country: providerCountry }, '-created_date')
+      : base44.entities.JobOrder.filter({ status: 'open' }, '-created_date'),
+    enabled: !!providerProfile,
   });
 
   const { data: myProposals = [] } = useQuery({

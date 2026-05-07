@@ -9,7 +9,7 @@ import { base44 } from '@/api/base44Client';
 import { toast } from 'sonner';
 import { CATEGORIES } from '@/lib/constants';
 
-export default function PostJobModal({ user, onClose, onSuccess }) {
+export default function PostJobModal({ user, userProfile, onClose, onSuccess }) {
   const [form, setForm] = useState({
     title: '', description: '', category: '', location_text: '', budget: '', budget_type: 'hourly'
   });
@@ -34,6 +34,7 @@ export default function PostJobModal({ user, onClose, onSuccess }) {
         budget: form.budget ? parseFloat(form.budget) : null,
         budget_type: form.budget_type,
         status: 'open',
+        country: userProfile?.country || null,
       });
       toast.success('Job posted! Providers can now apply.');
       onSuccess();

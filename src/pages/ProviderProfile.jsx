@@ -32,7 +32,8 @@ export default function ProviderProfile() {
     enabled: !!providerId,
   });
 
-  const badgeColor = provider ? CATEGORY_BADGE_COLORS[provider.category] || 'bg-gray-100 text-gray-700 border-gray-200' : '';
+  const primaryCategory = provider ? (provider.categories?.[0] || provider.category) : null;
+  const badgeColor = primaryCategory ? CATEGORY_BADGE_COLORS[primaryCategory] || 'bg-gray-100 text-gray-700 border-gray-200' : 'bg-gray-100 text-gray-700 border-gray-200';
 
   // Distance (if client has location stored)
   let distance = null;
@@ -94,7 +95,9 @@ export default function ProviderProfile() {
                     )}
                   </div>
                   <div className="flex items-center gap-4 mt-2 flex-wrap">
-                    <Badge variant="outline" className={`${badgeColor} border text-xs`}>{t(`cat_${provider.category}`)}</Badge>
+                    {(provider.categories?.length > 0 ? provider.categories : provider.category ? [provider.category] : []).map((cat, i) => (
+                      <Badge key={i} variant="outline" className={`${CATEGORY_BADGE_COLORS[cat] || 'bg-gray-100 text-gray-700 border-gray-200'} border text-xs`}>{t(`cat_${cat}`)}</Badge>
+                    ))}
                     {provider.location_text && <span className="flex items-center gap-1 text-sm text-gray-500"><MapPin className="w-3.5 h-3.5" />{provider.location_text}</span>}
                     {distance !== null && <span className="flex items-center gap-1 text-sm text-blue-600 font-medium"><MapPin className="w-3.5 h-3.5" />{formatDistance(distance)} away</span>}
                     {provider.experience_years > 0 && <span className="flex items-center gap-1 text-sm text-gray-500"><Briefcase className="w-3.5 h-3.5" />{provider.experience_years} yrs exp</span>}

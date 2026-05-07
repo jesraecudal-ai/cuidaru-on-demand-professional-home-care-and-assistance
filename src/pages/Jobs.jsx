@@ -26,27 +26,27 @@ export default function Jobs() {
 
   const { data: jobs = [], isLoading } = useQuery({
     queryKey: ['job-orders'],
-    queryFn: () => base44.entities.JobOrder.list('-created_date', 100),
+    queryFn: () => base44.entities.JobOrder.list('-created_date', 100)
   });
 
   const { data: providers = [] } = useQuery({
     queryKey: ['all-providers'],
-    queryFn: () => base44.entities.ServiceProvider.list('-created_date', 200),
+    queryFn: () => base44.entities.ServiceProvider.list('-created_date', 200)
   });
 
   const { data: userProfiles = [] } = useQuery({
     queryKey: ['all-user-profiles'],
-    queryFn: () => base44.entities.UserProfile.list('-created_date', 200),
+    queryFn: () => base44.entities.UserProfile.list('-created_date', 200)
   });
 
   const filteredJobs = useMemo(() => {
     if (!search.trim()) return jobs;
     const q = search.toLowerCase();
-    return jobs.filter(job =>
-      job.title?.toLowerCase().includes(q) ||
-      job.description?.toLowerCase().includes(q) ||
-      job.category?.toLowerCase().includes(q) ||
-      job.location_text?.toLowerCase().includes(q)
+    return jobs.filter((job) =>
+    job.title?.toLowerCase().includes(q) ||
+    job.description?.toLowerCase().includes(q) ||
+    job.category?.toLowerCase().includes(q) ||
+    job.location_text?.toLowerCase().includes(q)
     );
   }, [jobs, search]);
 
@@ -57,7 +57,7 @@ export default function Jobs() {
     brazil: { symbol: 'R$', code: 'BRL' },
     usa: { symbol: '$', code: 'USD' },
     canada: { symbol: '$', code: 'CAD' },
-    philippines: { symbol: '₱', code: 'PHP' },
+    philippines: { symbol: '₱', code: 'PHP' }
   };
 
   const getCurrency = () => {
@@ -91,11 +91,11 @@ export default function Jobs() {
   };
 
   const getProfileByEmail = (email) => {
-    return providers.find(p => p.user_email === email);
+    return providers.find((p) => p.user_email === email);
   };
 
   const getUserProfileByEmail = (email) => {
-    return userProfiles.find(p => p.user_email === email);
+    return userProfiles.find((p) => p.user_email === email);
   };
 
   const categoryColors = {
@@ -106,20 +106,20 @@ export default function Jobs() {
     social_worker: 'bg-orange-100 text-orange-700',
     house_cleaner: 'bg-yellow-100 text-yellow-700',
     cook: 'bg-pink-100 text-pink-700',
-    default: 'bg-gray-100 text-gray-700',
+    default: 'bg-gray-100 text-gray-700'
   };
 
   const budgetTypeLabels = {
     hourly: t('hourly'),
     daily: t('daily'),
     weekly: t('weekly'),
-    fixed: t('fixed'),
+    fixed: t('fixed')
   };
 
   const statusColors = {
     open: 'bg-green-100 text-green-700',
     in_progress: 'bg-blue-100 text-blue-700',
-    closed: 'bg-gray-100 text-gray-700',
+    closed: 'bg-gray-100 text-gray-700'
   };
 
   return (
@@ -134,34 +134,34 @@ export default function Jobs() {
               placeholder={t('search')}
               value={search}
               onChange={(e) => setSearch(e.target.value)}
-              className="pl-9"
-            />
+              className="pl-9" />
+            
           </div>
         </div>
 
         {/* Jobs List */}
         <div className="flex-1 overflow-y-auto">
-          {isLoading ? (
-            <div className="p-4 space-y-3">
+          {isLoading ?
+          <div className="p-4 space-y-3">
               {Array(5).fill(0).map((_, i) => <Skeleton key={i} className="h-24 rounded" />)}
-            </div>
-          ) : filteredJobs.length === 0 ? (
-            <div className="p-4 text-center text-gray-400">
+            </div> :
+          filteredJobs.length === 0 ?
+          <div className="p-4 text-center text-gray-400">
               <Briefcase className="w-8 h-8 mx-auto mb-2 opacity-30" />
               <p className="text-sm">{t('no_jobs_found')}</p>
-            </div>
-          ) : (
-            <div className="p-3 space-y-2">
-              {filteredJobs.map(job => (
-                <div
-                  key={job.id}
-                  onClick={() => setSelectedJob(job)}
-                  className={`p-3 rounded-lg border cursor-pointer transition-all ${
-                    selectedJob?.id === job.id
-                      ? 'border-blue-500 bg-blue-50'
-                      : 'border-gray-200 hover:border-gray-300 hover:bg-gray-50'
-                  }`}
-                >
+            </div> :
+
+          <div className="p-3 space-y-2">
+              {filteredJobs.map((job) =>
+            <div
+              key={job.id}
+              onClick={() => setSelectedJob(job)}
+              className={`p-3 rounded-lg border cursor-pointer transition-all ${
+              selectedJob?.id === job.id ?
+              'border-blue-500 bg-blue-50' :
+              'border-gray-200 hover:border-gray-300 hover:bg-gray-50'}`
+              }>
+              
                   <h3 className="font-semibold text-sm text-gray-900 line-clamp-2">{job.title}</h3>
                   <p className="text-xs text-gray-500 line-clamp-1 mt-1">{job.description}</p>
                   <div className="flex gap-2 mt-2 flex-wrap">
@@ -172,23 +172,23 @@ export default function Jobs() {
                       {job.status}
                     </Badge>
                   </div>
-                  {job.budget && (
-                    <div className="text-xs text-gray-600 mt-2 flex items-center gap-1">
+                  {job.budget &&
+              <div className="text-xs text-gray-600 mt-2 flex items-center gap-1">
                       <DollarSign className="w-3 h-3" />
                       {getCurrency().symbol} {job.budget} {budgetTypeLabels[job.budget_type] || job.budget_type}
                     </div>
-                  )}
+              }
                 </div>
-              ))}
+            )}
             </div>
-          )}
+          }
         </div>
       </div>
 
       {/* Right Panel - Job Details */}
       <div className="hidden md:flex flex-1 bg-white rounded-lg border border-gray-200 overflow-hidden flex-col">
-        {selectedJob ? (
-          <>
+        {selectedJob ?
+        <>
             <div className="p-6 border-b overflow-y-auto flex-1">
               <div className="mb-6">
                 <h1 className="text-3xl font-bold text-gray-900 mb-3">{selectedJob.title}</h1>
@@ -204,26 +204,26 @@ export default function Jobs() {
 
               <div className="space-y-6">
                 {/* Budget */}
-                {selectedJob.budget && (
-                  <div>
-                    <h3 className="text-sm font-semibold text-gray-700 mb-2 flex items-center gap-2">
+                {selectedJob.budget &&
+              <div>
+                    <h3 className="text-sm font-semibold text-gray-700 mb-2 flex items-center gap-2 hidden">
                       <DollarSign className="w-4 h-4" /> Budget
                     </h3>
                     <p className="text-2xl font-bold text-blue-600">
                       {getCurrency().symbol} {selectedJob.budget} <span className="text-sm text-gray-500">{budgetTypeLabels[selectedJob.budget_type] || selectedJob.budget_type}</span>
                     </p>
                   </div>
-                )}
+              }
 
                 {/* Location */}
-                {selectedJob.location_text && (
-                  <div>
+                {selectedJob.location_text &&
+              <div>
                     <h3 className="text-sm font-semibold text-gray-700 mb-2 flex items-center gap-2">
                       <MapPin className="w-4 h-4" /> Location
                     </h3>
                     <p className="text-gray-900">{selectedJob.location_text}</p>
                   </div>
-                )}
+              }
 
                 {/* Description */}
                 <div>
@@ -232,33 +232,33 @@ export default function Jobs() {
                 </div>
 
                 {/* Client Info - Clickable Profile */}
-                <div 
-                  className="bg-blue-50 border border-blue-200 rounded-lg p-4 cursor-pointer hover:bg-blue-100 transition-colors"
-                  onClick={() => setSelectedProfile(getProfileByEmail(selectedJob.client_email))}
-                >
+                <div
+                className="bg-blue-50 border border-blue-200 rounded-lg p-4 cursor-pointer hover:bg-blue-100 transition-colors"
+                onClick={() => setSelectedProfile(getProfileByEmail(selectedJob.client_email))}>
+                
                   <h3 className="text-sm font-semibold text-gray-700 mb-4">Posted by</h3>
                   <div className="flex items-center gap-6 justify-center">
                     <div className="flex flex-col items-center text-center">
                       <div className="w-20 h-20 rounded-full bg-gray-200 flex items-center justify-center mb-2 overflow-hidden">
-                        {getProfileByEmail(selectedJob.client_email)?.avatar_url ? (
-                          <img src={getProfileByEmail(selectedJob.client_email).avatar_url} alt="" className="w-full h-full object-cover" />
-                        ) : (
-                          <span className="text-lg font-semibold text-gray-600">{(selectedJob.client_name || 'A')[0].toUpperCase()}</span>
-                        )}
+                        {getProfileByEmail(selectedJob.client_email)?.avatar_url ?
+                      <img src={getProfileByEmail(selectedJob.client_email).avatar_url} alt="" className="w-full h-full object-cover" /> :
+
+                      <span className="text-lg font-semibold text-gray-600">{(selectedJob.client_name || 'A')[0].toUpperCase()}</span>
+                      }
                       </div>
                       <p className="text-gray-900 font-semibold text-sm">{selectedJob.client_name || 'Anonymous'}</p>
-                      {getUserProfileByEmail(selectedJob.client_email)?.position && (
-                        <p className="text-xs text-gray-600">{getUserProfileByEmail(selectedJob.client_email).position}</p>
-                      )}
+                      {getUserProfileByEmail(selectedJob.client_email)?.position &&
+                    <p className="text-xs text-gray-600">{getUserProfileByEmail(selectedJob.client_email).position}</p>
+                    }
                     </div>
-                    {getUserProfileByEmail(selectedJob.client_email)?.company_logo_url && (
-                      <div className="flex flex-col items-center text-center">
+                    {getUserProfileByEmail(selectedJob.client_email)?.company_logo_url &&
+                  <div className="flex flex-col items-center text-center">
                         <div className="w-20 h-20 flex items-center justify-center mb-2 bg-white rounded-lg p-2 border border-gray-300">
                           <img src={getUserProfileByEmail(selectedJob.client_email).company_logo_url} alt="" className="w-full h-full object-contain" />
                         </div>
                         <p className="text-gray-700 font-semibold text-sm">{getUserProfileByEmail(selectedJob.client_email).company_name}</p>
                       </div>
-                    )}
+                  }
                   </div>
                 </div>
 
@@ -275,94 +275,94 @@ export default function Jobs() {
             </div>
 
             <div className="p-4 border-t bg-gray-50 flex gap-2">
-              {(profile?.role === 'provider' || profile?.role === 'both') && (
-                <Button className="flex-1 bg-blue-600 hover:bg-blue-700">
+              {(profile?.role === 'provider' || profile?.role === 'both') &&
+            <Button className="flex-1 bg-blue-600 hover:bg-blue-700">
                   Submit Proposal
                 </Button>
-              )}
-              {canEditJob(selectedJob) && (
-                <Button variant="outline" onClick={() => handleEditClick(selectedJob)} className="gap-2">
+            }
+              {canEditJob(selectedJob) &&
+            <Button variant="outline" onClick={() => handleEditClick(selectedJob)} className="gap-2">
                   <Edit className="w-4 h-4" /> Edit
                 </Button>
-              )}
+            }
             </div>
-          </>
-        ) : (
-          <div className="flex items-center justify-center h-full text-center text-gray-400">
+          </> :
+
+        <div className="flex items-center justify-center h-full text-center text-gray-400">
             <div>
               <Briefcase className="w-12 h-12 mx-auto mb-3 opacity-30" />
               <p className="text-sm">Select a job to view details</p>
             </div>
           </div>
-        )}
+        }
       </div>
 
       {/* Profile Modal */}
-      <Dialog open={!!selectedProfile} onOpenChange={(open) => { if (!open) setSelectedProfile(null); }}>
+      <Dialog open={!!selectedProfile} onOpenChange={(open) => {if (!open) setSelectedProfile(null);}}>
         <DialogContent className="max-w-sm">
           <DialogHeader>
             <DialogTitle>Provider Profile</DialogTitle>
           </DialogHeader>
 
-          {selectedProfile && (
-            <div className="space-y-4">
+          {selectedProfile &&
+          <div className="space-y-4">
               <div className="text-center">
                 <div className="w-20 h-20 rounded-full bg-gray-200 flex items-center justify-center mx-auto mb-3 overflow-hidden">
-                  {selectedProfile.avatar_url ? (
-                    <img src={selectedProfile.avatar_url} alt="" className="w-full h-full object-cover" />
-                  ) : (
-                    <span className="text-2xl font-semibold text-gray-600">{(selectedProfile.full_name || 'P')[0].toUpperCase()}</span>
-                  )}
+                  {selectedProfile.avatar_url ?
+                <img src={selectedProfile.avatar_url} alt="" className="w-full h-full object-cover" /> :
+
+                <span className="text-2xl font-semibold text-gray-600">{(selectedProfile.full_name || 'P')[0].toUpperCase()}</span>
+                }
                 </div>
                 <h2 className="text-xl font-bold text-gray-900">{selectedProfile.full_name}</h2>
                 <p className="text-sm text-gray-500 mt-1">{selectedProfile.user_email}</p>
-                {getUserProfileByEmail(selectedProfile.user_email)?.company_name && (
-                  <div className="mt-3 pt-3 border-t">
-                    {getUserProfileByEmail(selectedProfile.user_email)?.company_logo_url && (
-                      <img src={getUserProfileByEmail(selectedProfile.user_email).company_logo_url} alt="" className="h-8 mx-auto mb-2" />
-                    )}
+                {getUserProfileByEmail(selectedProfile.user_email)?.company_name &&
+              <div className="mt-3 pt-3 border-t">
+                    {getUserProfileByEmail(selectedProfile.user_email)?.company_logo_url &&
+                <img src={getUserProfileByEmail(selectedProfile.user_email).company_logo_url} alt="" className="h-8 mx-auto mb-2" />
+                }
                     <p className="text-sm font-semibold text-gray-700">{getUserProfileByEmail(selectedProfile.user_email).company_name}</p>
                   </div>
-                )}
+              }
               </div>
 
-              {selectedProfile.bio && (
-                <div>
+              {selectedProfile.bio &&
+            <div>
                   <h3 className="text-sm font-semibold text-gray-700 mb-1">Bio</h3>
                   <p className="text-sm text-gray-700">{selectedProfile.bio}</p>
                 </div>
-              )}
+            }
 
-              {selectedProfile.categories && selectedProfile.categories.length > 0 && (
-                <div>
+              {selectedProfile.categories && selectedProfile.categories.length > 0 &&
+            <div>
                   <h3 className="text-sm font-semibold text-gray-700 mb-2">Services</h3>
                   <div className="flex flex-wrap gap-2">
-                    {selectedProfile.categories.map(cat => (
-                      <Badge key={cat} variant="outline" className="capitalize">{cat}</Badge>
-                    ))}
+                    {selectedProfile.categories.map((cat) =>
+                <Badge key={cat} variant="outline" className="capitalize">{cat}</Badge>
+                )}
                   </div>
                 </div>
-              )}
+            }
 
-              {selectedProfile.hourly_rate && (
-                <div>
+              {selectedProfile.hourly_rate &&
+            <div>
                   <h3 className="text-sm font-semibold text-gray-700 mb-1">Hourly Rate</h3>
                   <p className="text-sm text-gray-900 font-semibold">${selectedProfile.hourly_rate}</p>
                 </div>
-              )}
+            }
 
-              {selectedProfile.verification_status === 'verified' && (
-                <div className="bg-green-50 border border-green-200 rounded p-2 text-center">
+              {selectedProfile.verification_status === 'verified' &&
+            <div className="bg-green-50 border border-green-200 rounded p-2 text-center">
                   <p className="text-sm font-semibold text-green-700">✓ Verified</p>
                 </div>
-              )}
+            }
             </div>
-          )}
+          }
         </DialogContent>
       </Dialog>
 
       {/* Edit Job Dialog */}
-      <Dialog open={!!editingJob} onOpenChange={(open) => { if (!open) setEditingJob(null); }}>
+      <Dialog open={!!editingJob} onOpenChange={(open) => {if (!open) setEditingJob(null);}}>
         <DialogContent className="max-w-2xl max-h-[80vh] overflow-y-auto">
           <DialogHeader>
             <DialogTitle>Edit Job Post</DialogTitle>
@@ -373,8 +373,8 @@ export default function Jobs() {
               <label className="block text-sm font-medium text-gray-700 mb-1">Title</label>
               <Input
                 value={editFormData.title || ''}
-                onChange={(e) => setEditFormData({ ...editFormData, title: e.target.value })}
-              />
+                onChange={(e) => setEditFormData({ ...editFormData, title: e.target.value })} />
+              
             </div>
 
             <div>
@@ -383,8 +383,8 @@ export default function Jobs() {
                 className="w-full border rounded-md p-2 text-sm"
                 rows="4"
                 value={editFormData.description || ''}
-                onChange={(e) => setEditFormData({ ...editFormData, description: e.target.value })}
-              />
+                onChange={(e) => setEditFormData({ ...editFormData, description: e.target.value })} />
+              
             </div>
 
             <div>
@@ -412,8 +412,8 @@ export default function Jobs() {
                   type="number"
                   value={editFormData.budget || ''}
                   onChange={(e) => setEditFormData({ ...editFormData, budget: e.target.value ? parseFloat(e.target.value) : null })}
-                  placeholder="0.00"
-                />
+                  placeholder="0.00" />
+                
               </div>
               <div>
                 <label className="block text-sm font-medium text-gray-700 mb-1">Budget Type</label>
@@ -435,8 +435,8 @@ export default function Jobs() {
               <label className="block text-sm font-medium text-gray-700 mb-1">Location</label>
               <LocationPicker
                 onLocationSelect={(location) => setEditFormData({ ...editFormData, location_text: location.address })}
-                className="w-full"
-              />
+                className="w-full" />
+              
               <p className="text-xs text-gray-500 mt-1">{editFormData.location_text || 'Select location on map'}</p>
             </div>
 
@@ -461,6 +461,6 @@ export default function Jobs() {
           </div>
         </DialogContent>
       </Dialog>
-    </div>
-  );
+    </div>);
+
 }

@@ -21,7 +21,8 @@ import {
  *  longitude     – current lng
  *  onChange      – ({ location_text, latitude, longitude }) => void
  */
-export default function LocationPicker({ country, locationText, latitude, longitude, onChange }) {
+export default function LocationPicker({ country, locationText, latitude, longitude, onChange, onLocationSelect }) {
+  const handleChange = onChange || onLocationSelect || (() => {});
   const [geoLoading, setGeoLoading] = useState(false);
 
   // ---- Uruguay ----
@@ -109,42 +110,42 @@ export default function LocationPicker({ country, locationText, latitude, longit
   const handleUyDept = (val) => {
     setUyDept(val);
     setUyCity('');
-    onChange({ location_text: buildText({ dept: val, city: '' }), latitude, longitude });
+    handleChange({ location_text: buildText({ dept: val, city: '' }), latitude, longitude });
   };
   const handleUyCity = (val) => {
     setUyCity(val);
-    onChange({ location_text: buildText({ city: val }), latitude, longitude });
+    handleChange({ location_text: buildText({ city: val }), latitude, longitude });
   };
   const handleBrState = (val) => {
     setBrState(val);
     setBrCity('');
-    onChange({ location_text: buildText({ state: val, city: '' }), latitude, longitude });
+    handleChange({ location_text: buildText({ state: val, city: '' }), latitude, longitude });
   };
   const handleBrCity = (val) => {
     setBrCity(val);
-    onChange({ location_text: buildText({ city: val }), latitude, longitude });
+    handleChange({ location_text: buildText({ city: val }), latitude, longitude });
   };
   const handlePhRegion = (val) => {
     setPhRegion(val);
     setPhCity('');
-    onChange({ location_text: buildText({ region: val, ctCity: '' }), latitude, longitude });
+    handleChange({ location_text: buildText({ region: val, ctCity: '' }), latitude, longitude });
   };
   const handlePhCity = (val) => {
     setPhCity(val);
-    onChange({ location_text: buildText({ ctCity: val }), latitude, longitude });
+    handleChange({ location_text: buildText({ ctCity: val }), latitude, longitude });
   };
 
   const handleRegion = (val) => {
     setRegionValue(val);
-    onChange({ location_text: buildText({ region: val }), latitude, longitude });
+    handleChange({ location_text: buildText({ region: val }), latitude, longitude });
   };
   const handleCtCity = (e) => {
     setCityText(e.target.value);
-    onChange({ location_text: buildText({ ctCity: e.target.value }), latitude, longitude });
+    handleChange({ location_text: buildText({ ctCity: e.target.value }), latitude, longitude });
   };
   const handleExact = (e) => {
     setExactAddress(e.target.value);
-    onChange({ location_text: buildText({ exact: e.target.value }), latitude, longitude });
+    handleChange({ location_text: buildText({ exact: e.target.value }), latitude, longitude });
   };
 
   const detectGPS = () => {
@@ -152,7 +153,7 @@ export default function LocationPicker({ country, locationText, latitude, longit
     navigator.geolocation?.getCurrentPosition(
       pos => {
         setGeoLoading(false);
-        onChange({ location_text: locationText, latitude: pos.coords.latitude, longitude: pos.coords.longitude });
+        handleChange({ location_text: locationText, latitude: pos.coords.latitude, longitude: pos.coords.longitude });
         toast.success('GPS location saved!');
       },
       () => { setGeoLoading(false); toast.error('Location access denied'); }

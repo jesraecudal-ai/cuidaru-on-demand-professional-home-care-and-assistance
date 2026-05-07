@@ -221,12 +221,12 @@ export default function Jobs() {
               }
 
                 {/* Location */}
-                {selectedJob.location_text &&
+                {(getUserProfileByEmail(selectedJob.client_email)?.address || selectedJob.location_text) &&
               <div>
                     <h3 className="text-sm font-semibold text-gray-700 mb-2 flex items-center gap-2">
                       <MapPin className="w-4 h-4" /> Location
                     </h3>
-                    <p className="text-gray-900">{selectedJob.location_text}</p>
+                    <p className="text-gray-900">{getUserProfileByEmail(selectedJob.client_email)?.address || selectedJob.location_text}</p>
                   </div>
               }
 

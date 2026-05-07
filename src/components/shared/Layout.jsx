@@ -85,7 +85,7 @@ export default function Layout() {
                   <img src="https://upload.wikimedia.org/wikipedia/commons/b/ba/Stripe_Logo%2C_revised_2016.svg" alt="Stripe" className="h-4" />
                 </div>
                 <div className="flex items-center gap-4">
-                  <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/5/5e/Visa_Inc._logo.svg/2560px-Visa_Inc._logo.svg.png" alt="Visa" className="h-7 object-contain opacity-80" />
+                  <img src="https://media.base44.com/images/public/69ef625dd7c5f2aec1f5dc5d/b0e9b1c5d_image.png" alt="Visa" className="h-7 object-contain opacity-80" />
                   <img src="https://upload.wikimedia.org/wikipedia/commons/2/2a/Mastercard-logo.svg" alt="Mastercard" className="h-8 object-contain opacity-80" />
                   <img src="https://upload.wikimedia.org/wikipedia/commons/f/fa/American_Express_logo_%282018%29.svg" alt="Amex" className="h-8 object-contain opacity-80" />
                   <img src="https://upload.wikimedia.org/wikipedia/commons/b/b0/Apple_Pay_logo.svg" alt="Apple Pay" className="h-7 object-contain opacity-80" />

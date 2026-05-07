@@ -72,7 +72,7 @@ export default function ProviderProfile() {
           {/* Header */}
           <div className="bg-white rounded-2xl border border-gray-100 shadow-sm overflow-hidden">
             <div className="h-20 bg-gradient-to-r from-blue-600 to-blue-700" />
-            <div className="px-6 pb-6 -mt-8">
+            <div className="px-6 pb-6 mt-4">
               <div className="flex flex-col sm:flex-row sm:items-end gap-4">
                 <div className="w-24 h-24 rounded-2xl border-4 border-white bg-blue-50 flex items-center justify-center overflow-hidden shadow-lg">
                   {provider.avatar_url ? (

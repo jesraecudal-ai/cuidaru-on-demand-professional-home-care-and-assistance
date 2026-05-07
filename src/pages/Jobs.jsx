@@ -64,6 +64,12 @@ export default function Jobs() {
     return currencyMap[profile?.country] || currencyMap.usa;
   };
 
+  const getJobCurrency = (job) => {
+    const clientProfile = userProfiles.find((p) => p.user_email === job.client_email);
+    const country = clientProfile?.country;
+    return currencyMap[country] || { symbol: '$', code: 'USD' };
+  };
+
   const canEditJob = (job) => {
     return user?.email === job.client_email || user?.role === 'admin';
   };
@@ -174,8 +180,7 @@ export default function Jobs() {
                   </div>
                   {job.budget &&
               <div className="text-xs text-gray-600 mt-2 flex items-center gap-1">
-                      
-                      {getCurrency().symbol} {job.budget} {budgetTypeLabels[job.budget_type] || job.budget_type}
+                      {getJobCurrency(job).symbol}{job.budget} <span className="text-gray-400">{getJobCurrency(job).code}</span> · {budgetTypeLabels[job.budget_type] || job.budget_type}
                     </div>
               }
                 </div>
@@ -206,11 +211,11 @@ export default function Jobs() {
                 {/* Budget */}
                 {selectedJob.budget &&
               <div>
-                    
-
-                
+                    <h3 className="text-sm font-semibold text-gray-700 mb-2 flex items-center gap-2 hidden">
+                      <DollarSign className="w-4 h-4" /> Budget
+                    </h3>
                     <p className="text-2xl font-bold text-blue-600">
-                      {getCurrency().symbol} {selectedJob.budget} <span className="text-sm text-gray-500">{budgetTypeLabels[selectedJob.budget_type] || selectedJob.budget_type}</span>
+                      {getJobCurrency(selectedJob).symbol}{selectedJob.budget} <span className="text-base font-semibold text-blue-400">{getJobCurrency(selectedJob).code}</span> <span className="text-sm text-gray-500">{budgetTypeLabels[selectedJob.budget_type] || selectedJob.budget_type}</span>
                     </p>
                   </div>
               }

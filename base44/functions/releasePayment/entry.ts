@@ -10,16 +10,8 @@ const stripe = new Stripe(Deno.env.get('STRIPE_SECRET_KEY'));
  *   1. Client manually clicks "Release Payment" in the Bookings page
  *   2. autoReleasePayments scheduler fires after 24h
  *
- * What it does:
- *   - Verifies the booking's Stripe PaymentIntent is paid (status: succeeded)
- *   - Updates booking + transaction records to "released"
- *   - Creates a ProviderPayout record (status: pending → processed manually or via Connect later)
- *   - Sends notifications to both parties
- *
- * NOTE: Actual fund transfer to the provider's debit card requires Stripe Connect
- * (provider onboarded with connected account). Until Connect is configured this
- * function records the release intent and marks payout as "processing" so admin
- * can manually disburse or Connect can be wired up later.
+ * In TEST MODE: skips all Stripe verification and directly marks payment as released.
+ * In LIVE MODE: verifies Stripe PaymentIntent and optionally transfers via Connect.
  */
 Deno.serve(async (req) => {
   try {
@@ -30,30 +22,102 @@ Deno.serve(async (req) => {
     const { booking_id } = await req.json();
     if (!booking_id) return Response.json({ error: 'booking_id is required' }, { status: 400 });
 
-    // Fetch the booking
     const bookings = await base44.asServiceRole.entities.Booking.filter({ id: booking_id });
     if (bookings.length === 0) return Response.json({ error: 'Booking not found' }, { status: 404 });
     const booking = bookings[0];
 
-    // Only client or admin can release
     if (booking.client_email !== user.email && user.role !== 'admin') {
       return Response.json({ error: 'Not authorized to release this payment' }, { status: 403 });
     }
 
-    // Must be in a releasable state
     const releasableStatuses = ['completed', 'release_pending', 'paid_confirmed'];
     if (!releasableStatuses.includes(booking.status) && booking.payment_status !== 'paid_held' && booking.payment_status !== 'release_pending') {
       return Response.json({ error: `Cannot release payment with status: ${booking.status}` }, { status: 400 });
     }
 
-    // Find the Stripe PaymentIntent via the transaction record
+    // --- Check payment mode ---
+    const settings = await base44.asServiceRole.entities.AppSettings.filter({ key: 'payment_mode' });
+    const isTestMode = settings.length > 0 && settings[0].value === 'test';
+
+    if (isTestMode) {
+      console.log(`[releasePayment] TEST MODE — simulating release for booking ${booking_id}`);
+
+      // Look up provider for premium check
+      const providerProfiles = await base44.asServiceRole.entities.ServiceProvider.filter({ user_email: booking.provider_email });
+      const providerProfile = providerProfiles[0] || null;
+      const providerIsPremium = providerProfile?.is_premium === true &&
+        (!providerProfile?.premium_expires_at || new Date(providerProfile.premium_expires_at) > new Date());
+
+      let providerPayout = booking.provider_payout;
+      if (providerIsPremium && booking.platform_fee > 0) {
+        providerPayout = booking.subtotal || (booking.total_amount + booking.platform_fee);
+        await base44.asServiceRole.entities.Booking.update(booking_id, { provider_payout: providerPayout, platform_fee: 0, platform_fee_pct: 0 });
+      }
+
+      await base44.asServiceRole.entities.Booking.update(booking_id, {
+        status: 'payment_released',
+        payment_status: 'released',
+      });
+
+      const transactions = await base44.asServiceRole.entities.PaymentTransaction.filter({ booking_id, type: 'escrow_deposit' });
+      if (transactions.length > 0) {
+        await base44.asServiceRole.entities.PaymentTransaction.update(transactions[0].id, { status: 'completed' });
+      }
+
+      const payoutRecord = await base44.asServiceRole.entities.ProviderPayout.create({
+        provider_id: booking.provider_id,
+        provider_email: booking.provider_email,
+        amount: providerPayout,
+        currency: 'usd',
+        status: 'paid',
+        booking_id,
+        notes: '[TEST] Simulated payout release',
+      });
+
+      await base44.asServiceRole.entities.PaymentTransaction.create({
+        booking_id,
+        client_email: booking.client_email,
+        provider_id: booking.provider_id,
+        provider_email: booking.provider_email,
+        amount: providerPayout,
+        platform_fee: 0,
+        provider_payout: providerPayout,
+        currency: 'usd',
+        type: 'payout_released',
+        status: 'completed',
+        description: '[TEST] Simulated payout release',
+      });
+
+      await base44.asServiceRole.entities.Notification.create({
+        user_email: booking.provider_email,
+        type: 'payment_released',
+        title: 'Payment Released 💰',
+        body: `[TEST] Your payment of $${providerPayout?.toFixed(2)} for the job with ${booking.client_name} has been released.`,
+        link: '/payouts',
+        is_read: false,
+        reference_id: booking_id,
+      });
+
+      await base44.asServiceRole.entities.Notification.create({
+        user_email: booking.client_email,
+        type: 'payment_released',
+        title: 'Payment Released',
+        body: `[TEST] Your payment for ${booking.provider_name} has been released successfully.`,
+        link: '/bookings',
+        is_read: false,
+        reference_id: booking_id,
+      });
+
+      return Response.json({ success: true, test_mode: true, booking_id, payout_id: payoutRecord.id });
+    }
+
+    // --- LIVE MODE ---
     const transactions = await base44.asServiceRole.entities.PaymentTransaction.filter({ booking_id, type: 'escrow_deposit' });
     const tx = transactions[0];
     let stripeVerified = false;
     let paymentIntentId = tx?.stripe_payment_intent_id || null;
 
     if (paymentIntentId) {
-      // Verify with Stripe that the payment actually succeeded
       const pi = await stripe.paymentIntents.retrieve(paymentIntentId);
       console.log(`[releasePayment] PaymentIntent ${paymentIntentId} status: ${pi.status}`);
       if (pi.status === 'succeeded') {
@@ -63,7 +127,6 @@ Deno.serve(async (req) => {
         return Response.json({ error: `Payment not confirmed by Stripe (status: ${pi.status}). Cannot release.` }, { status: 400 });
       }
     } else {
-      // No PaymentIntent found — check if there's a session we can look up
       const sessionTx = transactions.find(t => t.stripe_session_id);
       if (sessionTx) {
         const session = await stripe.checkout.sessions.retrieve(sessionTx.stripe_session_id);
@@ -71,7 +134,6 @@ Deno.serve(async (req) => {
         if (session.payment_status === 'paid') {
           paymentIntentId = session.payment_intent;
           stripeVerified = true;
-          // Save it back to the transaction for future lookups
           await base44.asServiceRole.entities.PaymentTransaction.update(sessionTx.id, {
             stripe_payment_intent_id: paymentIntentId,
           });
@@ -79,23 +141,19 @@ Deno.serve(async (req) => {
           return Response.json({ error: `Stripe payment not confirmed (session status: ${session.payment_status}). Cannot release.` }, { status: 400 });
         }
       } else {
-        // No Stripe record — allow release for bookings that went through a manual/simulated path
         console.warn(`[releasePayment] No Stripe record for booking ${booking_id}, allowing release (manual payment path)`);
         stripeVerified = true;
       }
     }
 
-    // Look up provider's Stripe Connect account + premium status
     const providerProfiles = await base44.asServiceRole.entities.ServiceProvider.filter({ user_email: booking.provider_email });
     const providerProfile = providerProfiles[0] || null;
     const connectAccountId = providerProfile?.stripe_account_id || null;
 
-    // If provider is premium (active subscription), waive the platform fee
     const providerIsPremium = providerProfile?.is_premium === true &&
       (!providerProfile?.premium_expires_at || new Date(providerProfile.premium_expires_at) > new Date());
 
     if (providerIsPremium && booking.platform_fee > 0) {
-      // Recalculate: provider gets the full subtotal
       const newProviderPayout = booking.subtotal || (booking.total_amount + booking.platform_fee);
       await base44.asServiceRole.entities.Booking.update(booking_id, {
         provider_payout: newProviderPayout,
@@ -107,23 +165,18 @@ Deno.serve(async (req) => {
       console.log(`[releasePayment] Provider is premium — fee waived. Payout updated to ${newProviderPayout}`);
     }
 
-    // Look up provider's saved payout card (fallback if no Connect)
     const providerCards = await base44.asServiceRole.entities.SavedPaymentMethod.filter({
       user_email: booking.provider_email,
       user_role: 'provider',
     });
     const payoutCard = providerCards.find(c => c.is_default) || providerCards[0] || null;
 
-    // --- Attempt Stripe Transfer via Connect ---
     let stripeTransferId = null;
     let payoutStatus = 'processing';
 
     if (connectAccountId && paymentIntentId) {
       const payoutAmountCents = Math.round((booking.provider_payout || 0) * 100);
       if (payoutAmountCents > 0) {
-        // Retrieve the PaymentIntent to get the underlying charge ID
-        // Using source_transaction ties the transfer to the original charge
-        // which is the correct approach per Stripe Connect docs
         const pi = await stripe.paymentIntents.retrieve(paymentIntentId);
         const chargeId = pi.latest_charge;
 
@@ -139,10 +192,7 @@ Deno.serve(async (req) => {
           },
         };
 
-        // Link to source charge if available (recommended by Stripe)
-        if (chargeId) {
-          transferParams.source_transaction = chargeId;
-        }
+        if (chargeId) transferParams.source_transaction = chargeId;
 
         const transfer = await stripe.transfers.create(transferParams);
         stripeTransferId = transfer.id;
@@ -153,13 +203,11 @@ Deno.serve(async (req) => {
       console.log(`[releasePayment] No Connect account for provider ${booking.provider_email} — payout marked as processing`);
     }
 
-    // Update booking to released
     await base44.asServiceRole.entities.Booking.update(booking_id, {
       status: 'payment_released',
       payment_status: 'released',
     });
 
-    // Update the escrow transaction to released
     if (tx) {
       await base44.asServiceRole.entities.PaymentTransaction.update(tx.id, {
         status: 'completed',
@@ -168,7 +216,6 @@ Deno.serve(async (req) => {
       });
     }
 
-    // Create a payout record for the provider
     const payoutRecord = await base44.asServiceRole.entities.ProviderPayout.create({
       provider_id: booking.provider_id,
       provider_email: booking.provider_email,
@@ -185,7 +232,6 @@ Deno.serve(async (req) => {
         : (stripeVerified ? `Stripe PI: ${paymentIntentId || 'n/a'} — Connect not configured` : 'Manual path'),
     });
 
-    // Record payout transaction
     await base44.asServiceRole.entities.PaymentTransaction.create({
       booking_id,
       client_email: booking.client_email,
@@ -203,7 +249,6 @@ Deno.serve(async (req) => {
         : (payoutCard ? `Payout to ${payoutCard.card_brand} •••• ${payoutCard.card_last4}` : `Payout to provider (no card on file)`),
     });
 
-    // Notify provider
     await base44.asServiceRole.entities.Notification.create({
       user_email: booking.provider_email,
       type: 'payment_released',
@@ -216,7 +261,6 @@ Deno.serve(async (req) => {
       reference_id: booking_id,
     });
 
-    // Notify client
     await base44.asServiceRole.entities.Notification.create({
       user_email: booking.client_email,
       type: 'payment_released',

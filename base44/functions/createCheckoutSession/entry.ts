@@ -13,15 +13,46 @@ Deno.serve(async (req) => {
 
     if (!booking_id || !amount) return Response.json({ error: 'Missing required fields' }, { status: 400 });
 
-    // Client pays only the service subtotal (no platform fee added to client bill)
-    // Platform fee is deducted from provider payout on release
     const feePct = platform_fee_pct ?? 10;
     const platform_fee = parseFloat((amount * feePct / 100).toFixed(2));
     const provider_payout = parseFloat((amount - platform_fee).toFixed(2));
 
+    // --- Check payment mode ---
+    const settings = await base44.asServiceRole.entities.AppSettings.filter({ key: 'payment_mode' });
+    const isTestMode = settings.length > 0 && settings[0].value === 'test';
+
+    if (isTestMode) {
+      console.log(`[createCheckoutSession] TEST MODE — simulating payment for booking ${booking_id}`);
+
+      // Update booking directly to paid_confirmed
+      await base44.asServiceRole.entities.Booking.update(booking_id, {
+        status: 'paid_confirmed',
+        payment_status: 'paid_held',
+        platform_fee,
+        provider_payout,
+      });
+
+      // Record simulated transaction
+      await base44.asServiceRole.entities.PaymentTransaction.create({
+        booking_id,
+        client_email: user.email,
+        provider_id,
+        provider_email,
+        amount,
+        platform_fee,
+        provider_payout,
+        currency: currency || 'usd',
+        type: 'escrow_deposit',
+        status: 'completed',
+        description: `[TEST] Simulated escrow payment for booking ${booking_id}`,
+      });
+
+      return Response.json({ test_mode: true, simulated: true, booking_id });
+    }
+
+    // --- LIVE MODE: real Stripe flow ---
     const amountCents = Math.round(amount * 100);
 
-    // Get or create Stripe customer for this client
     let customerId;
     const saved = await base44.asServiceRole.entities.SavedPaymentMethod.filter({ user_email: user.email, user_role: 'client' });
     if (saved.length > 0 && saved[0].stripe_customer_id) {
@@ -65,7 +96,6 @@ Deno.serve(async (req) => {
       },
     });
 
-    // Record pending transaction
     await base44.asServiceRole.entities.PaymentTransaction.create({
       booking_id,
       client_email: user.email,

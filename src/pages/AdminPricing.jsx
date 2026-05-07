@@ -7,7 +7,7 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { toast } from 'sonner';
-import { Settings, Save, RefreshCw, DollarSign, Percent, Briefcase } from 'lucide-react';
+import { Settings, Save, RefreshCw, DollarSign, Percent, Briefcase, FlaskConical, Zap } from 'lucide-react';
 import { COUNTRY_SETTINGS } from '@/lib/constants';
 import { useUserProfile } from '@/lib/useUserProfile';
 
@@ -110,6 +110,29 @@ export default function AdminPricing() {
     queryFn: () => base44.entities.PricingSettings.list(),
   });
 
+  const { data: appSettings = [] } = useQuery({
+    queryKey: ['appSettings'],
+    queryFn: () => base44.entities.AppSettings.list(),
+  });
+
+  const paymentModeSetting = appSettings.find(s => s.key === 'payment_mode');
+  const isTestMode = paymentModeSetting?.value === 'test';
+
+  const handleTogglePaymentMode = async () => {
+    const newMode = isTestMode ? 'live' : 'test';
+    try {
+      if (paymentModeSetting) {
+        await base44.entities.AppSettings.update(paymentModeSetting.id, { value: newMode });
+      } else {
+        await base44.entities.AppSettings.create({ key: 'payment_mode', value: newMode, description: 'Controls whether payments use real Stripe or simulated test flow' });
+      }
+      await queryClient.invalidateQueries({ queryKey: ['appSettings'] });
+      toast.success(`Payment mode switched to ${newMode.toUpperCase()}`);
+    } catch (e) {
+      toast.error('Failed to update payment mode: ' + e.message);
+    }
+  };
+
   if (userLoading) {
     return (
       <div className="max-w-2xl mx-auto px-4 py-20 text-center">
@@ -168,6 +191,32 @@ export default function AdminPricing() {
         </div>
         <Button variant="outline" onClick={handleResetAll} disabled={!!savingCountry} className="gap-2 text-red-600 border-red-200 hover:bg-red-50">
           <RefreshCw className="w-4 h-4" /> {t('reset_to_defaults')}
+        </Button>
+      </div>
+
+      {/* Payment Mode Toggle */}
+      <div className={`mb-8 rounded-xl border-2 p-5 flex items-center justify-between gap-4 flex-wrap ${isTestMode ? 'border-amber-400 bg-amber-50' : 'border-green-400 bg-green-50'}`}>
+        <div className="flex items-center gap-3">
+          {isTestMode
+            ? <FlaskConical className="w-6 h-6 text-amber-600 shrink-0" />
+            : <Zap className="w-6 h-6 text-green-600 shrink-0" />
+          }
+          <div>
+            <p className={`font-bold text-base ${isTestMode ? 'text-amber-800' : 'text-green-800'}`}>
+              {isTestMode ? '🧪 Test Mode Active' : '⚡ Live Mode Active'}
+            </p>
+            <p className={`text-sm ${isTestMode ? 'text-amber-700' : 'text-green-700'}`}>
+              {isTestMode
+                ? 'Payments are simulated — no real Stripe charges. Booking flows through instantly for testing.'
+                : 'Real Stripe payments are active. Clients will be charged and providers will receive payouts.'}
+            </p>
+          </div>
+        </div>
+        <Button
+          onClick={handleTogglePaymentMode}
+          className={`shrink-0 font-semibold ${isTestMode ? 'bg-green-600 hover:bg-green-700 text-white' : 'bg-amber-500 hover:bg-amber-600 text-white'}`}
+        >
+          {isTestMode ? '⚡ Switch to Live' : '🧪 Switch to Test'}
         </Button>
       </div>
 

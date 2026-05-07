@@ -1,0 +1,39 @@
+{
+  "name": "AppSettings",
+  "type": "object",
+  "properties": {
+    "key": {
+      "type": "string",
+      "description": "Setting key, e.g. 'payment_mode'"
+    },
+    "value": {
+      "type": "string",
+      "description": "Setting value, e.g. 'test' or 'live'"
+    },
+    "description": {
+      "type": "string"
+    }
+  },
+  "required": [
+    "key",
+    "value"
+  ],
+  "rls": {
+    "create": {
+      "user_condition": {
+        "role": "admin"
+      }
+    },
+    "read": {},
+    "update": {
+      "user_condition": {
+        "role": "admin"
+      }
+    },
+    "delete": {
+      "user_condition": {
+        "role": "admin"
+      }
+    }
+  }
+}

@@ -25,10 +25,8 @@ export default function Navbar() {
 
   const authNavLinks = [
     { label: t('nav_find'), path: '/browse', icon: Search },
-    { label: t('nav_bookings'), path: '/bookings', icon: Calendar },
     { label: 'Job Board', path: '/jobs', icon: Briefcase },
     { label: t('messages'), path: '/messages', icon: MessageCircle },
-    { label: t('payments'), path: '/payments', icon: Wallet },
   ];
 
   const navLinks = user ? authNavLinks : publicNavLinks;

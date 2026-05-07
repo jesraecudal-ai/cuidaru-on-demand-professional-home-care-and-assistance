@@ -70,9 +70,9 @@ export default function MyProfile() {
     avatar_url: '', id_document_url: '',
   });
 
-  const isClient = !userProfile?.role || userProfile?.role === 'client' || userProfile?.role === 'both';
-  const isProviderRole = userProfile?.role === 'provider' || userProfile?.role === 'both';
-  const isProvider = isProviderRole; // show provider form whenever role includes provider
+  const isClient = !userProfile?.role || userProfile?.role === 'client';
+  const isProviderRole = userProfile?.role === 'provider';
+  const isProvider = isProviderRole;
   const country = userProfile?.country || 'brazil';
   const countryInfo = COUNTRY_SETTINGS[country] || COUNTRY_SETTINGS.brazil;
   const [companyName, setCompanyName] = useState('');

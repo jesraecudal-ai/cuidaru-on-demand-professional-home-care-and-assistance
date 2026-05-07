@@ -9,8 +9,7 @@
       "type": "string",
       "enum": [
         "client",
-        "provider",
-        "both"
+        "provider"
       ],
       "default": "client"
     },

@@ -3,7 +3,7 @@ import { useNavigate, Link } from 'react-router-dom';
 import { base44 } from '@/api/base44Client';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
-import { Heart, ChevronRight, Search, Briefcase, Users } from 'lucide-react';
+import { Heart, ChevronRight, Search, Briefcase } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useI18n } from '@/lib/i18n';
 import { COUNTRY_SETTINGS } from '@/lib/constants';
@@ -46,7 +46,7 @@ export default function Onboarding() {
     } else {
       await base44.entities.UserProfile.create({ user_email: me.email, role, country, onboarding_complete: true });
     }
-    if (role === 'provider' || role === 'both') {
+    if (role === 'provider') {
       navigate('/my-profile');
     } else {
       navigate('/browse');
@@ -106,19 +106,7 @@ export default function Onboarding() {
                   </CardContent>
                 </Card>
 
-                <Card
-                  className={`cursor-pointer border-2 transition-all hover:shadow-lg ${role === 'both' ? 'border-purple-500 bg-purple-50' : 'border-gray-200 hover:border-purple-300'}`}
-                  onClick={() => setRole('both')}
-                >
-                  <CardContent className="p-6 flex items-center gap-4">
-                    <div className="w-14 h-14 rounded-2xl bg-purple-100 flex items-center justify-center"><Users className="w-7 h-7 text-purple-600" /></div>
-                    <div>
-                      <h3 className="text-lg font-semibold text-gray-900">{t('onboarding_both')}</h3>
-                      <p className="text-sm text-gray-500">{t('onboarding_both_desc')}</p>
-                    </div>
-                    {role === 'both' && <ChevronRight className="ml-auto text-purple-500 w-5 h-5" />}
-                  </CardContent>
-                </Card>
+
               </div>
 
               <Button

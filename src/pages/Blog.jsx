@@ -5,7 +5,7 @@ import { base44 } from '@/api/base44Client';
 import { motion } from 'framer-motion';
 import { Badge } from '@/components/ui/badge';
 import { Input } from '@/components/ui/input';
-import { Clock, Search, ArrowRight, BookOpen, Plus } from 'lucide-react';
+import { Clock, Search, ArrowRight, BookOpen, Plus, Eye } from 'lucide-react';
 import { Skeleton } from '@/components/ui/skeleton';
 import { Button } from '@/components/ui/button';
 import { useUserProfile } from '@/lib/useUserProfile';
@@ -141,9 +141,9 @@ export default function Blog() {
                       <h2 className="text-2xl font-bold text-gray-900 mb-3 group-hover:text-blue-600 transition-colors">{featured.title}</h2>
                       <p className="text-gray-600 mb-4 leading-relaxed line-clamp-3">{featured.excerpt}</p>
                       <div className="flex items-center justify-between mt-auto">
-                        <div className="flex items-center gap-2 text-sm text-gray-500">
-                          <Clock className="w-4 h-4" />
-                          <span>{featured.read_time_minutes} min read</span>
+                        <div className="flex items-center gap-3 text-sm text-gray-500">
+                          <span className="flex items-center gap-1"><Clock className="w-4 h-4" />{featured.read_time_minutes} min read</span>
+                          <span className="flex items-center gap-1"><Eye className="w-4 h-4" />{(featured.view_count || 0).toLocaleString()} views</span>
                         </div>
                         <span className="text-blue-600 font-semibold text-sm flex items-center gap-1 group-hover:gap-2 transition-all">
                           Read more <ArrowRight className="w-4 h-4" />
@@ -187,9 +187,9 @@ export default function Blog() {
                           <h3 className="font-bold text-gray-900 mb-2 group-hover:text-blue-600 transition-colors line-clamp-2">{post.title}</h3>
                           <p className="text-sm text-gray-600 line-clamp-2 flex-1">{post.excerpt}</p>
                           <div className="flex items-center justify-between mt-4 pt-3 border-t border-gray-100">
-                            <div className="flex items-center gap-1.5 text-xs text-gray-400">
-                              <Clock className="w-3.5 h-3.5" />
-                              {post.read_time_minutes} min
+                            <div className="flex items-center gap-2 text-xs text-gray-400">
+                              <span className="flex items-center gap-1"><Clock className="w-3.5 h-3.5" />{post.read_time_minutes} min</span>
+                              <span className="flex items-center gap-1"><Eye className="w-3.5 h-3.5" />{(post.view_count || 0).toLocaleString()}</span>
                             </div>
                             <span className="text-blue-600 text-xs font-semibold flex items-center gap-1">
                               Read <ArrowRight className="w-3.5 h-3.5" />

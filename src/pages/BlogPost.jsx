@@ -6,7 +6,7 @@ import { motion } from 'framer-motion';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
-import { Clock, ArrowLeft, MessageCircle, Send, User, Pencil } from 'lucide-react';
+import { Clock, ArrowLeft, MessageCircle, Send, User, Pencil, Eye } from 'lucide-react';
 import { useUserProfile } from '@/lib/useUserProfile';
 import { Skeleton } from '@/components/ui/skeleton';
 import { toast } from 'sonner';
@@ -153,6 +153,7 @@ export default function BlogPostPage() {
           )}
           <span className="flex items-center gap-1.5"><User className="w-4 h-4" /> {post.author_name || 'Cuidaru Team'}</span>
           <span className="flex items-center gap-1.5"><Clock className="w-4 h-4" /> {post.read_time_minutes || 8} min read</span>
+          <span className="flex items-center gap-1.5"><Eye className="w-4 h-4" /> {(post.view_count || 0).toLocaleString()} {post.view_count === 1 ? 'view' : 'views'}</span>
           {post.tags?.length > 0 && (
             <div className="flex flex-wrap gap-1">
               {post.tags.map(tag => (

@@ -100,12 +100,12 @@ export default function About() {
 
         {/* Who We Are */}
         <motion.section initial={{ opacity: 0, y: 30 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} transition={{ duration: 0.5 }} className="bg-blue-50 rounded-2xl p-8">
-          <h2 className="text-3xl font-bold text-gray-900 mb-6">{t('about_who_title')}</h2>
+          <h2 className="text-3xl font-bold text-gray-900 mb-6">Who I Am</h2>
           <div className="flex flex-col md:flex-row gap-8 items-start">
             <div className="flex-1 space-y-4 text-gray-600">
-              <p>{t('about_who_p1')}</p>
-              <p>{t('about_who_p2')}</p>
-              <p>{t('about_who_p3')}</p>
+              <p>Cuidaru is a solo project — built, designed, and maintained entirely by <strong>Jesrae Cudal Laguna</strong>. From the first line of code to every feature you see today, this platform is the result of one person's vision and dedication.</p>
+              <p>I created Cuidaru because I saw a real gap: families struggling to find trusted care professionals, and skilled providers with no simple way to reach clients who needed them. I wanted to fix that — without charging anyone for it.</p>
+              <p>There is no team behind the scenes, no investors, no corporate agenda. Just a passion project built with heart, running on community support.</p>
             </div>
             <div className="grid grid-cols-2 gap-4 shrink-0">
               {stats.map((item, i) => (

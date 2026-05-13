@@ -120,18 +120,37 @@ export default function About() {
 
         {/* Vision, Mission, Goals */}
         <motion.section initial={{ opacity: 0, y: 30 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} transition={{ duration: 0.5 }}>
-          <h2 className="text-3xl font-bold text-gray-900 mb-10 text-center">{t('about_vmg_title')}</h2>
+          <h2 className="text-3xl font-bold text-gray-900 mb-4 text-center">Our Promise</h2>
+          <p className="text-center text-gray-500 mb-10 max-w-2xl mx-auto">This is what Cuidaru stands for — not just as a platform, but as a commitment to every person who uses it.</p>
           <div className="grid md:grid-cols-3 gap-6">
             {[
-              { border: 'border-blue-100', bg: 'bg-blue-100', Icon: Eye, iconClass: 'text-blue-600', title: t('about_vision_title'), content: <p className="text-gray-600 leading-relaxed">{t('about_vision_desc')}</p> },
-              { border: 'border-green-100', bg: 'bg-green-100', Icon: Target, iconClass: 'text-green-600', title: t('about_mission_title'), content: <p className="text-gray-600 leading-relaxed">{t('about_mission_desc')}</p> },
-              { border: 'border-amber-100', bg: 'bg-amber-100', Icon: Star, iconClass: 'text-amber-600', title: t('about_goals_title'), content: (
-                <ul className="text-gray-600 space-y-2 text-sm leading-relaxed">
-                  {[t('about_goal1'), t('about_goal2'), t('about_goal3'), t('about_goal4'), t('about_goal5')].map((g, i) => (
-                    <li key={i} className="flex items-start gap-2"><span className="text-amber-500 mt-0.5">•</span> {g}</li>
-                  ))}
-                </ul>
-              )},
+              {
+                border: 'border-blue-100', bg: 'bg-blue-100', Icon: Eye, iconClass: 'text-blue-600',
+                title: 'Our Vision',
+                content: <p className="text-gray-600 leading-relaxed">A world where anyone — anywhere — can find the care or service they need, and where skilled professionals can build a livelihood without gatekeepers or fees standing in the way. Cuidaru exists to make that world real, one connection at a time.</p>
+              },
+              {
+                border: 'border-green-100', bg: 'bg-green-100', Icon: Target, iconClass: 'text-green-600',
+                title: 'Our Mission',
+                content: <p className="text-gray-600 leading-relaxed">To be the most accessible, most trusted, and most human care marketplace on the planet — permanently free, community-powered, and built on the belief that helping each other should never cost a fortune. We make it simple to connect, simple to book, and simple to trust.</p>
+              },
+              {
+                border: 'border-amber-100', bg: 'bg-amber-100', Icon: Star, iconClass: 'text-amber-600',
+                title: 'Our Goals',
+                content: (
+                  <ul className="text-gray-600 space-y-3 text-sm leading-relaxed">
+                    {[
+                      'Always be free — no subscriptions, no commissions, no hidden fees, ever.',
+                      'Be known as the platform that genuinely helps people, not just connects them.',
+                      'Reach every corner of the world where care and help are needed.',
+                      'Empower providers to earn 100% of what they deserve.',
+                      'Build a community where trust, safety, and kindness come first.',
+                    ].map((g, i) => (
+                      <li key={i} className="flex items-start gap-2"><span className="text-amber-500 mt-0.5 font-bold">✓</span> {g}</li>
+                    ))}
+                  </ul>
+                )
+              },
             ].map(({ border, bg, Icon, iconClass, title, content }, i) => (
               <motion.div key={title} initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} transition={{ duration: 0.4, delay: i * 0.1 }} className={`bg-white border ${border} rounded-2xl p-6 shadow-sm hover:shadow-md transition-shadow`}>
                 <div className={`w-12 h-12 rounded-xl ${bg} flex items-center justify-center mb-4`}>

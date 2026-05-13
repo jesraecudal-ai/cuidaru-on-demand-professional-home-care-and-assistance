@@ -3,7 +3,7 @@ import { Link } from 'react-router-dom';
 import {
   Search, UserCheck, Calendar,
   Briefcase, ClipboardList, DollarSign, CheckCircle, Shield,
-  ArrowRight, Star
+  ArrowRight, Star, PenLine, Bell, MessageSquare, ThumbsUp
 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { useI18n } from '@/lib/i18n';
@@ -18,6 +18,14 @@ export default function HowItWorks() {
     { icon: Calendar, color: 'bg-cyan-100 text-cyan-600', title: 'Book', desc: 'Send a booking request — hourly, daily, or weekly. Discuss details directly with the provider via chat and agree on everything before starting.' },
     { icon: DollarSign, color: 'bg-teal-100 text-teal-600', title: 'Pay Privately', desc: 'Pay the provider directly however you both agree — no platform middleman, no fees taken. You keep full control of your money.' },
     { icon: Star, color: 'bg-amber-100 text-amber-600', title: 'Leave a Review', desc: 'After the service, rate your experience and leave a review to help other families in the community make informed decisions.' },
+  ];
+
+  const jobPostSteps = [
+    { icon: PenLine, color: 'bg-violet-100 text-violet-600', title: 'Describe Your Need', desc: 'Post a job with your requirements — category, location, schedule, and budget. It takes less than 2 minutes and is completely free.' },
+    { icon: Bell, color: 'bg-purple-100 text-purple-600', title: 'Receive Proposals', desc: 'Qualified providers in your area will send you proposals. Review their profiles, rates, and experience before deciding.' },
+    { icon: MessageSquare, color: 'bg-fuchsia-100 text-fuchsia-600', title: 'Chat & Agree', desc: 'Message providers directly to ask questions, negotiate terms, and confirm details before making any commitment.' },
+    { icon: CheckCircle, color: 'bg-pink-100 text-pink-600', title: 'Accept & Book', desc: 'Accept the best proposal and confirm the booking. The provider will be notified and the service is set.' },
+    { icon: ThumbsUp, color: 'bg-rose-100 text-rose-600', title: 'Get It Done & Review', desc: 'The provider completes the job. Pay them directly and leave a review to help the Cuidaru community.' },
   ];
 
   const providerSteps = [
@@ -47,9 +55,9 @@ export default function HowItWorks() {
         </motion.div>
       </motion.div>
 
-      {/* 2-Column Section */}
-      <div className="max-w-6xl mx-auto px-4 py-16">
-        <div className="grid md:grid-cols-2 gap-10">
+      {/* 3-Column Section */}
+      <div className="max-w-7xl mx-auto px-4 py-16">
+        <div className="grid md:grid-cols-3 gap-10">
 
           {/* Client Column */}
           <motion.div initial={{ opacity: 0, x: -30 }} animate={{ opacity: 1, x: 0 }} transition={{ duration: 0.5, delay: 0.2 }}>
@@ -83,6 +91,43 @@ export default function HowItWorks() {
               <Link to="/browse">
                 <Button className="bg-blue-600 hover:bg-blue-700 gap-2 w-full md:w-auto">
                   {t('hiw_cta_client')} <ArrowRight className="w-4 h-4" />
+                </Button>
+              </Link>
+            </div>
+          </motion.div>
+
+          {/* Post a Job Column */}
+          <motion.div initial={{ opacity: 0, y: 30 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.5, delay: 0.2 }}>
+            <div className="mb-8">
+              <div className="inline-flex items-center gap-2 bg-violet-100 text-violet-700 px-4 py-2 rounded-full text-sm font-semibold mb-4">
+                <PenLine className="w-4 h-4" /> For Clients — Post a Job
+              </div>
+              <h2 className="text-3xl font-bold text-gray-900 mb-2">Need someone specific?</h2>
+              <p className="text-gray-500">Post a job and let providers come to you.</p>
+            </div>
+            <div className="space-y-4">
+              {jobPostSteps.map((step, i) => {
+                const Icon = step.icon;
+                return (
+                  <motion.div key={i} initial={{ opacity: 0, y: 15 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.35, delay: 0.3 + i * 0.07 }} className="flex gap-4 p-5 bg-white rounded-2xl border border-gray-100 shadow-sm hover:shadow-md transition-shadow">
+                    <div className="shrink-0">
+                      <div className={`w-11 h-11 rounded-xl flex items-center justify-center ${step.color}`}>
+                        <Icon className="w-5 h-5" />
+                      </div>
+                    </div>
+                    <div>
+                      <div className="text-xs font-bold text-gray-400 mb-1">{t('hiw_step')} {i + 1}</div>
+                      <h3 className="font-semibold text-gray-900 mb-1">{step.title}</h3>
+                      <p className="text-sm text-gray-600 leading-relaxed">{step.desc}</p>
+                    </div>
+                  </motion.div>
+                );
+              })}
+            </div>
+            <div className="mt-8">
+              <Link to="/jobs">
+                <Button className="bg-violet-600 hover:bg-violet-700 gap-2 w-full md:w-auto">
+                  Post a Job <ArrowRight className="w-4 h-4" />
                 </Button>
               </Link>
             </div>

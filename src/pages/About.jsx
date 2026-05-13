@@ -130,9 +130,11 @@ export default function About() {
           <h2 className="text-3xl font-bold text-gray-900 mb-8 text-center">Meet the Founder</h2>
           <div className="flex flex-col md:flex-row gap-8 items-center">
             <div className="shrink-0 text-center">
-              <div className="w-32 h-32 rounded-full bg-gradient-to-br from-blue-400 to-blue-600 flex items-center justify-center mx-auto mb-3 shadow-lg text-white text-4xl font-bold">
-                JL
-              </div>
+              <img
+                src="https://media.base44.com/images/public/69ef625dd7c5f2aec1f5dc5d/ca7c9a8ef_469053292_18334390954196491_426818919358397822_n.jpg"
+                alt="Jesrae Cudal Laguna"
+                className="w-32 h-32 rounded-full object-cover object-top mx-auto mb-3 shadow-lg border-4 border-white"
+              />
               <p className="font-bold text-gray-900 text-lg">Jesrae Cudal Laguna</p>
               <p className="text-blue-600 font-medium text-sm">Founder & Creator of Cuidaru</p>
               <a href="https://www.linkedin.com/in/jesrae-l-a23716110/" target="_blank" rel="noopener noreferrer" className="inline-flex items-center gap-1.5 mt-3 text-sm text-blue-600 hover:text-blue-700 font-medium underline underline-offset-2">

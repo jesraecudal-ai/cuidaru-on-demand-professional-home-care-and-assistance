@@ -2,7 +2,7 @@ import React from 'react';
 import { Card, CardContent } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
-import { Calendar, MapPin, DollarSign, User, Clock, Star, MessageCircle, ArrowLeftRight } from 'lucide-react';
+import { Calendar, MapPin, User, Star, MessageCircle, ArrowLeftRight } from 'lucide-react';
 import { format } from 'date-fns';
 import { Link } from 'react-router-dom';
 import { useI18n } from '@/lib/i18n';
@@ -22,9 +22,6 @@ export default function BookingCard({ booking, isProvider, onAction, hasPendingR
               <span className={`inline-flex items-center rounded-full px-2.5 py-0.5 text-xs font-semibold ${statusInfo.color}`}>
                 {statusInfo.label}
               </span>
-              <Badge variant="outline" className="text-xs">
-                {booking.payment_status?.replace('_', ' ')}
-              </Badge>
             </div>
             <div className="space-y-1">
               <div className="flex items-center gap-2 text-sm font-medium text-gray-800">
@@ -47,7 +44,6 @@ export default function BookingCard({ booking, isProvider, onAction, hasPendingR
           <div className="sm:text-right space-y-2">
             <div>
               <span className="text-2xl font-bold text-gray-900">{country.symbol}{booking.total_amount?.toFixed(2)}</span>
-              <p className="text-xs text-gray-400">{booking.platform_fee_pct}% fee • {country.symbol}{booking.platform_fee?.toFixed(2)}</p>
             </div>
             <div className="flex sm:justify-end flex-wrap gap-2">
               {/* Provider actions */}
@@ -64,38 +60,23 @@ export default function BookingCard({ booking, isProvider, onAction, hasPendingR
                   <Button size="sm" variant="outline" className="h-8 text-xs text-red-600 border-red-200" onClick={() => onAction(booking.id, 'cancelled', booking)}>Decline</Button>
                 </>
               )}
-              {isProvider && booking.status === 'paid_confirmed' && (
+              {isProvider && (booking.status === 'paid_confirmed' || booking.status === 'accepted') && (
                 <Button size="sm" className="h-8 text-xs bg-purple-600 hover:bg-purple-700" onClick={() => onAction(booking.id, 'in_progress', booking)}>Start Job</Button>
               )}
               {isProvider && booking.status === 'in_progress' && (
                 <Button size="sm" className="h-8 text-xs bg-blue-600 hover:bg-blue-700" onClick={() => onAction(booking.id, 'completed', booking)}>Mark Complete</Button>
               )}
               {/* Client actions */}
-              {!isProvider && booking.status === 'accepted' && booking.payment_status === 'unpaid' && (
-                <Button size="sm" className="h-8 text-xs bg-blue-600 hover:bg-blue-700" onClick={() => onAction(booking.id, 'pay', booking)}>
-                  <DollarSign className="w-3 h-3 mr-1" /> Pay {country.symbol}{booking.total_amount?.toFixed(2)}
-                </Button>
-              )}
-              {!isProvider && booking.status === 'completed' && booking.payment_status === 'release_pending' && (
-                <Button size="sm" className="h-8 text-xs bg-green-600 hover:bg-green-700" onClick={() => onAction(booking.id, 'release', booking)}>
-                  Release Payment
-                </Button>
-              )}
-              {!isProvider && ['completed','release_pending'].includes(booking.status) && booking.payment_status !== 'disputed' && (
-                <Button size="sm" variant="outline" className="h-8 text-xs text-orange-600 border-orange-200" onClick={() => onAction(booking.id, 'dispute', booking)}>
-                  Dispute
+              {!isProvider && booking.status === 'accepted' && (
+                <Button size="sm" className="h-8 text-xs bg-blue-600 hover:bg-blue-700" onClick={() => onAction(booking.id, 'in_progress', booking)}>
+                  Confirm Start
                 </Button>
               )}
               {!isProvider && booking.status === 'pending_approval' && (
                 <Button size="sm" variant="outline" className="h-8 text-xs text-red-600 border-red-200" onClick={() => onAction(booking.id, 'cancelled', booking)}>Cancel</Button>
               )}
             </div>
-            {/* Auto-release timer */}
-            {booking.auto_release_at && booking.payment_status === 'release_pending' && (
-              <p className="text-xs text-gray-400 flex items-center gap-1">
-                <Clock className="w-3 h-3" /> Auto-releases: {format(new Date(booking.auto_release_at), 'MMM d, HH:mm')}
-              </p>
-            )}
+
           </div>
         </div>
         {/* Counter offer banner */}

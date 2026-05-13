@@ -72,52 +72,15 @@ export default function Bookings() {
         await updateMutation.mutateAsync({ id: bookingId, data: { status: 'accepted' } });
         toast.success(t('booking_accepted_toast'));
         break;
-      case 'pay': {
-        // Check if running inside iframe (Base44 preview) — Stripe checkout won't work there
-        if (window.self !== window.top) {
-          toast.error('Checkout only works from the published app, not the preview.');
-          break;
-        }
-        toast.loading('Redirecting to payment...', { id: 'pay-toast' });
-        const checkoutRes = await base44.functions.invoke('createCheckoutSession', {
-          booking_id: bookingId,
-          amount: booking.total_amount,
-          currency: booking.country ? (booking.country === 'brazil' ? 'brl' : booking.country === 'uruguay' ? 'uyu' : 'usd') : 'usd',
-          provider_name: booking.provider_name,
-          provider_id: booking.provider_id,
-          provider_email: booking.provider_email,
-          description: `${booking.category} service booking`,
-          platform_fee_pct: booking.platform_fee_pct ?? 10,
-        });
-        toast.dismiss('pay-toast');
-        if (checkoutRes.data?.url) {
-          window.location.href = checkoutRes.data.url;
-        } else {
-          toast.error(checkoutRes.data?.error || 'Failed to create checkout session');
-        }
-        break;
-      }
       case 'in_progress':
         await updateMutation.mutateAsync({ id: bookingId, data: { status: 'in_progress' } });
         toast.success(t('job_started_toast'));
         break;
       case 'completed': {
-        const autoRelease = new Date(Date.now() + 24 * 3600 * 1000).toISOString();
-        await updateMutation.mutateAsync({ id: bookingId, data: { status: 'completed', payment_status: 'release_pending', auto_release_at: autoRelease } });
+        await updateMutation.mutateAsync({ id: bookingId, data: { status: 'payment_released', payment_status: 'released' } });
         toast.success(t('marked_complete_toast'));
-        break;
-      }
-      case 'release': {
-        const releaseRes = await base44.functions.invoke('releasePayment', { booking_id: bookingId });
-        if (releaseRes.data?.success) {
-          toast.success(t('payment_released_toast'));
-          queryClient.invalidateQueries({ queryKey: ['clientBookings'] });
-          queryClient.invalidateQueries({ queryKey: ['providerBookings'] });
-          if (!existingReviews.some(r => r.booking_id === bookingId)) {
-            setReviewBooking(booking);
-          }
-        } else {
-          toast.error(releaseRes.data?.error || 'Failed to release payment');
+        if (!existingReviews.some(r => r.booking_id === bookingId)) {
+          setReviewBooking(booking);
         }
         break;
       }
@@ -165,12 +128,12 @@ export default function Bookings() {
 
   // Client: completed jobs not yet reviewed by client
   const completedUnreviewed = clientBookings.filter(
-    b => b.status === 'payment_released' && !reviewedBookingIds.has(b.id)
+    b => (b.status === 'payment_released' || b.status === 'completed') && !reviewedBookingIds.has(b.id)
   );
 
   // Provider: completed jobs not yet reviewed by provider
   const providerUnreviewed = providerBookings.filter(
-    b => b.status === 'payment_released' && !reviewedBookingIds.has(b.id)
+    b => (b.status === 'payment_released' || b.status === 'completed') && !reviewedBookingIds.has(b.id)
   );
 
   const isProvider = !!providerProfile;

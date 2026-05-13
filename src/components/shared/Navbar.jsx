@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { Link, useLocation } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
-import { Menu, X, Search, User, Calendar, LogOut, Zap, Heart, Wallet, MessageCircle, AlertTriangle, Settings, ArrowDownCircle, ShieldCheck, GitBranch, Users, Briefcase, Info, HelpCircle, BookOpen } from 'lucide-react';
+import { Menu, X, Search, User, Calendar, LogOut, Zap, MessageCircle, AlertTriangle, Settings, ShieldCheck, GitBranch, Users, Briefcase, Info, HelpCircle, BookOpen } from 'lucide-react';
 import { base44 } from '@/api/base44Client';
 import {
   DropdownMenu, DropdownMenuContent, DropdownMenuItem,
@@ -96,10 +96,6 @@ export default function Navbar() {
                 <DropdownMenuItem asChild><Link to="/my-profile" className="gap-2"><User className="w-4 h-4" /> {t('my_profile')}</Link></DropdownMenuItem>
                 <DropdownMenuItem asChild><Link to="/bookings" className="gap-2"><Calendar className="w-4 h-4" /> {t('nav_bookings')}</Link></DropdownMenuItem>
                 <DropdownMenuItem asChild><Link to="/messages" className="gap-2"><MessageCircle className="w-4 h-4" /> {t('messages')}</Link></DropdownMenuItem>
-                <DropdownMenuItem asChild><Link to="/payments" className="gap-2"><Wallet className="w-4 h-4" /> {t('payments')}</Link></DropdownMenuItem>
-                {(profile?.role === 'provider' || profile?.role === 'both') && (
-                  <DropdownMenuItem asChild><Link to="/payouts" className="gap-2 text-green-700"><ArrowDownCircle className="w-4 h-4" /> {t('payout_history')}</Link></DropdownMenuItem>
-                )}
                 <DropdownMenuItem asChild><Link to="/premium" className="gap-2 text-amber-600"><Zap className="w-4 h-4" /> Cuidaru+</Link></DropdownMenuItem>
                 <DropdownMenuItem asChild><Link to="/affiliate" className="gap-2 text-purple-600"><GitBranch className="w-4 h-4" /> {t('affiliate')}</Link></DropdownMenuItem>
                 {user?.role === 'admin' && <DropdownMenuItem asChild><Link to="/admin/verifications" className="gap-2 text-blue-600"><ShieldCheck className="w-4 h-4" /> {t('verify_providers')}</Link></DropdownMenuItem>}
@@ -153,14 +149,7 @@ export default function Navbar() {
               <Link to="/messages" onClick={() => setMobileOpen(false)}>
                 <Button variant="ghost" className="w-full justify-start gap-2 text-sm"><MessageCircle className="w-4 h-4" /> {t('messages')}</Button>
               </Link>
-              <Link to="/payments" onClick={() => setMobileOpen(false)}>
-                <Button variant="ghost" className="w-full justify-start gap-2 text-sm"><Wallet className="w-4 h-4" /> {t('payments')}</Button>
-              </Link>
-              {(profile?.role === 'provider' || profile?.role === 'both') && (
-                <Link to="/payouts" onClick={() => setMobileOpen(false)}>
-                  <Button variant="ghost" className="w-full justify-start gap-2 text-sm text-green-700"><ArrowDownCircle className="w-4 h-4" /> {t('payout_history')}</Button>
-                </Link>
-              )}
+
               <Link to="/affiliate" onClick={() => setMobileOpen(false)}>
                 <Button variant="ghost" className="w-full justify-start gap-2 text-sm text-purple-600"><GitBranch className="w-4 h-4" /> {t('affiliate')}</Button>
               </Link>

@@ -53,11 +53,7 @@ export default function Navbar() {
                 </Button>
               </Link>
             ))}
-            <Link to="/premium">
-              <Button variant="ghost" size="sm" className="text-amber-600 hover:text-amber-700 hover:bg-amber-50">
-                <Zap className="w-4 h-4 mr-1.5" /> Cuidaru+
-              </Button>
-            </Link>
+
             <Link to="/about">
               <Button variant={isActive('/about') ? 'default' : 'ghost'} size="sm"
                 className={isActive('/about') ? 'bg-blue-600 hover:bg-blue-700' : 'text-gray-600 hover:text-gray-900'}>
@@ -81,7 +77,7 @@ export default function Navbar() {
           {/* Right side */}
           <div className="hidden md:flex items-center gap-2">
             {user && <NotificationBell />}
-            {profile?.is_premium && <Badge className="bg-amber-100 text-amber-700 border-amber-300 text-xs gap-1"><Zap className="w-3 h-3" />Cuidaru+</Badge>}
+
             {user ? (
             <DropdownMenu>
               <DropdownMenuTrigger asChild>
@@ -96,7 +92,7 @@ export default function Navbar() {
                 <DropdownMenuItem asChild><Link to="/my-profile" className="gap-2"><User className="w-4 h-4" /> {t('my_profile')}</Link></DropdownMenuItem>
                 <DropdownMenuItem asChild><Link to="/bookings" className="gap-2"><Calendar className="w-4 h-4" /> {t('nav_bookings')}</Link></DropdownMenuItem>
                 <DropdownMenuItem asChild><Link to="/messages" className="gap-2"><MessageCircle className="w-4 h-4" /> {t('messages')}</Link></DropdownMenuItem>
-                <DropdownMenuItem asChild><Link to="/premium" className="gap-2 text-amber-600"><Zap className="w-4 h-4" /> Cuidaru+</Link></DropdownMenuItem>
+
                 <DropdownMenuItem asChild><Link to="/affiliate" className="gap-2 text-purple-600"><GitBranch className="w-4 h-4" /> {t('affiliate')}</Link></DropdownMenuItem>
                 {user?.role === 'admin' && <DropdownMenuItem asChild><Link to="/admin/verifications" className="gap-2 text-blue-600"><ShieldCheck className="w-4 h-4" /> {t('verify_providers')}</Link></DropdownMenuItem>}
                 {user?.role === 'admin' && <DropdownMenuItem asChild><Link to="/admin/disputes" className="gap-2 text-orange-600"><AlertTriangle className="w-4 h-4" /> {t('disputes')}</Link></DropdownMenuItem>}
@@ -141,11 +137,6 @@ export default function Navbar() {
                   </Button>
                 </Link>
               ))}
-              <Link to="/premium" onClick={() => setMobileOpen(false)}>
-                <Button variant="ghost" className="w-full justify-start gap-2 text-sm text-amber-600">
-                  <Zap className="w-4 h-4" /> Cuidaru+
-                </Button>
-              </Link>
               <Link to="/messages" onClick={() => setMobileOpen(false)}>
                 <Button variant="ghost" className="w-full justify-start gap-2 text-sm"><MessageCircle className="w-4 h-4" /> {t('messages')}</Button>
               </Link>
@@ -187,11 +178,7 @@ export default function Navbar() {
                   <Search className="w-4 h-4" /> {t('nav_find')}
                 </Button>
               </Link>
-              <Link to="/premium" onClick={() => setMobileOpen(false)}>
-                <Button variant="ghost" className="w-full justify-start gap-2 text-sm text-amber-600">
-                  <Zap className="w-4 h-4" /> Cuidaru+
-                </Button>
-              </Link>
+
               <Link to="/about" onClick={() => setMobileOpen(false)}>
                 <Button variant="ghost" className="w-full justify-start gap-2 text-sm">
                   About

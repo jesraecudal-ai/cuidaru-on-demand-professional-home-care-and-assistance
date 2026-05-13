@@ -3,12 +3,9 @@ import { Link, useNavigate } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
-import { Shield, Star, DollarSign, ArrowRight, CheckCircle2, MapPin, Zap, Lock, GitBranch, Gift } from 'lucide-react';
+import { Shield, Star, ArrowRight, CheckCircle2, Zap, GitBranch, Gift } from 'lucide-react';
 import { motion } from 'framer-motion';
-import { CATEGORY_COLORS } from '@/lib/constants';
-import { usePricing } from '@/lib/usePricing';
 import { useI18n } from '@/lib/i18n';
-import { base44 } from '@/api/base44Client';
 import { useUserProfile } from '@/lib/useUserProfile';
 import CategoryCarousel from '@/components/home/CategoryCarousel';
 
@@ -44,9 +41,6 @@ export default function Home() {
     }, 5000);
     return () => clearInterval(interval);
   }, []);
-
-  const country = profile?.country || 'brazil';
-  const countryInfo = usePricing(country);
 
   const STEPS = [
     { icon: '🔍', title: t('step1_title'), desc: t('step1_desc') },
@@ -95,6 +89,7 @@ export default function Home() {
               <span className="flex items-center gap-2"><CheckCircle2 className="w-4 h-4 text-green-600" /> {t('hero_trust_1')}</span>
               <span className="flex items-center gap-2"><Shield className="w-4 h-4 text-blue-600" /> {t('hero_trust_2')}</span>
               <span className="flex items-center gap-2"><Star className="w-4 h-4 text-amber-600" /> {t('hero_trust_3')}</span>
+              <span className="flex items-center gap-2"><CheckCircle2 className="w-4 h-4 text-green-600" /> 100% Free — No fees ever</span>
             </div>
           </motion.div>
         </div>
@@ -103,35 +98,30 @@ export default function Home() {
       {/* Categories Carousel */}
       <CategoryCarousel />
 
-      {/* Premium Feature Banner */}
-      <section className="bg-gradient-to-br from-amber-50 via-orange-50 to-yellow-50 border-t-2 border-amber-200">
+      {/* Free Platform Banner */}
+      <section className="bg-gradient-to-br from-green-50 via-emerald-50 to-teal-50 border-t-2 border-green-200">
         <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-20">
-          <div className="flex flex-col lg:flex-row items-center gap-12">
-            <div className="flex-1">
-              <div className="flex items-center gap-2 mb-4">
-                <Zap className="w-5 h-5 text-amber-600" />
-                <span className="font-semibold text-amber-700 text-sm uppercase tracking-wider">{t('premium_badge')}</span>
-              </div>
-              <h3 className="text-3xl sm:text-4xl font-bold text-gray-900 mb-4">{t('premium_heading')}</h3>
-              <p className="text-gray-700 text-lg mb-6">{t('premium_subheading')}</p>
-              <ul className="space-y-3 mb-8">
-                {[
-                  t('premium_feat1'),
-                  `${t('premium_feat2')} ${countryInfo.symbol}${countryInfo.sub_provider}/${t('per_month')}`,
-                  t('premium_feat3'),
-                  `${t('premium_feat4')} ${countryInfo.symbol}${countryInfo.sub_client}/${t('per_month')}`,
-                ].map((item, i) => (
-                  <li key={i} className="flex items-center gap-3 text-gray-800">
-                    <CheckCircle2 className="w-5 h-5 text-amber-600 flex-shrink-0" /> {item}
-                  </li>
-                ))}
-              </ul>
+          <div className="text-center">
+            <div className="inline-flex items-center gap-2 bg-green-100 text-green-700 rounded-full px-4 py-1.5 text-sm font-semibold mb-6">
+              <CheckCircle2 className="w-4 h-4" /> Always Free
             </div>
-            <Link to="/premium" className="flex-shrink-0">
-               <Button size="lg" className="bg-gradient-to-r from-amber-500 to-orange-500 hover:from-amber-600 hover:to-orange-600 text-white h-14 px-10 gap-2 shadow-lg text-base">
-                 <Zap className="w-5 h-5" /> {t('premium_cta')}
-               </Button>
-             </Link>
+            <h3 className="text-3xl sm:text-4xl font-bold text-gray-900 mb-4">Zero fees. Zero subscriptions. Zero limits.</h3>
+            <p className="text-gray-600 text-lg max-w-2xl mx-auto mb-10">
+              Cuidaru is a free powerhouse platform connecting clients and service professionals directly. No platform cuts, no hidden charges — ever.
+            </p>
+            <div className="grid sm:grid-cols-3 gap-6 max-w-3xl mx-auto">
+              {[
+                { icon: '🙌', title: 'Free for Clients', desc: 'Browse and book any service at no cost.' },
+                { icon: '💼', title: 'Free for Providers', desc: 'List your services and earn 100% of your rate.' },
+                { icon: '🔒', title: 'No Hidden Fees', desc: 'What you agree is what you pay. Always.' },
+              ].map((item, i) => (
+                <div key={i} className="bg-white rounded-2xl border border-green-100 p-6 shadow-sm">
+                  <div className="text-3xl mb-3">{item.icon}</div>
+                  <h4 className="font-bold text-gray-900 mb-1">{item.title}</h4>
+                  <p className="text-gray-500 text-sm">{item.desc}</p>
+                </div>
+              ))}
+            </div>
           </div>
         </div>
       </section>
@@ -192,7 +182,7 @@ export default function Home() {
                       <span>{t('referral_provider')}</span>
                     </li>
                   </ul>
-                  <Link to="/premium" className="block">
+                  <Link to="/my-profile" className="block">
                     <Button className="w-full bg-purple-600 hover:bg-purple-700 text-white gap-2">
                       <Gift className="w-4 h-4" /> {t('referral_cta')}
                     </Button>

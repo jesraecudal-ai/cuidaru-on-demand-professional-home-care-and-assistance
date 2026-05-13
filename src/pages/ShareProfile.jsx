@@ -27,40 +27,36 @@ export default function ShareProfile() {
   // Update page title and meta tags for social sharing
   useEffect(() => {
     if (provider) {
-      const newTitle = `${provider.full_name} - ${t(`cat_${provider.category}`)} on CareBook`;
-      const newDesc = `${provider.full_name} offers ${t(`cat_${provider.category}`)} services. Hourly: $${provider.hourly_rate}, Daily: $${provider.daily_rate}, Weekly: $${provider.weekly_rate}. Book now on CareBook!`;
-      
+      const primaryCategory = provider.categories?.[0] || provider.category || '';
+      const categoryLabel = primaryCategory.replace(/_/g, ' ');
+      const newTitle = `${provider.full_name} — ${categoryLabel} on Cuidaru`;
+      const newDesc = provider.bio
+        ? `${provider.bio.slice(0, 120)}... Book ${provider.full_name} on Cuidaru — 100% free platform.`
+        : `${provider.full_name} is a verified ${categoryLabel} on Cuidaru. Connect for free — no fees, no commissions.`;
+      const shareUrl = `${window.location.origin}/share/${provider.id}`;
+      const ogImage = provider.avatar_url || 'https://media.base44.com/images/public/69ef625dd7c5f2aec1f5dc5d/596b340f8_generated_image.png';
+
       document.title = newTitle;
 
-      const updateMetaTag = (property, content) => {
-        let tag = document.querySelector(`meta[property="${property}"]`);
-        if (!tag) {
-          tag = document.createElement('meta');
-          tag.setAttribute('property', property);
-          document.head.appendChild(tag);
-        }
+      const setMeta = (attr, key, content) => {
+        let tag = document.querySelector(`meta[${attr}="${key}"]`);
+        if (!tag) { tag = document.createElement('meta'); tag.setAttribute(attr, key); document.head.appendChild(tag); }
         tag.setAttribute('content', content);
       };
 
-      const updateMetaName = (name, content) => {
-        let tag = document.querySelector(`meta[name="${name}"]`);
-        if (!tag) {
-          tag = document.createElement('meta');
-          tag.setAttribute('name', name);
-          document.head.appendChild(tag);
-        }
-        tag.setAttribute('content', content);
-      };
-
-      updateMetaTag('og:title', newTitle);
-      updateMetaTag('og:description', newDesc);
-      updateMetaTag('og:image', provider.avatar_url || 'https://via.placeholder.com/1200x630?text=CareBook');
-      updateMetaTag('og:type', 'profile');
-      updateMetaTag('twitter:card', 'summary_large_image');
-      updateMetaTag('twitter:title', newTitle);
-      updateMetaTag('twitter:description', newDesc);
-      updateMetaTag('twitter:image', provider.avatar_url || 'https://via.placeholder.com/1200x630?text=CareBook');
-      updateMetaName('description', newDesc);
+      setMeta('property', 'og:title', newTitle);
+      setMeta('property', 'og:description', newDesc);
+      setMeta('property', 'og:image', ogImage);
+      setMeta('property', 'og:image:width', '400');
+      setMeta('property', 'og:image:height', '400');
+      setMeta('property', 'og:type', 'profile');
+      setMeta('property', 'og:url', shareUrl);
+      setMeta('property', 'og:site_name', 'Cuidaru');
+      setMeta('name', 'twitter:card', 'summary');
+      setMeta('name', 'twitter:title', newTitle);
+      setMeta('name', 'twitter:description', newDesc);
+      setMeta('name', 'twitter:image', ogImage);
+      setMeta('name', 'description', newDesc);
     }
   }, [provider, t]);
 

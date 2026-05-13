@@ -12,6 +12,7 @@ import { CATEGORY_BADGE_COLORS, formatDistance, calcDistance } from '@/lib/const
 import { useUserProfile } from '@/lib/useUserProfile';
 import DoctorAvailabilityCalendar from '../components/doctors/DoctorAvailabilityCalendar';
 import MobileHeader from '@/components/shared/MobileHeader';
+import ShareButton from '@/components/shared/ShareButton';
 
 export default function ProviderProfile() {
   const { t } = useI18n();
@@ -93,6 +94,7 @@ export default function ProviderProfile() {
                     {provider.verification_status === 'pending' && (
                       <Badge variant="outline" className="text-amber-600 border-amber-300">ID Pending</Badge>
                     )}
+                    <ShareButton provider={provider} t={t} />
                   </div>
                   <div className="flex items-center gap-4 mt-2 flex-wrap">
                     {(provider.categories?.length > 0 ? provider.categories : provider.category ? [provider.category] : []).map((cat, i) => (

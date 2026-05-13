@@ -1,9 +1,9 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
 import {
-  Search, UserCheck, Calendar, CreditCard, Star,
+  Search, UserCheck, Calendar,
   Briefcase, ClipboardList, DollarSign, CheckCircle, Shield,
-  ArrowRight, Heart
+  ArrowRight, Star
 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { useI18n } from '@/lib/i18n';
@@ -13,19 +13,19 @@ export default function HowItWorks() {
   const { t } = useI18n();
 
   const clientSteps = [
-    { icon: Search, color: 'bg-blue-100 text-blue-600', title: t('hiw_client_step1_title'), desc: t('hiw_client_step1_desc') },
-    { icon: UserCheck, color: 'bg-indigo-100 text-indigo-600', title: t('hiw_client_step2_title'), desc: t('hiw_client_step2_desc') },
-    { icon: Calendar, color: 'bg-cyan-100 text-cyan-600', title: t('hiw_client_step3_title'), desc: t('hiw_client_step3_desc') },
-    { icon: CreditCard, color: 'bg-teal-100 text-teal-600', title: t('hiw_client_step4_title'), desc: t('hiw_client_step4_desc') },
-    { icon: Star, color: 'bg-amber-100 text-amber-600', title: t('hiw_client_step5_title'), desc: t('hiw_client_step5_desc') },
+    { icon: Search, color: 'bg-blue-100 text-blue-600', title: 'Browse & Find', desc: 'Search verified providers by category, location, ratings, and availability. Filter by service type to find the perfect match.' },
+    { icon: UserCheck, color: 'bg-indigo-100 text-indigo-600', title: 'Review Profiles', desc: 'Check provider profiles, experience, certifications, and client reviews to make an informed decision.' },
+    { icon: Calendar, color: 'bg-cyan-100 text-cyan-600', title: 'Book', desc: 'Send a booking request — hourly, daily, or weekly. Discuss details directly with the provider via chat and agree on everything before starting.' },
+    { icon: DollarSign, color: 'bg-teal-100 text-teal-600', title: 'Pay Privately', desc: 'Pay the provider directly however you both agree — no platform middleman, no fees taken. You keep full control of your money.' },
+    { icon: Star, color: 'bg-amber-100 text-amber-600', title: 'Leave a Review', desc: 'After the service, rate your experience and leave a review to help other families in the community make informed decisions.' },
   ];
 
   const providerSteps = [
-    { icon: ClipboardList, color: 'bg-green-100 text-green-600', title: t('hiw_provider_step1_title'), desc: t('hiw_provider_step1_desc') },
-    { icon: Shield, color: 'bg-emerald-100 text-emerald-600', title: t('hiw_provider_step2_title'), desc: t('hiw_provider_step2_desc') },
-    { icon: Briefcase, color: 'bg-lime-100 text-lime-600', title: t('hiw_provider_step3_title'), desc: t('hiw_provider_step3_desc') },
-    { icon: CheckCircle, color: 'bg-orange-100 text-orange-600', title: t('hiw_provider_step4_title'), desc: t('hiw_provider_step4_desc') },
-    { icon: DollarSign, color: 'bg-rose-100 text-rose-600', title: t('hiw_provider_step5_title'), desc: t('hiw_provider_step5_desc') },
+    { icon: ClipboardList, color: 'bg-green-100 text-green-600', title: 'Create Your Profile', desc: 'Sign up and build your professional profile. Add your services, experience, certifications, and availability — completely free.' },
+    { icon: Shield, color: 'bg-emerald-100 text-emerald-600', title: 'Get Verified', desc: 'Upload your ID documents to get a verified badge. Verification builds trust and helps you stand out to clients.' },
+    { icon: Briefcase, color: 'bg-lime-100 text-lime-600', title: 'Receive Bookings', desc: 'Clients find you and send booking requests. Review them, chat directly, and agree on the details before accepting.' },
+    { icon: CheckCircle, color: 'bg-orange-100 text-orange-600', title: 'Deliver the Service', desc: 'Complete the job on the agreed terms. Communicate with the client throughout to ensure a great experience.' },
+    { icon: DollarSign, color: 'bg-rose-100 text-rose-600', title: 'Get Paid Directly', desc: 'Receive payment directly from the client — no platform cut, no delays, no middleman. 100% of what you agree goes to you.' },
   ];
 
   return (

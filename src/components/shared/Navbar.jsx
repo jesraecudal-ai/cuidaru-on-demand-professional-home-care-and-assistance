@@ -93,10 +93,7 @@ export default function Navbar() {
                 <DropdownMenuItem asChild><Link to="/bookings" className="gap-2"><Calendar className="w-4 h-4" /> {t('nav_bookings')}</Link></DropdownMenuItem>
                 <DropdownMenuItem asChild><Link to="/messages" className="gap-2"><MessageCircle className="w-4 h-4" /> {t('messages')}</Link></DropdownMenuItem>
 
-                <DropdownMenuItem asChild><Link to="/affiliate" className="gap-2 text-purple-600"><GitBranch className="w-4 h-4" /> {t('affiliate')}</Link></DropdownMenuItem>
                 {user?.role === 'admin' && <DropdownMenuItem asChild><Link to="/admin/verifications" className="gap-2 text-blue-600"><ShieldCheck className="w-4 h-4" /> {t('verify_providers')}</Link></DropdownMenuItem>}
-                {user?.role === 'admin' && <DropdownMenuItem asChild><Link to="/admin/disputes" className="gap-2 text-orange-600"><AlertTriangle className="w-4 h-4" /> {t('disputes')}</Link></DropdownMenuItem>}
-                {user?.role === 'admin' && <DropdownMenuItem asChild><Link to="/admin/pricing" className="gap-2 text-blue-600"><Settings className="w-4 h-4" /> {t('manage_pricing')}</Link></DropdownMenuItem>}
                 {user?.role === 'admin' && <DropdownMenuItem asChild><Link to="/admin/users" className="gap-2 text-indigo-600"><Users className="w-4 h-4" /> {t('admin')}</Link></DropdownMenuItem>}
                 <DropdownMenuSeparator />
                 <DropdownMenuItem onClick={() => base44.auth.logout()} className="gap-2 text-red-600">
@@ -141,22 +138,9 @@ export default function Navbar() {
                 <Button variant="ghost" className="w-full justify-start gap-2 text-sm"><MessageCircle className="w-4 h-4" /> {t('messages')}</Button>
               </Link>
 
-              <Link to="/affiliate" onClick={() => setMobileOpen(false)}>
-                <Button variant="ghost" className="w-full justify-start gap-2 text-sm text-purple-600"><GitBranch className="w-4 h-4" /> {t('affiliate')}</Button>
-              </Link>
               {user?.role === 'admin' && (
                 <Link to="/admin/verifications" onClick={() => setMobileOpen(false)}>
                   <Button variant="ghost" className="w-full justify-start gap-2 text-sm text-blue-600"><ShieldCheck className="w-4 h-4" /> {t('verify_providers')}</Button>
-                </Link>
-              )}
-              {user?.role === 'admin' && (
-                <Link to="/admin/disputes" onClick={() => setMobileOpen(false)}>
-                  <Button variant="ghost" className="w-full justify-start gap-2 text-sm text-orange-600"><AlertTriangle className="w-4 h-4" /> {t('disputes')}</Button>
-                </Link>
-              )}
-              {user?.role === 'admin' && (
-                <Link to="/admin/pricing" onClick={() => setMobileOpen(false)}>
-                  <Button variant="ghost" className="w-full justify-start gap-2 text-sm text-blue-600"><Settings className="w-4 h-4" /> {t('manage_pricing')}</Button>
                 </Link>
               )}
               {user?.role === 'admin' && (

@@ -1,9 +1,8 @@
 import React, { useEffect, useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
-import { Card, CardContent } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
-import { Shield, Star, ArrowRight, CheckCircle2, Zap, GitBranch, Gift } from 'lucide-react';
+import { Shield, Star, ArrowRight, CheckCircle2, Zap, Heart } from 'lucide-react';
 import { motion } from 'framer-motion';
 import { useI18n } from '@/lib/i18n';
 import { useUserProfile } from '@/lib/useUserProfile';
@@ -155,74 +154,33 @@ export default function Home() {
         </div>
       </section>
 
-      {/* Referral & Affiliate Section */}
-      <section className="bg-gradient-to-br from-purple-50 via-pink-50 to-rose-50 border-t-2 border-purple-200">
-        <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-24">
-          <div className="text-center mb-16">
-            <h2 className="text-4xl sm:text-5xl font-bold text-gray-900">{t('earn_title')}</h2>
-             <p className="mt-4 text-lg text-gray-600">{t('earn_subtitle')}</p>
+      {/* Donation Section */}
+      <section className="bg-gradient-to-br from-rose-50 via-pink-50 to-red-50 border-t-2 border-rose-200">
+        <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-24 text-center">
+          <div className="w-16 h-16 rounded-full bg-rose-100 flex items-center justify-center mx-auto mb-6">
+            <Heart className="w-8 h-8 text-rose-500" />
           </div>
-          <div className="grid md:grid-cols-2 gap-8">
-            {/* Referral Rewards Block */}
-            <motion.div initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }}>
-              <Card className="h-full border-2 border-purple-200 bg-white hover:shadow-2xl transition-shadow">
-                <CardContent className="p-8">
-                  <div className="w-14 h-14 rounded-xl bg-gradient-to-br from-purple-100 to-purple-50 flex items-center justify-center mb-5">
-                    <Gift className="w-7 h-7 text-purple-600" />
-                  </div>
-                  <h3 className="text-2xl font-bold text-gray-900 mb-2">{t('referral_title')}</h3>
-                  <p className="text-gray-600 mb-6 text-sm">{t('referral_subtitle')}</p>
-                  <ul className="space-y-3 mb-8">
-                    <li className="flex items-start gap-3 text-sm text-gray-700">
-                      <CheckCircle2 className="w-4 h-4 text-purple-600 flex-shrink-0 mt-0.5" />
-                      <span>{t('referral_client')}</span>
-                    </li>
-                    <li className="flex items-start gap-3 text-sm text-gray-700">
-                      <CheckCircle2 className="w-4 h-4 text-purple-600 flex-shrink-0 mt-0.5" />
-                      <span>{t('referral_provider')}</span>
-                    </li>
-                  </ul>
-                  <Link to="/my-profile" className="block">
-                    <Button className="w-full bg-purple-600 hover:bg-purple-700 text-white gap-2">
-                      <Gift className="w-4 h-4" /> {t('referral_cta')}
-                    </Button>
-                  </Link>
-                </CardContent>
-              </Card>
-            </motion.div>
-
-            {/* Affiliate Program Block */}
-            <motion.div initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} transition={{ delay: 0.1 }}>
-              <Card className="h-full border-2 border-pink-200 bg-white hover:shadow-2xl transition-shadow">
-                <CardContent className="p-8">
-                  <div className="w-14 h-14 rounded-xl bg-gradient-to-br from-pink-100 to-pink-50 flex items-center justify-center mb-5">
-                    <GitBranch className="w-7 h-7 text-pink-600" />
-                  </div>
-                  <h3 className="text-2xl font-bold text-gray-900 mb-2">{t('affiliate_title')}</h3>
-                  <p className="text-gray-600 mb-6 text-sm">{t('affiliate_subtitle')}</p>
-                  <ul className="space-y-3 mb-8">
-                    <li className="flex items-start gap-3 text-sm text-gray-700">
-                      <CheckCircle2 className="w-4 h-4 text-pink-600 flex-shrink-0 mt-0.5" />
-                      <span>{t('affiliate_feat1')}</span>
-                    </li>
-                    <li className="flex items-start gap-3 text-sm text-gray-700">
-                      <CheckCircle2 className="w-4 h-4 text-pink-600 flex-shrink-0 mt-0.5" />
-                      <span>{t('affiliate_feat2')}</span>
-                    </li>
-                    <li className="flex items-start gap-3 text-sm text-gray-700">
-                      <CheckCircle2 className="w-4 h-4 text-pink-600 flex-shrink-0 mt-0.5" />
-                      <span>{t('affiliate_feat3')}</span>
-                    </li>
-                  </ul>
-                  <Link to="/affiliate" className="block">
-                    <Button className="w-full bg-pink-600 hover:bg-pink-700 text-white gap-2">
-                      <GitBranch className="w-4 h-4" /> {t('affiliate_cta')}
-                    </Button>
-                  </Link>
-                </CardContent>
-              </Card>
-            </motion.div>
+          <h2 className="text-4xl sm:text-5xl font-bold text-gray-900 mb-4">Help Keep Cuidaru Free</h2>
+          <p className="text-gray-600 text-lg max-w-2xl mx-auto mb-4">
+            Cuidaru is and will always be free for everyone. No subscriptions, no commissions, no hidden fees.
+          </p>
+          <p className="text-gray-500 text-base max-w-2xl mx-auto mb-10">
+            Running the platform has real costs — servers, security, development, and support. If Cuidaru has helped you, consider making a small donation to keep it alive and free for the families and professionals who need it most.
+          </p>
+          <div className="grid sm:grid-cols-3 gap-4 max-w-xl mx-auto mb-10">
+            {[{ amount: '$5', label: 'A coffee ☕' }, { amount: '$15', label: 'A month of hosting 🖥️' }, { amount: '$50', label: 'Keep us going 💪' }].map((tier, i) => (
+              <div key={i} className="bg-white border-2 border-rose-100 rounded-2xl p-5 shadow-sm">
+                <div className="text-2xl font-bold text-rose-600 mb-1">{tier.amount}</div>
+                <div className="text-gray-500 text-sm">{tier.label}</div>
+              </div>
+            ))}
           </div>
+          <a href="https://donate.stripe.com" target="_blank" rel="noopener noreferrer">
+            <Button size="lg" className="bg-rose-500 hover:bg-rose-600 text-white h-14 px-10 gap-2 shadow-lg text-base">
+              <Heart className="w-5 h-5" /> Donate & Support Cuidaru
+            </Button>
+          </a>
+          <p className="mt-4 text-xs text-gray-400">Donations are voluntary and go directly towards platform maintenance costs.</p>
         </div>
       </section>
 

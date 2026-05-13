@@ -1,6 +1,6 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
-import { Heart, Target, Eye, Star, Globe, Shield, Users, ArrowLeft } from 'lucide-react';
+import { Heart, Target, Eye, Star, Globe, Shield, Users, ArrowLeft, Gift, Coffee } from 'lucide-react';
 import { useI18n } from '@/lib/i18n';
 import { motion } from 'framer-motion';
 
@@ -43,6 +43,9 @@ export default function About() {
           </div>
           <h1 className="text-4xl md:text-5xl font-bold mb-4">{t('about_title')}</h1>
           <p className="text-xl text-blue-100 max-w-2xl mx-auto">{t('about_subtitle')}</p>
+          <div className="mt-6 inline-flex items-center gap-2 bg-white/20 backdrop-blur-sm border border-white/30 text-white text-sm font-semibold px-5 py-2.5 rounded-full">
+            <Gift className="w-4 h-4" /> 100% Free — No subscriptions, no commissions, ever.
+          </div>
         </motion.div>
       </motion.div>
 
@@ -58,6 +61,40 @@ export default function About() {
             <p>{t('about_story_p1')}</p>
             <p dangerouslySetInnerHTML={{ __html: t('about_story_p2') }} />
             <p>{t('about_story_p3')}</p>
+          </div>
+        </motion.section>
+
+        {/* Free Platform + Donation */}
+        <motion.section initial={{ opacity: 0, y: 30 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} transition={{ duration: 0.5 }} className="bg-gradient-to-br from-emerald-50 to-teal-50 rounded-2xl p-8 border border-emerald-100">
+          <div className="flex flex-col md:flex-row gap-8 items-center">
+            <div className="flex-1 space-y-4">
+              <div className="inline-flex items-center gap-2 bg-emerald-100 text-emerald-700 text-sm font-semibold px-4 py-1.5 rounded-full">
+                <Gift className="w-4 h-4" /> Always Free
+              </div>
+              <h2 className="text-3xl font-bold text-gray-900">Cuidaru is free for everyone</h2>
+              <p className="text-gray-600 leading-relaxed">
+                We believe connecting families with the care they need should never come with a price tag. Cuidaru charges <strong>zero commissions, zero subscription fees, and zero hidden costs</strong> — for both clients and service providers.
+              </p>
+              <p className="text-gray-600 leading-relaxed">
+                Providers keep 100% of what they earn. Clients find help without paying platform fees. Direct payments, trusted connections, real community.
+              </p>
+            </div>
+            <div className="shrink-0 text-center bg-white rounded-2xl p-7 shadow-sm border border-emerald-100 max-w-xs w-full">
+              <Coffee className="w-10 h-10 text-amber-500 mx-auto mb-3" />
+              <h3 className="text-xl font-bold text-gray-900 mb-2">Support Cuidaru</h3>
+              <p className="text-sm text-gray-500 mb-5 leading-relaxed">
+                Cuidaru is a passion project kept alive by its community. If it helped you, consider buying us a coffee to keep the platform running.
+              </p>
+              <a
+                href="https://buymeacoffee.com/cuidaru"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="inline-flex items-center gap-2 bg-amber-400 hover:bg-amber-500 text-gray-900 font-bold px-6 py-3 rounded-xl transition-colors w-full justify-center"
+              >
+                <Coffee className="w-4 h-4" /> Buy us a coffee ☕
+              </a>
+              <p className="text-xs text-gray-400 mt-3">Every contribution keeps Cuidaru free for everyone.</p>
+            </div>
           </div>
         </motion.section>
 
